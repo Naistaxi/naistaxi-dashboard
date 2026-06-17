@@ -20,23 +20,32 @@ export default async function handler(req, res) {
     // For each message that has replies, fetch the thread
     const messagesWithThreads = await Promise.all(
       messages.map(async (msg) => {
+        // reply_count > 0 means there are thread replies
         if (!msg.reply_count || msg.reply_count === 0) {
-          return { ...msg, confirmed: false };
+          return { ...msg, confirmed: false, debug_replies: 0 };
         }
         try {
           const threadRes = await fetch(
-            `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}&limit=20`,
+            `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           const threadData = await threadRes.json();
-          const replies = threadData.messages || [];
-          // Check if any reply contains "confirmed" (case-insensitive)
-          const confirmed = replies.some(r =>
-            r.ts !== msg.ts && /confirmed/i.test(r.text || '')
-          );
-          return { ...msg, confirmed };
-        } catch {
-          return { ...msg, confirmed: false };
+          
+          if (!threadData.ok) {
+            return { ...msg, confirmed: false, debug_thread_error: threadData.error };
+          }
+
+          const replies = (threadData.messages || []).filter(r => r.ts !== msg.ts);
+          const confirmed = replies.some(r => /confirmed/i.test(r.text || ''));
+          
+          return { 
+            ...msg, 
+            confirmed,
+            debug_replies: replies.length,
+            debug_reply_texts: replies.map(r => r.text?.substring(0, 50))
+          };
+        } catch(e) {
+          return { ...msg, confirmed: false, debug_error: e.message };
         }
       })
     );
