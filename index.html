@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naistaxi · Ride Requests</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0C0D0F; --surface: #141618; --surface2: #1C1E21;
+      --border: rgba(255,255,255,0.07); --text: #F0F0EE; --text2: #8A8A85; --text3: #505048;
+      --accent: #C8F04A; --accent2: #4A9CF0; --red: #F05A4A; --amber: #F0A84A; --green: #4AF09A;
+      --radius: 12px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(12,13,15,0.92); backdrop-filter: blur(12px); z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+    .logo-dot { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .live-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); background: var(--surface); border: 1px solid var(--border); padding: 5px 10px; border-radius: 20px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .channel-tag { font-size: 12px; color: var(--accent2); background: rgba(74,156,240,0.1); border: 1px solid rgba(74,156,240,0.2); padding: 5px 10px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; }
+    main { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+    .metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+    .metric-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .metric-value { font-size: 28px; font-weight: 600; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; }
+    .metric-sub { font-size: 11px; color: var(--text3); }
+    .metric-value.green { color: var(--green); } .metric-value.accent { color: var(--accent); } .metric-value.amber { color: var(--amber); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; }
+    .card-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .mb { margin-bottom: 12px; }
+    .ride-row { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .ride-row:last-child { border-bottom: none; }
+    .avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+    .av1{background:rgba(74,156,240,0.15);color:var(--accent2)} .av2{background:rgba(74,240,154,0.12);color:var(--green)} .av3{background:rgba(240,168,74,0.12);color:var(--amber)} .av4{background:rgba(200,240,74,0.12);color:var(--accent)} .av5{background:rgba(240,90,74,0.12);color:var(--red)}
+    .ride-name { font-size: 13px; font-weight: 500; } .ride-route { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ride-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .ride-price { text-align: right; } .price-val { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .epm-tag { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border-radius: 20px; margin-top: 3px; display: inline-block; }
+    .epm-high{background:rgba(240,90,74,0.15);color:var(--red)} .epm-mid{background:rgba(240,168,74,0.15);color:var(--amber)} .epm-low{background:rgba(74,240,154,0.12);color:var(--green)}
+    .type-tag { font-size: 10px; padding: 2px 6px; border-radius: 5px; display: inline-block; margin-left: 5px; }
+    .tag-air{background:rgba(74,156,240,0.12);color:var(--accent2)} .tag-city{background:rgba(200,240,74,0.1);color:var(--accent)}
+    .dist-legend { display: flex; flex-direction: column; gap: 10px; }
+    .dist-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+    .dist-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+    .dist-bar-wrap { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+    .dist-bar { height: 100%; border-radius: 2px; }
+    .dist-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text); min-width: 60px; text-align: right; }
+    .state-msg { font-size: 12px; color: var(--text2); padding: 12px 0; }
+    .err { color: var(--red) !important; }
+    footer { text-align: center; font-size: 11px; color: var(--text3); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+    @media(max-width:700px){ .metrics{grid-template-columns:repeat(2,1fr)} .grid-3{grid-template-columns:1fr} header{padding:14px 16px} main{padding:16px 14px 40px} }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="logo-dot">🚕</div>Naistaxi</div>
+  <div class="header-right">
+    <div class="channel-tag">#ride-requests</div>
+    <div class="live-badge"><div class="live-dot" id="liveDot"></div><span id="liveLabel">Connecting...</span></div>
+  </div>
+</header>
+<main>
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Total bookings</div><div class="metric-value" id="mTotal">—</div><div class="metric-sub" id="mSince">Loading...</div></div>
+    <div class="metric"><div class="metric-label">Est. revenue</div><div class="metric-value green" id="mRevenue">—</div><div class="metric-sub">sum of fares</div></div>
+    <div class="metric"><div class="metric-label">Avg. fare</div><div class="metric-value accent" id="mAvgFare">—</div><div class="metric-sub">per ride</div></div>
+    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value amber" id="mAvgEpk">—</div><div class="metric-sub">across all rides</div></div>
+  </div>
+  <div class="card mb">
+    <div class="card-title">Last 5 bookings</div>
+    <div id="rideList"><div class="state-msg">Loading rides...</div></div>
+  </div>
+  <div class="grid-3">
+    <div class="card"><div class="card-title">Fare range</div><div style="position:relative;height:180px"><canvas id="fareChart"></canvas></div></div>
+    <div class="card"><div class="card-title">Bookings by week</div><div style="position:relative;height:180px"><canvas id="weekChart"></canvas></div></div>
+    <div class="card">
+      <div class="card-title">Rides by distance</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;height:180px">
+        <div style="position:relative;height:160px"><canvas id="distChart"></canvas></div>
+        <div class="dist-legend">
+          <div class="dist-item"><div class="dist-dot" style="background:#F05A4A"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar1" style="background:#F05A4A;width:0%"></div></div><div class="dist-val" id="distVal1">—</div></div>
+          <div style="font-size:11px;color:var(--text3);margin-left:18px">under 5 km</div>
+          <div class="dist-item"><div class="dist-dot" style="background:#F0A84A"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar2" style="background:#F0A84A;width:0%"></div></div><div class="dist-val" id="distVal2">—</div></div>
+          <div style="font-size:11px;color:var(--text3);margin-left:18px">5 – 10 km</div>
+          <div class="dist-item"><div class="dist-dot" style="background:#4A9CF0"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar3" style="background:#4A9CF0;width:0%"></div></div><div class="dist-val" id="distVal3">—</div></div>
+          <div style="font-size:11px;color:var(--text3);margin-left:18px">over 10 km</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer id="footer">Connecting to Slack...</footer>
+<script>
+const POLL_MS = 30000;
+let fareC, weekC, distC;
+
+function parseRides(messages) {
+  return messages.filter(m => m.text && !m.subtype).map(m => {
+    const t = m.text;
+    const pm = t.match(/(\d+)[,.](\d{1,2})\s*€|€\s*(\d+)[,.](\d{1,2})/);
+    if (!pm) return null;
+    const price = pm[1] ? parseFloat(`${pm[1]}.${pm[2]}`) : parseFloat(`${pm[3]}.${pm[4]}`);
+    const dm = t.match(/(\d+)[,.](\d+)\s*km/i);
+    const dist = dm ? parseFloat(`${dm[1]}.${dm[2]}`) : null;
+    const tm = t.match(/\b(\d{1,2}:\d{2})\b/);
+    const rm = t.match(/(.+?)\s*→\s*(.+?)(?:\n|·|,|$)/);
+    const lines = t.split('\n').map(l=>l.trim()).filter(Boolean);
+    const nm = (lines[0]||'').match(/^([A-ZÄÖÅ][a-zäöå]+(?:\s[A-ZÄÖÅ][a-zäöå]+)?)/);
+    const ts = parseFloat(m.ts);
+    const epk = dist && dist > 0 ? price/dist : null;
+    return {
+      name: nm ? nm[1] : 'Unknown',
+      from: rm ? rm[1].trim() : '',
+      to: rm ? rm[2].trim() : '',
+      price, dist, epk,
+      time: tm ? tm[1] : '',
+      isAirport: /airport|lentoasema|vantaa.*lento|lento.*vantaa/i.test(t),
+      childSeat: /child seat|lastenstol|lastenistuin/i.test(t),
+      ts, date: new Date(ts*1000)
+    };
+  }).filter(Boolean).sort((a,b)=>b.ts-a.ts);
+}
+
+function initials(n){ return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
+const avC = ['av1','av2','av3','av4','av5'];
+function epmClass(e){ return !e?'epm-mid':e>=4?'epm-high':e>=2.5?'epm-mid':'epm-low'; }
+
+function render(rides) {
+  // metrics
+  const rev = rides.reduce((s,r)=>s+r.price,0);
+  const epkR = rides.filter(r=>r.epk);
+  const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
+  document.getElementById('mTotal').textContent = rides.length;
+  document.getElementById('mRevenue').textContent = `€${rev.toFixed(0)}`;
+  document.getElementById('mAvgFare').textContent = `€${rides.length?(rev/rides.length).toFixed(1):'0'}`;
+  document.getElementById('mAvgEpk').textContent = `€${avgEpk.toFixed(2)}`;
+  if(rides.length) document.getElementById('mSince').textContent = 'since '+rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+
+  // last 5
+  const last5 = rides.slice(0,5);
+  document.getElementById('rideList').innerHTML = last5.length ? last5.map((r,i)=>`
+    <div class="ride-row">
+      <div class="avatar ${avC[i%5]}">${initials(r.name)}</div>
+      <div style="min-width:0">
+        <div class="ride-name">${r.name}${r.childSeat?' 🪑':''}</div>
+        <div class="ride-route">${r.from||'?'} → ${r.to||'?'}</div>
+        <div class="ride-meta">${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''} ${r.dist?'· '+r.dist+' km':''} <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span></div>
+      </div>
+      <div class="ride-price">
+        <div class="price-val">€${r.price.toFixed(2)}</div>
+        ${r.epk?`<span class="epm-tag ${epmClass(r.epk)}">€${r.epk.toFixed(2)}/km</span>`:''}
+      </div>
+    </div>`).join('') : '<div class="state-msg">No bookings found.</div>';
+
+  // fare chart
+  const fd = [rides.filter(r=>r.price<25).length, rides.filter(r=>r.price>=25&&r.price<=50).length, rides.filter(r=>r.price>50).length];
+  if(fareC) fareC.destroy();
+  fareC = new Chart(document.getElementById('fareChart'),{type:'doughnut',data:{labels:['< €25','€25–50','> €50'],datasets:[{data:fd,backgroundColor:['#534AB7','#4AF09A','#F05A4A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8A8A85',font:{size:10},boxWidth:8,padding:10}}}}});
+
+  // week chart
+  const weeks={};
+  rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=mon.toLocaleDateString('en',{month:'short',day:'numeric'});weeks[k]=(weeks[k]||0)+1;});
+  const wl=Object.keys(weeks).reverse(),wd=wl.map(k=>weeks[k]);
+  if(weekC) weekC.destroy();
+  weekC = new Chart(document.getElementById('weekChart'),{type:'bar',data:{labels:wl,datasets:[{data:wd,backgroundColor:'#C8F04A',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#505048',font:{size:9},maxRotation:35}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#505048',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}}});
+
+  // dist chart
+  const d1=rides.filter(r=>r.dist&&r.dist<5).length, d2=rides.filter(r=>r.dist&&r.dist>=5&&r.dist<=10).length, d3=rides.filter(r=>r.dist&&r.dist>10).length;
+  const dt=d1+d2+d3||1;
+  if(distC) distC.destroy();
+  distC = new Chart(document.getElementById('distChart'),{type:'doughnut',data:{labels:['< 5km','5–10km','> 10km'],datasets:[{data:[d1,d2,d3],backgroundColor:['#F05A4A','#F0A84A','#4A9CF0'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
+  document.getElementById('distVal1').textContent=`${d1} (${Math.round(d1/dt*100)}%)`;
+  document.getElementById('distVal2').textContent=`${d2} (${Math.round(d2/dt*100)}%)`;
+  document.getElementById('distVal3').textContent=`${d3} (${Math.round(d3/dt*100)}%)`;
+  document.getElementById('distBar1').style.width=`${d1/dt*100}%`;
+  document.getElementById('distBar2').style.width=`${d2/dt*100}%`;
+  document.getElementById('distBar3').style.width=`${d3/dt*100}%`;
+}
+
+async function refresh() {
+  try {
+    const res = await fetch('/api/slack');
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    const rides = parseRides(data.messages||[]);
+    render(rides);
+    const now = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('liveLabel').textContent = `Updated ${now}`;
+    document.getElementById('liveDot').style.background = '#4AF09A';
+    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · ${rides.length} bookings · Updated ${now} · Refreshes every 30s`;
+  } catch(err) {
+    document.getElementById('liveLabel').textContent = 'Error';
+    document.getElementById('liveDot').style.background = '#F05A4A';
+    document.getElementById('rideList').innerHTML = `<div class="state-msg err">⚠ ${err.message}</div>`;
+  }
+}
+refresh();
+setInterval(refresh, POLL_MS);
+</script>
+</body>
+</html>
