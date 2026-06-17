@@ -99,56 +99,98 @@
 const POLL_MS = 30000;
 let fareC, weekC, distC;
 
+function field(text, ...keys) {
+  // Searches for "Key: value" in both Finnish and English, case-insensitive
+  for (const key of keys) {
+    const m = text.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
+    if (m) return m[1].trim();
+  }
+  return null;
+}
+
 function parseRides(messages) {
   return messages.filter(m => m.text && !m.subtype).map(m => {
     const t = m.text;
-    const pm = t.match(/(\d+)[,.](\d{1,2})\s*€|€\s*(\d+)[,.](\d{1,2})/);
+
+    // Only parse booking messages
+    if (!/ennakkovaraus|booking|reservation|reitti|route/i.test(t)) return null;
+
+    // Price — "Arvioitu hinta: 14,30 €" or "Estimated price: 14.30 €"
+    const priceRaw = field(t, 'Arvioitu hinta', 'Estimated price', 'Price', 'Hinta');
+    const pm = priceRaw && priceRaw.match(/(\d+)[,.](\d{1,2})/);
     if (!pm) return null;
-    const price = pm[1] ? parseFloat(`${pm[1]}.${pm[2]}`) : parseFloat(`${pm[3]}.${pm[4]}`);
-    const dm = t.match(/(\d+)[,.](\d+)\s*km/i);
+    const price = parseFloat(`${pm[1]}.${pm[2]}`);
+
+    // Distance — "Etäisyys: 2.58 km" or "Distance: 2.58 km"
+    const distRaw = field(t, 'Etäisyys', 'Distance');
+    const dm = distRaw && distRaw.match(/(\d+)[,.](\d+)/);
     const dist = dm ? parseFloat(`${dm[1]}.${dm[2]}`) : null;
-    const tm = t.match(/\b(\d{1,2}:\d{2})\b/);
-    const rm = t.match(/(.+?)\s*→\s*(.+?)(?:\n|·|,|$)/);
-    const lines = t.split('\n').map(l=>l.trim()).filter(Boolean);
-    const nm = (lines[0]||'').match(/^([A-ZÄÖÅ][a-zäöå]+(?:\s[A-ZÄÖÅ][a-zäöå]+)?)/);
+
+    // From — "Lähtö: ..." or "From: ..." or "Pickup: ..."
+    const from = field(t, 'Lähtö', 'From', 'Pickup', 'Lähtöpaikka') || '?';
+
+    // To — "Määränpää: ..." or "To: ..." or "Destination: ..."
+    const to = field(t, 'Määränpää', 'To', 'Destination', 'Kohde') || '?';
+
+    // Name — "Nimi: Jenni" or "Name: Jenni"
+    const name = field(t, 'Nimi', 'Name') || 'Unknown';
+
+    // Time — "Aika: 23:15" or "Time: 23:15"
+    const timeRaw = field(t, 'Aika', 'Time');
+    const timem = timeRaw && timeRaw.match(/(\d{1,2}:\d{2})/);
+    const time = timem ? timem[1] : '';
+
+    // Date — "Päivä: 2026-05-15" or "Date: 2026-05-15"
+    const dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
+    let date;
+    if (dateRaw) {
+      const parts = dateRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
+      date = parts ? new Date(`${parts[1]}-${parts[2]}-${parts[3]}T${time||'00:00'}`) : new Date(parseFloat(m.ts)*1000);
+    } else {
+      date = new Date(parseFloat(m.ts)*1000);
+    }
+
+    // Passengers
+    const paxRaw = field(t, 'Matkustajat', 'Passengers', 'Pax');
+    const pax = paxRaw ? parseInt(paxRaw) : 1;
+
+    // Child seat — "Lastenistuin: Kyllä/Yes" or "Child seat: Yes"
+    const childRaw = field(t, 'Lastenistuin', 'Child seat', 'Child Seat');
+    const childSeat = childRaw && /kyll[äa]|yes|true/i.test(childRaw);
+
+    // Airport detection
+    const isAirport = /airport|lentoasema|vantaa.*lento|lento.*vantaa|helsinki.?vantaa/i.test(t);
+
     const ts = parseFloat(m.ts);
-    const epk = dist && dist > 0 ? price/dist : null;
-    return {
-      name: nm ? nm[1] : 'Unknown',
-      from: rm ? rm[1].trim() : '',
-      to: rm ? rm[2].trim() : '',
-      price, dist, epk,
-      time: tm ? tm[1] : '',
-      isAirport: /airport|lentoasema|vantaa.*lento|lento.*vantaa/i.test(t),
-      childSeat: /child seat|lastenstol|lastenistuin/i.test(t),
-      ts, date: new Date(ts*1000)
-    };
-  }).filter(Boolean).sort((a,b)=>b.ts-a.ts);
+    const epk = dist && dist > 0 ? price / dist : null;
+
+    return { name, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date };
+  }).filter(Boolean).sort((a, b) => b.ts - a.ts);
 }
 
-function initials(n){ return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
+function initials(n) { return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
 const avC = ['av1','av2','av3','av4','av5'];
-function epmClass(e){ return !e?'epm-mid':e>=4?'epm-high':e>=2.5?'epm-mid':'epm-low'; }
+function epmClass(e) { return !e?'epm-mid':e>=4?'epm-high':e>=2.5?'epm-mid':'epm-low'; }
 
 function render(rides) {
-  // metrics
-  const rev = rides.reduce((s,r)=>s+r.price,0);
+  const rev = rides.reduce((s,r)=>s+r.price, 0);
   const epkR = rides.filter(r=>r.epk);
   const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
+
   document.getElementById('mTotal').textContent = rides.length;
   document.getElementById('mRevenue').textContent = `€${rev.toFixed(0)}`;
   document.getElementById('mAvgFare').textContent = `€${rides.length?(rev/rides.length).toFixed(1):'0'}`;
   document.getElementById('mAvgEpk').textContent = `€${avgEpk.toFixed(2)}`;
-  if(rides.length) document.getElementById('mSince').textContent = 'since '+rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+  if (rides.length) document.getElementById('mSince').textContent =
+    'since ' + rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
 
-  // last 5
   const last5 = rides.slice(0,5);
-  document.getElementById('rideList').innerHTML = last5.length ? last5.map((r,i)=>`
+  document.getElementById('rideList').innerHTML = last5.length ? last5.map((r,i) => `
     <div class="ride-row">
       <div class="avatar ${avC[i%5]}">${initials(r.name)}</div>
       <div style="min-width:0">
-        <div class="ride-name">${r.name}${r.childSeat?' 🪑':''}</div>
-        <div class="ride-route">${r.from||'?'} → ${r.to||'?'}</div>
+        <div class="ride-name">${r.name}${r.childSeat?' 🪑':''}${r.pax>1?` · ${r.pax} pax`:''}</div>
+        <div class="ride-route">${r.from} → ${r.to}</div>
         <div class="ride-meta">${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''} ${r.dist?'· '+r.dist+' km':''} <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span></div>
       </div>
       <div class="ride-price">
@@ -157,20 +199,17 @@ function render(rides) {
       </div>
     </div>`).join('') : '<div class="state-msg">No bookings found.</div>';
 
-  // fare chart
   const fd = [rides.filter(r=>r.price<25).length, rides.filter(r=>r.price>=25&&r.price<=50).length, rides.filter(r=>r.price>50).length];
   if(fareC) fareC.destroy();
   fareC = new Chart(document.getElementById('fareChart'),{type:'doughnut',data:{labels:['< €25','€25–50','> €50'],datasets:[{data:fd,backgroundColor:['#534AB7','#4AF09A','#F05A4A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8A8A85',font:{size:10},boxWidth:8,padding:10}}}}});
 
-  // week chart
   const weeks={};
   rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=mon.toLocaleDateString('en',{month:'short',day:'numeric'});weeks[k]=(weeks[k]||0)+1;});
   const wl=Object.keys(weeks).reverse(),wd=wl.map(k=>weeks[k]);
   if(weekC) weekC.destroy();
   weekC = new Chart(document.getElementById('weekChart'),{type:'bar',data:{labels:wl,datasets:[{data:wd,backgroundColor:'#C8F04A',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#505048',font:{size:9},maxRotation:35}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#505048',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}}});
 
-  // dist chart
-  const d1=rides.filter(r=>r.dist&&r.dist<5).length, d2=rides.filter(r=>r.dist&&r.dist>=5&&r.dist<=10).length, d3=rides.filter(r=>r.dist&&r.dist>10).length;
+  const d1=rides.filter(r=>r.dist&&r.dist<5).length,d2=rides.filter(r=>r.dist&&r.dist>=5&&r.dist<=10).length,d3=rides.filter(r=>r.dist&&r.dist>10).length;
   const dt=d1+d2+d3||1;
   if(distC) distC.destroy();
   distC = new Chart(document.getElementById('distChart'),{type:'doughnut',data:{labels:['< 5km','5–10km','> 10km'],datasets:[{data:[d1,d2,d3],backgroundColor:['#F05A4A','#F0A84A','#4A9CF0'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
@@ -186,7 +225,7 @@ async function refresh() {
   try {
     const res = await fetch('/api/slack');
     const data = await res.json();
-    if(data.error) throw new Error(data.error);
+    if (data.error) throw new Error(data.error);
     const rides = parseRides(data.messages||[]);
     render(rides);
     const now = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
