@@ -1,3 +1,11 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "functions": {
+    "api/slack.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/api/slack", "destination": "/api/slack.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
