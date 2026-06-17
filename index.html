@@ -29,11 +29,18 @@
     .metric-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
     .metric-value { font-size: 28px; font-weight: 600; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; }
     .metric-sub { font-size: 11px; color: var(--text3); }
-    .metric-value.green { color: var(--green); } .metric-value.accent { color: var(--accent); } .metric-value.amber { color: var(--amber); }
+    .metric-value.green { color: var(--green); } .metric-value.accent { color: var(--accent); } .metric-value.amber { color: var(--amber); } .metric-value.red { color: var(--red); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; }
     .card-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .mb { margin-bottom: 12px; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .tab { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.15s; }
+    .tab.active { background: var(--accent); color: #0C0D0F; border-color: var(--accent); font-weight: 600; }
+    .tab:hover:not(.active) { border-color: var(--text3); color: var(--text); }
+
     .ride-row { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
     .ride-row:last-child { border-bottom: none; }
     .avatar { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
@@ -42,8 +49,12 @@
     .ride-price { text-align: right; } .price-val { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
     .epm-tag { font-size: 10px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border-radius: 20px; margin-top: 3px; display: inline-block; }
     .epm-high{background:rgba(240,90,74,0.15);color:var(--red)} .epm-mid{background:rgba(240,168,74,0.15);color:var(--amber)} .epm-low{background:rgba(74,240,154,0.12);color:var(--green)}
-    .type-tag { font-size: 10px; padding: 2px 6px; border-radius: 5px; display: inline-block; margin-left: 5px; }
+    .type-tag { font-size: 10px; padding: 2px 6px; border-radius: 5px; display: inline-block; margin-left: 4px; }
     .tag-air{background:rgba(74,156,240,0.12);color:var(--accent2)} .tag-city{background:rgba(200,240,74,0.1);color:var(--accent)}
+    .status-tag { font-size: 10px; padding: 2px 7px; border-radius: 5px; display: inline-block; margin-left: 4px; font-weight: 500; }
+    .tag-confirmed { background: rgba(74,240,154,0.12); color: var(--green); }
+    .tag-pending { background: rgba(240,168,74,0.12); color: var(--amber); }
+
     .dist-legend { display: flex; flex-direction: column; gap: 10px; }
     .dist-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
     .dist-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
@@ -66,17 +77,26 @@
 </header>
 <main>
   <div class="metrics">
-    <div class="metric"><div class="metric-label">Total bookings</div><div class="metric-value" id="mTotal">—</div><div class="metric-sub" id="mSince">Loading...</div></div>
-    <div class="metric"><div class="metric-label">Est. revenue</div><div class="metric-value green" id="mRevenue">—</div><div class="metric-sub">sum of fares</div></div>
-    <div class="metric"><div class="metric-label">Avg. fare</div><div class="metric-value accent" id="mAvgFare">—</div><div class="metric-sub">per ride</div></div>
-    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value amber" id="mAvgEpk">—</div><div class="metric-sub">across all rides</div></div>
+    <div class="metric"><div class="metric-label">Total requests</div><div class="metric-value" id="mTotal">—</div><div class="metric-sub" id="mSince">Loading...</div></div>
+    <div class="metric"><div class="metric-label">Confirmed bookings</div><div class="metric-value green" id="mConfirmed">—</div><div class="metric-sub">with "confirmed" reply</div></div>
+    <div class="metric"><div class="metric-label">Pending requests</div><div class="metric-value amber" id="mPending">—</div><div class="metric-sub">awaiting confirmation</div></div>
+    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value accent" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
+
   <div class="card mb">
-    <div class="card-title">Last 5 bookings</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+      <div class="card-title" style="margin-bottom:0">Last 5 bookings</div>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('all', this)">All</button>
+        <button class="tab" onclick="switchTab('confirmed', this)">✅ Confirmed</button>
+        <button class="tab" onclick="switchTab('pending', this)">⏳ Pending</button>
+      </div>
+    </div>
     <div id="rideList"><div class="state-msg">Loading rides...</div></div>
   </div>
+
   <div class="grid-3">
-    <div class="card"><div class="card-title">Fare range</div><div style="position:relative;height:180px"><canvas id="fareChart"></canvas></div></div>
+    <div class="card"><div class="card-title">Fare range (confirmed)</div><div style="position:relative;height:180px"><canvas id="fareChart"></canvas></div></div>
     <div class="card"><div class="card-title">Bookings by week</div><div style="position:relative;height:180px"><canvas id="weekChart"></canvas></div></div>
     <div class="card">
       <div class="card-title">Rides by distance</div>
@@ -98,9 +118,10 @@
 <script>
 const POLL_MS = 30000;
 let fareC, weekC, distC;
+let allRides = [];
+let currentTab = 'all';
 
 function field(text, ...keys) {
-  // Searches for "Key: value" in both Finnish and English, case-insensitive
   for (const key of keys) {
     const m = text.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
     if (m) return m[1].trim();
@@ -111,36 +132,25 @@ function field(text, ...keys) {
 function parseRides(messages) {
   return messages.filter(m => m.text && !m.subtype).map(m => {
     const t = m.text;
-
-    // Only parse booking messages
     if (!/ennakkovaraus|booking|reservation|reitti|route/i.test(t)) return null;
 
-    // Price — "Arvioitu hinta: 14,30 €" or "Estimated price: 14.30 €"
     const priceRaw = field(t, 'Arvioitu hinta', 'Estimated price', 'Price', 'Hinta');
     const pm = priceRaw && priceRaw.match(/(\d+)[,.](\d{1,2})/);
     if (!pm) return null;
     const price = parseFloat(`${pm[1]}.${pm[2]}`);
 
-    // Distance — "Etäisyys: 2.58 km" or "Distance: 2.58 km"
     const distRaw = field(t, 'Etäisyys', 'Distance');
     const dm = distRaw && distRaw.match(/(\d+)[,.](\d+)/);
     const dist = dm ? parseFloat(`${dm[1]}.${dm[2]}`) : null;
 
-    // From — "Lähtö: ..." or "From: ..." or "Pickup: ..."
     const from = field(t, 'Lähtö', 'From', 'Pickup', 'Lähtöpaikka') || '?';
-
-    // To — "Määränpää: ..." or "To: ..." or "Destination: ..."
     const to = field(t, 'Määränpää', 'To', 'Destination', 'Kohde') || '?';
-
-    // Name — "Nimi: Jenni" or "Name: Jenni"
     const name = field(t, 'Nimi', 'Name') || 'Unknown';
 
-    // Time — "Aika: 23:15" or "Time: 23:15"
     const timeRaw = field(t, 'Aika', 'Time');
     const timem = timeRaw && timeRaw.match(/(\d{1,2}:\d{2})/);
     const time = timem ? timem[1] : '';
 
-    // Date — "Päivä: 2026-05-15" or "Date: 2026-05-15"
     const dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
     let date;
     if (dateRaw) {
@@ -150,66 +160,88 @@ function parseRides(messages) {
       date = new Date(parseFloat(m.ts)*1000);
     }
 
-    // Passengers
     const paxRaw = field(t, 'Matkustajat', 'Passengers', 'Pax');
     const pax = paxRaw ? parseInt(paxRaw) : 1;
 
-    // Child seat — "Lastenistuin: Kyllä/Yes" or "Child seat: Yes"
     const childRaw = field(t, 'Lastenistuin', 'Child seat', 'Child Seat');
     const childSeat = childRaw && /kyll[äa]|yes|true/i.test(childRaw);
-
-    // Airport detection
     const isAirport = /airport|lentoasema|vantaa.*lento|lento.*vantaa|helsinki.?vantaa/i.test(t);
 
     const ts = parseFloat(m.ts);
     const epk = dist && dist > 0 ? price / dist : null;
+    const confirmed = m.confirmed === true;
 
-    return { name, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date };
-  }).filter(Boolean).sort((a, b) => b.ts - a.ts);
+    return { name, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed };
+  }).filter(Boolean).sort((a,b) => b.ts - a.ts);
 }
 
 function initials(n) { return n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase(); }
 const avC = ['av1','av2','av3','av4','av5'];
 function epmClass(e) { return !e?'epm-mid':e>=4?'epm-high':e>=2.5?'epm-mid':'epm-low'; }
 
-function render(rides) {
-  const rev = rides.reduce((s,r)=>s+r.price, 0);
-  const epkR = rides.filter(r=>r.epk);
-  const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderRideList();
+}
 
-  document.getElementById('mTotal').textContent = rides.length;
-  document.getElementById('mRevenue').textContent = `€${rev.toFixed(0)}`;
-  document.getElementById('mAvgFare').textContent = `€${rides.length?(rev/rides.length).toFixed(1):'0'}`;
-  document.getElementById('mAvgEpk').textContent = `€${avgEpk.toFixed(2)}`;
-  if (rides.length) document.getElementById('mSince').textContent =
-    'since ' + rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
-
-  const last5 = rides.slice(0,5);
+function renderRideList() {
+  const filtered = currentTab === 'confirmed' ? allRides.filter(r=>r.confirmed)
+    : currentTab === 'pending' ? allRides.filter(r=>!r.confirmed)
+    : allRides;
+  const last5 = filtered.slice(0,5);
   document.getElementById('rideList').innerHTML = last5.length ? last5.map((r,i) => `
     <div class="ride-row">
       <div class="avatar ${avC[i%5]}">${initials(r.name)}</div>
       <div style="min-width:0">
         <div class="ride-name">${r.name}${r.childSeat?' 🪑':''}${r.pax>1?` · ${r.pax} pax`:''}</div>
         <div class="ride-route">${r.from} → ${r.to}</div>
-        <div class="ride-meta">${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''} ${r.dist?'· '+r.dist+' km':''} <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span></div>
+        <div class="ride-meta">
+          ${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''}
+          ${r.dist?'· '+r.dist+' km':''}
+          <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span>
+          <span class="status-tag ${r.confirmed?'tag-confirmed':'tag-pending'}">${r.confirmed?'✅ confirmed':'⏳ pending'}</span>
+        </div>
       </div>
       <div class="ride-price">
         <div class="price-val">€${r.price.toFixed(2)}</div>
         ${r.epk?`<span class="epm-tag ${epmClass(r.epk)}">€${r.epk.toFixed(2)}/km</span>`:''}
       </div>
-    </div>`).join('') : '<div class="state-msg">No bookings found.</div>';
+    </div>`).join('')
+    : `<div class="state-msg">No ${currentTab !== 'all' ? currentTab : ''} bookings found.</div>`;
+}
 
-  const fd = [rides.filter(r=>r.price<25).length, rides.filter(r=>r.price>=25&&r.price<=50).length, rides.filter(r=>r.price>50).length];
+function render(rides) {
+  allRides = rides;
+  const confirmed = rides.filter(r=>r.confirmed);
+  const pending = rides.filter(r=>!r.confirmed);
+  const epkR = confirmed.filter(r=>r.epk);
+  const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
+
+  document.getElementById('mTotal').textContent = rides.length;
+  document.getElementById('mConfirmed').textContent = confirmed.length;
+  document.getElementById('mPending').textContent = pending.length;
+  document.getElementById('mAvgEpk').textContent = `€${avgEpk.toFixed(2)}`;
+  if (rides.length) document.getElementById('mSince').textContent =
+    'since ' + rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+
+  renderRideList();
+
+  // Fare chart (confirmed only)
+  const fd = [confirmed.filter(r=>r.price<25).length, confirmed.filter(r=>r.price>=25&&r.price<=50).length, confirmed.filter(r=>r.price>50).length];
   if(fareC) fareC.destroy();
   fareC = new Chart(document.getElementById('fareChart'),{type:'doughnut',data:{labels:['< €25','€25–50','> €50'],datasets:[{data:fd,backgroundColor:['#534AB7','#4AF09A','#F05A4A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8A8A85',font:{size:10},boxWidth:8,padding:10}}}}});
 
+  // Week chart (all requests)
   const weeks={};
   rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=mon.toLocaleDateString('en',{month:'short',day:'numeric'});weeks[k]=(weeks[k]||0)+1;});
   const wl=Object.keys(weeks).reverse(),wd=wl.map(k=>weeks[k]);
   if(weekC) weekC.destroy();
   weekC = new Chart(document.getElementById('weekChart'),{type:'bar',data:{labels:wl,datasets:[{data:wd,backgroundColor:'#C8F04A',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#505048',font:{size:9},maxRotation:35}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#505048',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}}}});
 
-  const d1=rides.filter(r=>r.dist&&r.dist<5).length,d2=rides.filter(r=>r.dist&&r.dist>=5&&r.dist<=10).length,d3=rides.filter(r=>r.dist&&r.dist>10).length;
+  // Distance chart (confirmed only)
+  const d1=confirmed.filter(r=>r.dist&&r.dist<5).length,d2=confirmed.filter(r=>r.dist&&r.dist>=5&&r.dist<=10).length,d3=confirmed.filter(r=>r.dist&&r.dist>10).length;
   const dt=d1+d2+d3||1;
   if(distC) distC.destroy();
   distC = new Chart(document.getElementById('distChart'),{type:'doughnut',data:{labels:['< 5km','5–10km','> 10km'],datasets:[{data:[d1,d2,d3],backgroundColor:['#F05A4A','#F0A84A','#4A9CF0'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
@@ -226,12 +258,11 @@ async function refresh() {
     const res = await fetch('/api/slack');
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    const rides = parseRides(data.messages||[]);
-    render(rides);
+    render(parseRides(data.messages||[]));
     const now = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('liveLabel').textContent = `Updated ${now}`;
     document.getElementById('liveDot').style.background = '#4AF09A';
-    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · ${rides.length} bookings · Updated ${now} · Refreshes every 30s`;
+    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Refreshes every 30s`;
   } catch(err) {
     document.getElementById('liveLabel').textContent = 'Error';
     document.getElementById('liveDot').style.background = '#F05A4A';
