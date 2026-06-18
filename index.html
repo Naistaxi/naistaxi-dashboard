@@ -283,11 +283,12 @@ function render(rides) {
   const avgRPC = rideVals.length ? (rideVals.reduce((a,b)=>a+b,0)/rideVals.length).toFixed(1) : '0';
   document.getElementById('mRidesPerCust').textContent = avgRPC;
 
-  // Peak hour
+  // Peak hour — based on ALL booking requests, shown in 24h format
   const hourCount = {};
-  confirmed.forEach(r => { const h=r.time?parseInt(r.time.split(':')[0]):null; if(h!==null) hourCount[h]=(hourCount[h]||0)+1; });
+  rides.forEach(r => { const h=r.time?parseInt(r.time.split(':')[0]):null; if(h!==null) hourCount[h]=(hourCount[h]||0)+1; });
   const peak = Object.entries(hourCount).sort((a,b)=>b[1]-a[1])[0];
-  document.getElementById('mPeakHour').textContent = peak ? peak[0]+':00' : '—';
+  const peakH = peak ? String(parseInt(peak[0])).padStart(2,'0')+':00' : '—';
+  document.getElementById('mPeakHour').textContent = peakH;
 
   renderRideList();
 
