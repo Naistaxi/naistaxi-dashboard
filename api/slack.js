@@ -30,21 +30,25 @@ export default async function handler(req, res) {
         if (!d.ok) return { ts: msg.ts, confirmed: false };
         const replies = (d.messages || []).filter(r => r.ts !== msg.ts);
         const confirmed = replies.some(r => /confirmed/i.test(r.text || ''));
-        return { ts: msg.ts, confirmed };
+        const rejected = replies.some(r => /rejected|reject/i.test(r.text || ''));
+        const cancelled = replies.some(r => /cancelled|canceled|cancel/i.test(r.text || ''));
+        return { ts: msg.ts, confirmed, rejected, cancelled };
       })
     );
 
     const confirmedMap = {};
     threadResults.forEach(r => {
       if (r.status === 'fulfilled') {
-        confirmedMap[r.value.ts] = r.value.confirmed;
+        confirmedMap[r.value.ts] = { confirmed: r.value.confirmed, rejected: r.value.rejected, cancelled: r.value.cancelled };
       }
     });
 
     res.status(200).json({
       messages: messages.map(m => ({
         ...m,
-        confirmed: confirmedMap[m.ts] ?? false
+        confirmed: confirmedMap[m.ts]?.confirmed ?? false,
+        rejected: confirmedMap[m.ts]?.rejected ?? false,
+        cancelled: confirmedMap[m.ts]?.cancelled ?? false
       }))
     });
   } catch (err) {
