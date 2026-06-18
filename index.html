@@ -134,16 +134,24 @@ function parseRides(messages) {
     const t = m.text;
     if (!/ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(t)) return null;
 
-    const priceRaw = field(t, 'Arvioitu hinta', 'Estimated price', 'Price', 'Hinta');
-    const pm = priceRaw && priceRaw.match(/(\d+)[,.](\d{1,2})/);
-    if (!pm) return null;
-    const price = parseFloat(`${pm[1]}.${pm[2]}`);
+    // Try all known price field names, fallback to scanning raw text
+    const priceRaw = field(t, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Price', 'Hinta');
+    let price = null;
+    if (priceRaw) {
+      const pm2 = priceRaw.match(/(\d+)[,.](\d{1,2})/);
+      if (pm2) price = parseFloat(pm2[1] + '.' + pm2[2]);
+    }
+    if (!price) {
+      const fb = t.match(/(\d+)[,.](\d{2})\s*€/);
+      if (fb) price = parseFloat(fb[1] + '.' + fb[2]);
+    }
+    if (!price) return null;
 
     const distRaw = field(t, 'Etäisyys', 'Distance');
-    const dm = distRaw && distRaw.match(/(\d+)[,.](\d+)/);
-    const dist = dm ? parseFloat(`${dm[1]}.${dm[2]}`) : null;
+    const dm = distRaw && distRaw.match(/(\d+)[,.]?(\d*)/);
+    const dist = dm ? parseFloat(dm[1] + (dm[2] ? '.' + dm[2] : '')) : null;
 
-    const from = field(t, 'Lähtö', 'From', 'Pickup', 'Lähtöpaikka') || '?';
+    const from = field(t, 'Lähtö', 'From', 'Pickup address', 'Pickup', 'Lähtöpaikka') || '?';
     const to = field(t, 'Määränpää', 'To', 'Destination', 'Kohde') || '?';
     const name = field(t, 'Nimi', 'Name') || 'Unknown';
 
