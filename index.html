@@ -259,7 +259,7 @@ async function refresh() {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     render(parseRides(data.messages||[]));
-    const now = new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+    const now = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
     document.getElementById('liveLabel').textContent = `Updated ${now}`;
     document.getElementById('liveDot').style.background = '#4AF09A';
     document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Refreshes every 30s`;
