@@ -1,5 +1,3 @@
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -10,7 +8,7 @@ export default async function handler(req, res) {
 
   try {
     const histRes = await fetch(
-      `https://slack.com/api/conversations.history?channel=${channelId}&limit=200`,
+      `https://slack.com/api/conversations.history?channel=${channelId}&limit=100`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const histData = await histRes.json();
@@ -18,36 +16,32 @@ export default async function handler(req, res) {
 
     const messages = histData.messages || [];
 
-    // Only fetch threads for messages that have replies, sequentially with delay
-    const messagesWithThreads = [];
-    for (const msg of messages) {
-      if (!msg.reply_count || msg.reply_count === 0) {
-        messagesWithThreads.push({ ...msg, confirmed: false });
-        continue;
-      }
-
-      try {
-        await sleep(300); // 300ms delay between requests to avoid rate limiting
-        const threadRes = await fetch(
-          `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}`,
+    // Fetch ALL threads in parallel at once — fastest possible
+    const results = await Promise.allSettled(
+      messages.map(async (msg) => {
+        if (!msg.reply_count || msg.reply_count === 0) {
+          return { ts: msg.ts, confirmed: false };
+        }
+        const r = await fetch(
+          `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}&limit=50`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        const threadData = await threadRes.json();
-
-        if (!threadData.ok) {
-          messagesWithThreads.push({ ...msg, confirmed: false });
-          continue;
-        }
-
-        const replies = (threadData.messages || []).filter(r => r.ts !== msg.ts);
+        const d = await r.json();
+        if (!d.ok) return { ts: msg.ts, confirmed: false };
+        const replies = (d.messages || []).filter(r => r.ts !== msg.ts);
         const confirmed = replies.some(r => /confirmed/i.test(r.text || ''));
-        messagesWithThreads.push({ ...msg, confirmed });
-      } catch {
-        messagesWithThreads.push({ ...msg, confirmed: false });
-      }
-    }
+        return { ts: msg.ts, confirmed };
+      })
+    );
 
-    res.status(200).json({ messages: messagesWithThreads });
+    const confirmedMap = {};
+    results.forEach(r => {
+      if (r.status === 'fulfilled') confirmedMap[r.value.ts] = r.value.confirmed;
+    });
+
+    res.status(200).json({
+      messages: messages.map(m => ({ ...m, confirmed: confirmedMap[m.ts] || false }))
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
