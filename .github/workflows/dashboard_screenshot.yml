@@ -55,7 +55,7 @@ jobs:
                 channel_id: 'C09G3CKNQ82',
                 file: 'screenshot.jpg',
                 filename: 'dashboard_hoy.jpg',
-                initial_comment: '📊 ¡Buenos días! Aquí está el estado actual del dashboard para arrancar la jornada.'
+                initial_comment: '📊 Good morning! Here is the current status of the dashboard to start the day.'
               });
             }
             
