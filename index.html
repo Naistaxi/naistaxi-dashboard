@@ -132,7 +132,7 @@ function field(text, ...keys) {
 function parseRides(messages) {
   return messages.filter(m => m.text && !m.subtype).map(m => {
     const t = m.text;
-    if (!/ennakkovaraus|booking|reservation|reitti|route/i.test(t)) return null;
+    if (!/ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(t)) return null;
 
     const priceRaw = field(t, 'Arvioitu hinta', 'Estimated price', 'Price', 'Hinta');
     const pm = priceRaw && priceRaw.match(/(\d+)[,.](\d{1,2})/);
