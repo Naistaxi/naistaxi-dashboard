@@ -167,7 +167,6 @@ function parseRides(messages) {
     const from = field(t, 'Lähtö', 'From', 'Pickup address', 'Pickup', 'Lähtöpaikka') || '?';
     const to = field(t, 'Määränpää', 'To', 'Destination', 'Kohde') || '?';
     const name = field(t, 'Nimi', 'Name') || 'Unknown';
-    const phone = field(t, 'Puhelin', 'Phone') || name;
     const phoneRaw = field(t, 'Puhelin', 'Phone');
     const phoneMatch = phoneRaw && phoneRaw.match(/[+\d][\d\s\-().]{6,}/);
     const phone = phoneMatch ? phoneMatch[0].replace(/\s/g,'') : name;
