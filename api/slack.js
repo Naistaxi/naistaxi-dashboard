@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   try {
     const histRes = await fetch(
-      `https://slack.com/api/conversations.history?channel=${channelId}&limit=100`,
+      `https://slack.com/api/conversations.history?channel=${channelId}&limit=200`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const histData = await histRes.json();
@@ -16,12 +16,12 @@ export default async function handler(req, res) {
 
     const messages = histData.messages || [];
 
-    // Fetch ALL threads in parallel at once — fastest possible
-    const results = await Promise.allSettled(
-      messages.map(async (msg) => {
-        if (!msg.reply_count || msg.reply_count === 0) {
-          return { ts: msg.ts, confirmed: false };
-        }
+    // Only fetch threads for messages with replies (booking messages)
+    const withReplies = messages.filter(m => m.reply_count > 0);
+
+    // Fetch all threads in parallel - fast
+    const threadResults = await Promise.allSettled(
+      withReplies.map(async (msg) => {
         const r = await fetch(
           `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}&limit=50`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -35,12 +35,17 @@ export default async function handler(req, res) {
     );
 
     const confirmedMap = {};
-    results.forEach(r => {
-      if (r.status === 'fulfilled') confirmedMap[r.value.ts] = r.value.confirmed;
+    threadResults.forEach(r => {
+      if (r.status === 'fulfilled') {
+        confirmedMap[r.value.ts] = r.value.confirmed;
+      }
     });
 
     res.status(200).json({
-      messages: messages.map(m => ({ ...m, confirmed: confirmedMap[m.ts] || false }))
+      messages: messages.map(m => ({
+        ...m,
+        confirmed: confirmedMap[m.ts] ?? false
+      }))
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
