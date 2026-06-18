@@ -52,7 +52,7 @@ jobs:
               // Lo envía al Slack de Naistaxi usando el Secret de seguridad
               const slack = new WebClient('${{ secrets.SLACK_BOT_TOKEN }}');
               await slack.files.uploadV2({
-                channel_id: 'all-naistaxi',
+                channel_id: 'C09G3CKNQ82',
                 file: 'screenshot.jpg',
                 filename: 'dashboard_hoy.jpg',
                 initial_comment: '📊 ¡Buenos días! Aquí está el estado actual del dashboard para arrancar la jornada.'
