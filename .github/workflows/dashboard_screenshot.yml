@@ -1,0 +1,62 @@
+name: Daily Dashboard Screenshot
+
+on:
+  schedule:
+    # 06:00 UTC son las 09:00 AM en Finlandia (EEST)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Esto te da un botón para probarlo cuando quieras
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Puppeteer and Slack API
+        run: npm install puppeteer @slack/web-api
+
+      - name: Take Screenshot and Send to Slack
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const puppeteer = require('puppeteer');
+            const { WebClient } = require('@slack/web-api');
+            
+            async function run() {
+              // Lanzamos el navegador automático en el servidor
+              const browser = await puppeteer.launch({ 
+                headless: "new",
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+              });
+              const page = await browser.newPage();
+              
+              // Ajustamos la pantalla a tamaño computadora estándar
+              await page.setViewport({ width: 1440, height: 900 });
+              
+              // El robot entra a tu link abierto de Vercel
+              await page.goto('https://naistaxi-dashboard.vercel.app/', { waitUntil: 'networkidle2' });
+              
+              // Esperamos 3 segundos extra para asegurar que las gráficas carguen su animación
+              await new Promise(r => setTimeout(r, 3000));
+              
+              // Toma el pantallazo
+              await page.screenshot({ path: 'screenshot.jpg', fullPage: false });
+              await browser.close();
+              
+              // Lo envía al Slack de Naistaxi usando el Secret de seguridad
+              const slack = new WebClient('${{ secrets.SLACK_BOT_TOKEN }}');
+              await slack.files.uploadV2({
+                channel_id: 'all-naistaxi',
+                file: 'screenshot.jpg',
+                filename: 'dashboard_hoy.jpg',
+                initial_comment: '📊 ¡Buenos días! Aquí está el estado actual del dashboard para arrancar la jornada.'
+              });
+            }
+            
+            run();
