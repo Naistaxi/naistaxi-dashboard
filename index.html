@@ -55,6 +55,7 @@
     .tag-confirmed { background: rgba(74,240,154,0.12); color: var(--green); }
     .tag-pending { background: rgba(240,168,74,0.12); color: var(--amber); }
     .tag-rejected { background: rgba(240,90,74,0.12); color: var(--red); }
+    .tag-cancelled { background: rgba(140,140,140,0.15); color: #8A8A85; }
 
     .dist-legend { display: flex; flex-direction: column; gap: 10px; }
     .dist-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
@@ -82,6 +83,7 @@
     <div class="metric"><div class="metric-label">Confirmed bookings</div><div class="metric-value green" id="mConfirmed">—</div><div class="metric-sub">with "confirmed" reply</div></div>
     <div class="metric"><div class="metric-label">Pending requests</div><div class="metric-value amber" id="mPending">—</div><div class="metric-sub">awaiting confirmation</div></div>
     <div class="metric"><div class="metric-label">Rejected</div><div class="metric-value red" id="mRejected">—</div><div class="metric-sub">cannot be fulfilled</div></div>
+    <div class="metric"><div class="metric-label">Cancelled</div><div class="metric-value red" id="mCancelled">—</div><div class="metric-sub">cancelled by team</div></div>
     <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value accent" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
 
@@ -93,6 +95,7 @@
         <button class="tab" onclick="switchTab('confirmed', this)">✅ Confirmed</button>
         <button class="tab" onclick="switchTab('pending', this)">⏳ Pending</button>
         <button class="tab" onclick="switchTab('rejected', this)">❌ Rejected</button>
+        <button class="tab" onclick="switchTab('cancelled', this)">🚫 Cancelled</button>
       </div>
     </div>
     <div id="rideList"><div class="state-msg">Loading rides...</div></div>
@@ -182,8 +185,9 @@ function parseRides(messages) {
     const epk = dist && dist > 0 ? price / dist : null;
     const confirmed = m.confirmed === true;
     const rejected = m.rejected === true;
+    const cancelled = m.cancelled === true;
 
-    return { name, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected };
+    return { name, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected, cancelled };
   }).filter(Boolean).sort((a,b) => b.ts - a.ts);
 }
 
@@ -199,9 +203,10 @@ function switchTab(tab, btn) {
 }
 
 function renderRideList() {
-  const filtered = currentTab === 'confirmed' ? allRides.filter(r=>r.confirmed && !r.rejected)
-    : currentTab === 'pending' ? allRides.filter(r=>!r.confirmed && !r.rejected)
+  const filtered = currentTab === 'confirmed' ? allRides.filter(r=>r.confirmed && !r.rejected && !r.cancelled)
+    : currentTab === 'pending' ? allRides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled)
     : currentTab === 'rejected' ? allRides.filter(r=>r.rejected)
+    : currentTab === 'cancelled' ? allRides.filter(r=>r.cancelled)
     : allRides;
   const last5 = filtered.slice(0,5);
   document.getElementById('rideList').innerHTML = last5.length ? last5.map((r,i) => `
@@ -214,7 +219,7 @@ function renderRideList() {
           ${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''}
           ${r.dist?'· '+r.dist+' km':''}
           <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span>
-          <span class="status-tag ${r.rejected?'tag-rejected':r.confirmed?'tag-confirmed':'tag-pending'}">${r.rejected?'❌ rejected':r.confirmed?'✅ confirmed':'⏳ pending'}</span>
+          <span class="status-tag ${r.cancelled?'tag-cancelled':r.rejected?'tag-rejected':r.confirmed?'tag-confirmed':'tag-pending'}">${r.cancelled?'🚫 cancelled':r.rejected?'❌ rejected':r.confirmed?'✅ confirmed':'⏳ pending'}</span>
         </div>
       </div>
       <div class="ride-price">
@@ -227,9 +232,10 @@ function renderRideList() {
 
 function render(rides) {
   allRides = rides;
-  const confirmed = rides.filter(r=>r.confirmed && !r.rejected);
-  const pending = rides.filter(r=>!r.confirmed && !r.rejected);
+  const confirmed = rides.filter(r=>r.confirmed && !r.rejected && !r.cancelled);
+  const pending = rides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled);
   const rejected = rides.filter(r=>r.rejected);
+  const cancelled = rides.filter(r=>r.cancelled);
   const epkR = confirmed.filter(r=>r.epk);
   const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
 
@@ -237,6 +243,7 @@ function render(rides) {
   document.getElementById('mConfirmed').textContent = confirmed.length;
   document.getElementById('mPending').textContent = pending.length;
   document.getElementById('mRejected').textContent = rejected.length;
+  document.getElementById('mCancelled').textContent = cancelled.length;
   document.getElementById('mAvgEpk').textContent = `€${avgEpk.toFixed(2)}`;
   if (rides.length) document.getElementById('mSince').textContent =
     'since ' + rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
