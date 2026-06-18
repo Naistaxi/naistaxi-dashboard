@@ -92,6 +92,7 @@
     <div class="metric"><div class="metric-label">Cancellation</div><div class="metric-value amber" id="mCancelRate">—</div><div class="metric-sub">of total requests</div></div>
     <div class="metric"><div class="metric-label">Rides / customer</div><div class="metric-value" id="mRidesPerCust">—</div><div class="metric-sub">repeat rate</div></div>
     <div class="metric"><div class="metric-label">Peak hour</div><div class="metric-value accent" id="mPeakHour">—</div><div class="metric-sub">most bookings</div></div>
+    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value amber" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
 
   <div class="card mb">
@@ -248,8 +249,6 @@ function render(rides) {
   const pending = rides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled);
   const rejected = rides.filter(r=>r.rejected);
   const cancelled = rides.filter(r=>r.cancelled);
-  const epkR = confirmed.filter(r=>r.epk);
-  const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
 
   document.getElementById('mTotal').textContent = rides.length;
   document.getElementById('mConfirmed').textContent = confirmed.length;
@@ -282,6 +281,11 @@ function render(rides) {
   const rideVals = Object.values(custRides);
   const avgRPC = rideVals.length ? (rideVals.reduce((a,b)=>a+b,0)/rideVals.length).toFixed(1) : '0';
   document.getElementById('mRidesPerCust').textContent = avgRPC;
+
+  // Avg €/km (confirmed only)
+  const epkR = confirmed.filter(r=>r.epk);
+  const avgEpk = epkR.length ? epkR.reduce((s,r)=>s+r.epk,0)/epkR.length : 0;
+  document.getElementById('mAvgEpk').textContent = '€' + avgEpk.toFixed(2);
 
   // Peak hour — based on ALL booking requests, shown in 24h format
   const hourCount = {};
