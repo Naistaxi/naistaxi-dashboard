@@ -317,14 +317,28 @@ function render(rides) {
 
 async function refresh() {
   try {
-    const res = await fetch('/api/slack');
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    render(parseRides(data.messages||[]));
+    document.getElementById('liveLabel').textContent = 'Loading...';
+    document.getElementById('liveDot').style.background = '#F0A84A';
+
+    // Stage 1: load messages fast (no thread fetching)
+    const res1 = await fetch('/api/slack?mode=messages');
+    const data1 = await res1.json();
+    if (data1.error) throw new Error(data1.error);
+    render(parseRides(data1.messages || []));
     const now = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
-    document.getElementById('liveLabel').textContent = `Updated ${now}`;
-    document.getElementById('liveDot').style.background = '#4AF09A';
-    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Refreshes every 30s`;
+    document.getElementById('liveLabel').textContent = `Loading statuses...`;
+    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Loading confirmed status...`;
+
+    // Stage 2: load thread statuses in background
+    const res2 = await fetch('/api/slack?mode=full');
+    const data2 = await res2.json();
+    if (!data2.error) {
+      render(parseRides(data2.messages || []));
+      const now2 = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
+      document.getElementById('liveLabel').textContent = `Updated ${now2}`;
+      document.getElementById('liveDot').style.background = '#4AF09A';
+      document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now2} · Refreshes every 30s`;
+    }
   } catch(err) {
     document.getElementById('liveLabel').textContent = 'Error';
     document.getElementById('liveDot').style.background = '#F05A4A';
