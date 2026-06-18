@@ -171,9 +171,11 @@ function parseRides(messages) {
     const phoneMatch = phoneRaw && phoneRaw.match(/[+\d][\d\s\-().]{6,}/);
     const phone = phoneMatch ? phoneMatch[0].replace(/\s/g,'') : name;
 
+    // Extract time — try field first, then scan full text
     const timeRaw = field(t, 'Aika', 'Time');
     const timem = timeRaw && timeRaw.match(/(\d{1,2}:\d{2})/);
-    const time = timem ? timem[1] : '';
+    const timeFromText = t.match(/\b(\d{1,2}:\d{2})\b/);
+    const time = timem ? timem[1] : (timeFromText ? timeFromText[1] : '');
 
     const dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
     let date;
