@@ -1,11 +1,12 @@
 name: Daily Dashboard Screenshot
-
 on:
   schedule:
-    # 06:00 UTC son las 09:00 AM en Finlandia (EEST)
+    # 06:00 UTC = 09:00 Helsinki verano (EEST, UTC+3)
+    # 07:00 UTC = 09:00 Helsinki invierno (EET, UTC+2)
+    # Ejecutamos a las 06:00 y 07:00 UTC para cubrir ambas estaciones
     - cron: '0 6 * * *'
-  workflow_dispatch: # Esto te da un botón para probarlo cuando quieras
-
+    - cron: '0 7 * * *'
+  workflow_dispatch:
 jobs:
   screenshot:
     runs-on: ubuntu-latest
@@ -27,36 +28,62 @@ jobs:
           script: |
             const puppeteer = require('puppeteer');
             const { WebClient } = require('@slack/web-api');
-            
+
             async function run() {
+              // Comprobamos la hora actual en Helsinki para evitar doble envío
+              const now = new Date();
+              const helsinkiHour = parseInt(new Intl.DateTimeFormat('fi', {
+                timeZone: 'Europe/Helsinki',
+                hour: 'numeric',
+                hour12: false
+              }).format(now));
+
+              // Solo enviamos si son las 9am en Helsinki (evita el doble disparo)
+              if (helsinkiHour !== 9) {
+                console.log(`Son las ${helsinkiHour}h en Helsinki, no es hora de enviar. Saliendo.`);
+                return;
+              }
+
+              console.log('Son las 9am en Helsinki. Tomando pantallazo...');
+
               // Lanzamos el navegador automático en el servidor
-              const browser = await puppeteer.launch({ 
-                headless: "new",
+              const browser = await puppeteer.launch({
+                headless: 'new',
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
               });
               const page = await browser.newPage();
-              
+
               // Ajustamos la pantalla a tamaño computadora estándar
               await page.setViewport({ width: 1440, height: 900 });
-              
-              // El robot entra a tu link abierto de Vercel
-              await page.goto('https://naistaxi-dashboard.vercel.app/', { waitUntil: 'networkidle2' });
-              
-              // Esperamos 3 segundos extra para asegurar que las gráficas carguen su animación
-              await new Promise(r => setTimeout(r, 3000));
-              
+
+              // El robot entra al dashboard de Vercel
+              await page.goto('https://naistaxi-dashboard.vercel.app/', {
+                waitUntil: 'networkidle2',
+                timeout: 30000
+              });
+
+              // Esperamos 15 segundos para que los datos de Slack carguen completamente
+              await new Promise(r => setTimeout(r, 15000));
+
               // Toma el pantallazo
               await page.screenshot({ path: 'screenshot.jpg', fullPage: false });
               await browser.close();
-              
-              // Lo envía al Slack de Naistaxi usando el Secret de seguridad
-              const slack = new WebClient('${{ secrets.SLACK_BOT_TOKEN }}');
+
+              // Lo envía al canal #all-naistaxi en Slack
+              const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
               await slack.files.uploadV2({
                 channel_id: 'C09G3CKNQ82',
                 file: 'screenshot.jpg',
                 filename: 'dashboard_hoy.jpg',
-                initial_comment: '📊 Good morning! Here is the current status of the dashboard to start the day.'
+                initial_comment: '📊 ¡Buenos días! Aquí está el estado actual del dashboard para arrancar la jornada.'
               });
+
+              console.log('Pantallazo enviado a Slack correctamente.');
             }
-            
-            run();
+
+            run().catch(err => {
+              console.error('Error:', err);
+              process.exit(1);
+            });
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
