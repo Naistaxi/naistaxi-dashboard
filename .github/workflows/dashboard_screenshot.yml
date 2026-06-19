@@ -3,7 +3,6 @@ on:
   schedule:
     # 06:00 UTC = 09:00 Helsinki verano (EEST, UTC+3)
     # 07:00 UTC = 09:00 Helsinki invierno (EET, UTC+2)
-    # Ejecutamos a las 06:00 y 07:00 UTC para cubrir ambas estaciones
     - cron: '0 6 * * *'
     - cron: '0 7 * * *'
   workflow_dispatch:
@@ -12,51 +11,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install Puppeteer and Slack API
         run: npm install puppeteer @slack/web-api
 
       - name: Take Screenshot and Send to Slack
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const puppeteer = require('puppeteer');
             const { WebClient } = require('@slack/web-api');
 
             async function run() {
-              // Comprobamos la hora actual en Helsinki para evitar doble envío
-              const now = new Date();
-              const helsinkiHour = parseInt(new Intl.DateTimeFormat('fi', {
-                timeZone: 'Europe/Helsinki',
-                hour: 'numeric',
-                hour12: false
-              }).format(now));
-
-              // Solo enviamos si son las 9am en Helsinki (evita el doble disparo)
-              if (helsinkiHour !== 9) {
-                console.log(`Son las ${helsinkiHour}h en Helsinki, no es hora de enviar. Saliendo.`);
-                return;
+              // Si es un trigger automático (schedule), comprobamos que sean las 9am en Helsinki
+              const isScheduled = context.eventName === 'schedule';
+              if (isScheduled) {
+                const now = new Date();
+                const helsinkiHour = parseInt(new Intl.DateTimeFormat('fi', {
+                  timeZone: 'Europe/Helsinki',
+                  hour: 'numeric',
+                  hour12: false
+                }).format(now));
+                if (helsinkiHour !== 9) {
+                  console.log(`Son las ${helsinkiHour}h en Helsinki, no es hora de enviar. Saliendo.`);
+                  return;
+                }
               }
 
-              console.log('Son las 9am en Helsinki. Tomando pantallazo...');
+              console.log('Tomando pantallazo del dashboard...');
 
-              // Lanzamos el navegador automático en el servidor
               const browser = await puppeteer.launch({
                 headless: 'new',
                 args: ['--no-sandbox', '--disable-setuid-sandbox']
               });
               const page = await browser.newPage();
-
-              // Ajustamos la pantalla a tamaño computadora estándar
               await page.setViewport({ width: 1440, height: 900 });
-
-              // El robot entra al dashboard de Vercel
               await page.goto('https://naistaxi-dashboard.vercel.app/', {
                 waitUntil: 'networkidle2',
                 timeout: 30000
@@ -65,11 +60,9 @@ jobs:
               // Esperamos 15 segundos para que los datos de Slack carguen completamente
               await new Promise(r => setTimeout(r, 15000));
 
-              // Toma el pantallazo
               await page.screenshot({ path: 'screenshot.jpg', fullPage: false });
               await browser.close();
 
-              // Lo envía al canal #all-naistaxi en Slack
               const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
               await slack.files.uploadV2({
                 channel_id: 'C09G3CKNQ82',
