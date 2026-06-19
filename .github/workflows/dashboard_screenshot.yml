@@ -3,8 +3,8 @@ on:
   schedule:
     # 06:00 UTC = 09:00 Helsinki verano (EEST, UTC+3)
     # 07:00 UTC = 09:00 Helsinki invierno (EET, UTC+2)
-    - cron: '0 6 * * *'
-    - cron: '0 7 * * *'
+    - cron: '0 6 * * 1-5'
+    - cron: '0 7 * * 1-5'
   workflow_dispatch:
 jobs:
   screenshot:
@@ -68,7 +68,7 @@ jobs:
                 channel_id: 'C09G3CKNQ82',
                 file: 'screenshot.jpg',
                 filename: 'dashboard_hoy.jpg',
-                initial_comment: '📊 ¡Buenos días! Aquí está el estado actual del dashboard para arrancar la jornada.'
+                initial_comment: '📊 Good morning! Here is the current status of the dashboard to start the day.'
               });
 
               console.log('Pantallazo enviado a Slack correctamente.');
