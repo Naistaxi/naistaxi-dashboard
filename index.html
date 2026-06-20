@@ -24,7 +24,7 @@
     .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .channel-tag { font-size: 12px; color: var(--purple); background: var(--purple-light); border: 1px solid rgba(139,47,201,0.2); padding: 5px 10px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; }
-    main { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+    main { max-width: 1160px; margin: 0 auto; padding: 28px 24px 60px; }
     .metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
     .metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; box-shadow: 0 1px 3px rgba(139,47,201,0.06); }
     .metric-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; font-weight: 600; }
@@ -78,21 +78,21 @@
   </div>
 </header>
 <main>
-  <div class="metrics" style="grid-template-columns:repeat(5,1fr);">
+  <div class="metrics" style="grid-template-columns:repeat(6,1fr);">
     <div class="metric"><div class="metric-label">Total requests</div><div class="metric-value" id="mTotal">—</div><div class="metric-sub" id="mSince">Loading...</div></div>
     <div class="metric"><div class="metric-label">Confirmed</div><div class="metric-value" style="color:var(--green);" id="mConfirmed">—</div><div class="metric-sub">with "confirmed" reply</div></div>
     <div class="metric"><div class="metric-label">Pending</div><div class="metric-value" style="color:var(--amber);" id="mPending">—</div><div class="metric-sub">awaiting confirmation</div></div>
     <div class="metric"><div class="metric-label">Rejected</div><div class="metric-value" style="color:var(--red);" id="mRejected">—</div><div class="metric-sub">cannot be fulfilled</div></div>
     <div class="metric"><div class="metric-label">Cancelled</div><div class="metric-value" style="color:var(--red);" id="mCancelled">—</div><div class="metric-sub">by team</div></div>
+    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value" style="color:var(--amber);" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
-  <div class="metrics" style="grid-template-columns:repeat(6,1fr); margin-top:0;">
+  <div class="metrics" style="grid-template-columns:repeat(6,1fr); margin-top:12px;">
     <div class="metric"><div class="metric-label">GBV</div><div class="metric-value" style="color:var(--green);" id="mGBV">—</div><div class="metric-sub">gross booking value</div></div>
     <div class="metric"><div class="metric-label">CLV</div><div class="metric-value" style="color:var(--purple);" id="mCLV">—</div><div class="metric-sub">avg per customer</div></div>
     <div class="metric"><div class="metric-label">Conversion</div><div class="metric-value" id="mConversion">—</div><div class="metric-sub">requests → confirmed</div></div>
     <div class="metric"><div class="metric-label">Cancellation</div><div class="metric-value" style="color:var(--amber);" id="mCancelRate">—</div><div class="metric-sub">of total requests</div></div>
     <div class="metric"><div class="metric-label">Rides / customer</div><div class="metric-value" id="mRidesPerCust">—</div><div class="metric-sub">repeat rate</div></div>
     <div class="metric"><div class="metric-label">Peak hour</div><div class="metric-value" style="color:var(--purple);" id="mPeakHour">—</div><div class="metric-sub">most bookings</div></div>
-    <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value" style="color:var(--amber);" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
 
   <div class="card mb">
