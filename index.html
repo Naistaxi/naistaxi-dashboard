@@ -124,15 +124,21 @@
     <div class="card"><div class="card-title">Bookings by week</div><div style="position:relative;height:180px"><canvas id="weekChart"></canvas></div></div>
     <div class="card">
       <div class="card-title">Rides by distance</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;height:180px">
-        <div style="position:relative;height:160px"><canvas id="distChart"></canvas></div>
-        <div class="dist-legend">
-          <div class="dist-item"><div class="dist-dot" style="background:#F05A4A"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar1" style="background:#F05A4A;width:0%"></div></div><div class="dist-val" id="distVal1">—</div></div>
-          <div style="font-size:11px;color:var(--text3);margin-left:18px">under 5 km</div>
-          <div class="dist-item"><div class="dist-dot" style="background:#F0A84A"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar2" style="background:#F0A84A;width:0%"></div></div><div class="dist-val" id="distVal2">—</div></div>
-          <div style="font-size:11px;color:var(--text3);margin-left:18px">5 – 10 km</div>
-          <div class="dist-item"><div class="dist-dot" style="background:#4A9CF0"></div><div class="dist-bar-wrap"><div class="dist-bar" id="distBar3" style="background:#4A9CF0;width:0%"></div></div><div class="dist-val" id="distVal3">—</div></div>
-          <div style="font-size:11px;color:var(--text3);margin-left:18px">over 10 km</div>
+      <div style="display:flex;flex-direction:column;gap:14px;height:180px;justify-content:center;">
+        <div style="position:relative;height:100px;width:100px;margin:0 auto;"><canvas id="distChart"></canvas></div>
+        <div class="dist-legend" style="gap:6px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;">
+            <span style="display:flex;align-items:center;gap:6px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#F05A4A;flex-shrink:0;"></span>under 5 km</span>
+            <span class="dist-val" id="distVal1" style="min-width:auto;">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;">
+            <span style="display:flex;align-items:center;gap:6px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#F0A84A;flex-shrink:0;"></span>5 – 10 km</span>
+            <span class="dist-val" id="distVal2" style="min-width:auto;">—</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;">
+            <span style="display:flex;align-items:center;gap:6px;color:var(--text2);"><span style="width:8px;height:8px;border-radius:2px;background:#4A9CF0;flex-shrink:0;"></span>over 10 km</span>
+            <span class="dist-val" id="distVal3" style="min-width:auto;">—</span>
+          </div>
         </div>
       </div>
     </div>
@@ -278,7 +284,7 @@ function renderRideList() {
         ${r.epk?`<span class="epm-tag ${epmClass(r.epk)}">€${r.epk.toFixed(2)}/km</span>`:''}
       </div>
     </div>`).join('')
-    : `<div class="state-msg">No ${currentTab !== 'all' ? currentTab : ''} bookings found.</div>`;
+    : `<div class="state-msg">No bookings found${currentTab !== 'all' ? ' for "'+currentTab+'"' : ''}${fromDate||toDate ? ' in the selected date range' : ''}. Try adjusting your filters.</div>`;
 }
 
 function render(rides) {
@@ -354,9 +360,6 @@ function render(rides) {
   document.getElementById('distVal1').textContent=`${d1} (${Math.round(d1/dt*100)}%)`;
   document.getElementById('distVal2').textContent=`${d2} (${Math.round(d2/dt*100)}%)`;
   document.getElementById('distVal3').textContent=`${d3} (${Math.round(d3/dt*100)}%)`;
-  document.getElementById('distBar1').style.width=`${d1/dt*100}%`;
-  document.getElementById('distBar2').style.width=`${d2/dt*100}%`;
-  document.getElementById('distBar3').style.width=`${d3/dt*100}%`;
 }
 
 async function refresh() {
