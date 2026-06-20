@@ -248,20 +248,14 @@ function switchTab(tab, btn) {
 }
 
 function renderRideList() {
-  const fromVal = document.getElementById('dateFrom')?.value;
-  const toVal = document.getElementById('dateTo')?.value;
-  // Parse as local time to avoid UTC offset issues
-  const fromDate = fromVal ? new Date(fromVal + 'T00:00:00') : null;
-  const toDate = toVal ? new Date(toVal + 'T23:59:59') : null;
+  const dateFiltered = getDateFilteredRides();
+  const hasDateFilter = document.getElementById('dateFrom')?.value || document.getElementById('dateTo')?.value;
 
-  let filtered = currentTab === 'confirmed' ? allRides.filter(r=>r.confirmed && !r.rejected && !r.cancelled)
-    : currentTab === 'pending' ? allRides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled)
-    : currentTab === 'rejected' ? allRides.filter(r=>r.rejected)
-    : currentTab === 'cancelled' ? allRides.filter(r=>r.cancelled)
-    : allRides;
-
-  if (fromDate) filtered = filtered.filter(r => r.date >= fromDate);
-  if (toDate) filtered = filtered.filter(r => r.date <= toDate);
+  let filtered = currentTab === 'confirmed' ? dateFiltered.filter(r=>r.confirmed && !r.rejected && !r.cancelled)
+    : currentTab === 'pending' ? dateFiltered.filter(r=>!r.confirmed && !r.rejected && !r.cancelled)
+    : currentTab === 'rejected' ? dateFiltered.filter(r=>r.rejected)
+    : currentTab === 'cancelled' ? dateFiltered.filter(r=>r.cancelled)
+    : dateFiltered;
 
   const btn = document.getElementById('showAllBtn');
   if (btn) { btn.style.display = filtered.length > 5 ? 'inline-block' : 'none'; }
@@ -284,11 +278,23 @@ function renderRideList() {
         ${r.epk?`<span class="epm-tag ${epmClass(r.epk)}">€${r.epk.toFixed(2)}/km</span>`:''}
       </div>
     </div>`).join('')
-    : `<div class="state-msg">No bookings found${currentTab !== 'all' ? ' for "'+currentTab+'"' : ''}${fromDate||toDate ? ' in the selected date range' : ''}. Try adjusting your filters.</div>`;
+    : `<div class="state-msg">No bookings found${currentTab !== 'all' ? ' for "'+currentTab+'"' : ''}${hasDateFilter ? ' in the selected date range' : ''}. Try adjusting your filters.</div>`;
 }
 
-function render(rides) {
-  allRides = rides;
+function getDateFilteredRides() {
+  const fromVal = document.getElementById('dateFrom')?.value;
+  const toVal = document.getElementById('dateTo')?.value;
+  const fromDate = fromVal ? new Date(fromVal + 'T00:00:00') : null;
+  const toDate = toVal ? new Date(toVal + 'T23:59:59') : null;
+  let rides = allRides;
+  if (fromDate) rides = rides.filter(r => r.date >= fromDate);
+  if (toDate) rides = rides.filter(r => r.date <= toDate);
+  return rides;
+}
+
+function render(rawRides) {
+  allRides = rawRides;
+  const rides = getDateFilteredRides();
   const confirmed = rides.filter(r=>r.confirmed && !r.rejected && !r.cancelled);
   const pending = rides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled);
   const rejected = rides.filter(r=>r.rejected);
@@ -301,6 +307,7 @@ function render(rides) {
   document.getElementById('mCancelled').textContent = cancelled.length;
   if (rides.length) document.getElementById('mSince').textContent =
     'since ' + rides[rides.length-1].date.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+  else document.getElementById('mSince').textContent = 'no data in range';
 
   // GBV
   const gbv = confirmed.reduce((s,r) => s + r.price, 0);
@@ -362,30 +369,33 @@ function render(rides) {
   document.getElementById('distVal3').textContent=`${d3} (${Math.round(d3/dt*100)}%)`;
 }
 
+let hasLoadedOnce = false;
+
 async function refresh() {
   try {
-    document.getElementById('liveLabel').textContent = 'Loading...';
-    document.getElementById('liveDot').style.background = '#F0A84A';
+    if (!hasLoadedOnce) {
+      document.getElementById('liveLabel').textContent = 'Loading...';
+      document.getElementById('liveDot').style.background = '#F0A84A';
 
-    // Stage 1: load messages fast (no thread fetching)
-    const res1 = await fetch('/api/slack?mode=messages');
-    const data1 = await res1.json();
-    if (data1.error) throw new Error(data1.error);
-    render(parseRides(data1.messages || []));
-    const now = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
-    document.getElementById('liveLabel').textContent = `Loading statuses...`;
-    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Loading confirmed status...`;
+      // First load only: show messages fast (no thread fetching) for instant feedback
+      const res1 = await fetch('/api/slack?mode=messages');
+      const data1 = await res1.json();
+      if (data1.error) throw new Error(data1.error);
+      render(parseRides(data1.messages || []));
+      document.getElementById('liveLabel').textContent = `Loading statuses...`;
+      document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Loading confirmed status...`;
+    }
 
-    // Stage 2: load thread statuses in background
+    // Load full data with thread statuses (confirmed/rejected/cancelled)
     const res2 = await fetch('/api/slack?mode=full');
     const data2 = await res2.json();
-    if (!data2.error) {
-      render(parseRides(data2.messages || []));
-      const now2 = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
-      document.getElementById('liveLabel').textContent = `Updated ${now2}`;
-      document.getElementById('liveDot').style.background = '#4AF09A';
-      document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now2} · Refreshes every 30s`;
-    }
+    if (data2.error) throw new Error(data2.error);
+    render(parseRides(data2.messages || []));
+    hasLoadedOnce = true;
+    const now2 = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
+    document.getElementById('liveLabel').textContent = `Updated ${now2}`;
+    document.getElementById('liveDot').style.background = '#4AF09A';
+    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now2} · Refreshes every 30s`;
   } catch(err) {
     document.getElementById('liveLabel').textContent = 'Error';
     document.getElementById('liveDot').style.background = '#F05A4A';
