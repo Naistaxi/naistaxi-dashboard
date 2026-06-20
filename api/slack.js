@@ -22,31 +22,48 @@ export default async function handler(req, res) {
       return res.status(200).json({ messages: messages.map(m => ({ ...m, confirmed: false, rejected: false, cancelled: false })) });
     }
 
-    // Fetch threads in batches of 5 with small delays
+    // Fetch threads in batches of 5 with small delays, with retry on failure
     const withReplies = messages.filter(m => m.reply_count > 0);
     const confirmedMap = {};
+
+    async function fetchThread(msg, attempt = 1) {
+      try {
+        const r = await fetch(
+          `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}&limit=50`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const d = await r.json();
+        if (!d.ok) {
+          if (d.error === 'ratelimited' && attempt < 3) {
+            await new Promise(res => setTimeout(res, 500 * attempt));
+            return fetchThread(msg, attempt + 1);
+          }
+          return null;
+        }
+        const replies = (d.messages || []).filter(r => r.ts !== msg.ts);
+        return {
+          confirmed: replies.some(r => /\bconfirmed\b/i.test(r.text || '')),
+          rejected: replies.some(r => /\brejected\b/i.test(r.text || '')),
+          cancelled: replies.some(r => /\bcancell?ed\b/i.test(r.text || ''))
+        };
+      } catch {
+        if (attempt < 3) {
+          await new Promise(res => setTimeout(res, 500 * attempt));
+          return fetchThread(msg, attempt + 1);
+        }
+        return null;
+      }
+    }
 
     const batchSize = 5;
     for (let i = 0; i < withReplies.length; i += batchSize) {
       const batch = withReplies.slice(i, i + batchSize);
       await Promise.all(batch.map(async (msg) => {
-        try {
-          const r = await fetch(
-            `https://slack.com/api/conversations.replies?channel=${channelId}&ts=${msg.ts}&limit=50`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-          const d = await r.json();
-          if (!d.ok) return;
-          const replies = (d.messages || []).filter(r => r.ts !== msg.ts);
-          confirmedMap[msg.ts] = {
-            confirmed: replies.some(r => /\bconfirmed\b/i.test(r.text || '')),
-            rejected: replies.some(r => /\brejected\b/i.test(r.text || '')),
-            cancelled: replies.some(r => /\bcancell?ed\b/i.test(r.text || ''))
-          };
-        } catch {}
+        const result = await fetchThread(msg);
+        if (result) confirmedMap[msg.ts] = result;
       }));
       if (i + batchSize < withReplies.length) {
-        await new Promise(r => setTimeout(r, 200));
+        await new Promise(r => setTimeout(r, 300));
       }
     }
 
