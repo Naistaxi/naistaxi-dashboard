@@ -30,9 +30,10 @@
     .metric-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; font-weight: 600; }
     .metric-value { font-size: 20px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em; line-height: 1; margin-bottom: 2px; color: var(--text); }
     .metric-sub { font-size: 10px; color: var(--text3); }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; box-shadow: 0 1px 4px rgba(139,47,201,0.06); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; box-shadow: 0 1px 4px rgba(139,47,201,0.06); box-sizing: border-box; min-width: 0; overflow: hidden; }
     .card-title { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .grid-3 > .card { min-width: 0; }
     .mb { margin-bottom: 12px; }
 
     /* TABS */
@@ -62,7 +63,7 @@
     .dist-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
     .dist-bar-wrap { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
     .dist-bar { height: 100%; border-radius: 2px; }
-    .dist-val { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text); min-width: 60px; text-align: right; }
+    .dist-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: var(--text); min-width: 44px; text-align: right; flex-shrink: 0; }
     .state-msg { font-size: 12px; color: var(--text2); padding: 12px 0; }
     .err { color: var(--red) !important; }
     footer { text-align: center; font-size: 11px; color: var(--text3); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
@@ -243,7 +244,8 @@ function switchTab(tab, btn) {
 function renderRideList() {
   const fromVal = document.getElementById('dateFrom')?.value;
   const toVal = document.getElementById('dateTo')?.value;
-  const fromDate = fromVal ? new Date(fromVal) : null;
+  // Parse as local time to avoid UTC offset issues
+  const fromDate = fromVal ? new Date(fromVal + 'T00:00:00') : null;
   const toDate = toVal ? new Date(toVal + 'T23:59:59') : null;
 
   let filtered = currentTab === 'confirmed' ? allRides.filter(r=>r.confirmed && !r.rejected && !r.cancelled)
