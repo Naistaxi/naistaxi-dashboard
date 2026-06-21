@@ -228,8 +228,9 @@ function parseRides(messages) {
     const confirmed = m.confirmed === true;
     const rejected = m.rejected === true;
     const cancelled = m.cancelled === true;
+    const statusUnknown = m.status_unknown === true;
 
-    return { name, phone, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected, cancelled };
+    return { name, phone, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected, cancelled, statusUnknown };
   }).filter(Boolean).sort((a,b) => b.ts - a.ts);
 }
 
@@ -270,7 +271,7 @@ function renderRideList() {
           ${r.date.toLocaleDateString('en',{month:'short',day:'numeric'})}${r.time?' · '+r.time:''}
           ${r.dist?'· '+r.dist+' km':''}
           <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span>
-          <span class="status-tag ${r.cancelled?'tag-cancelled':r.rejected?'tag-rejected':r.confirmed?'tag-confirmed':'tag-pending'}">${r.cancelled?'🚫 cancelled':r.rejected?'❌ rejected':r.confirmed?'✅ confirmed':'⏳ pending'}</span>
+          <span class="status-tag ${r.cancelled?'tag-cancelled':r.rejected?'tag-rejected':r.confirmed?'tag-confirmed':r.statusUnknown?'tag-pending':'tag-pending'}">${r.cancelled?'🚫 cancelled':r.rejected?'❌ rejected':r.confirmed?'✅ confirmed':r.statusUnknown?'⚠ retrying...':'⏳ pending'}</span>
         </div>
       </div>
       <div class="ride-price">
@@ -296,9 +297,11 @@ function render(rawRides) {
   allRides = rawRides;
   const rides = getDateFilteredRides();
   const confirmed = rides.filter(r=>r.confirmed && !r.rejected && !r.cancelled);
-  const pending = rides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled);
   const rejected = rides.filter(r=>r.rejected);
   const cancelled = rides.filter(r=>r.cancelled);
+  const unknown = rides.filter(r=>r.statusUnknown && !r.confirmed && !r.rejected && !r.cancelled);
+  // True pending = no status reply at all yet AND not a Slack-fetch failure
+  const pending = rides.filter(r=>!r.confirmed && !r.rejected && !r.cancelled && !r.statusUnknown);
 
   document.getElementById('mTotal').textContent = rides.length;
   document.getElementById('mConfirmed').textContent = confirmed.length;
