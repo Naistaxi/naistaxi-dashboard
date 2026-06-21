@@ -120,7 +120,7 @@
   </div>
 
   <div class="grid-3">
-    <div class="card"><div class="card-title">Fare range (confirmed)</div><div style="position:relative;height:180px"><canvas id="fareChart"></canvas></div></div>
+    <div class="card"><div class="card-title">Fare range (confirmed)</div><div style="position:relative;height:150px"><canvas id="fareChart"></canvas></div><div id="fareLegend" style="display:flex;justify-content:center;gap:14px;margin-top:8px;font-size:11px;color:var(--text2);flex-wrap:wrap;"></div></div>
     <div class="card"><div class="card-title">Bookings by week</div><div style="position:relative;height:180px"><canvas id="weekChart"></canvas></div></div>
     <div class="card">
       <div class="card-title">Rides by distance</div>
@@ -352,8 +352,14 @@ function render(rawRides) {
 
   // Fare chart (confirmed only)
   const fd = [confirmed.filter(r=>r.price<25).length, confirmed.filter(r=>r.price>=25&&r.price<=50).length, confirmed.filter(r=>r.price>50).length];
+  const fdTotal = fd[0]+fd[1]+fd[2] || 1;
   if(fareC) fareC.destroy();
-  fareC = new Chart(document.getElementById('fareChart'),{type:'doughnut',data:{labels:['< €25','€25–50','> €50'],datasets:[{data:fd,backgroundColor:['#534AB7','#4AF09A','#F05A4A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8A8A85',font:{size:10},boxWidth:8,padding:10}}}}});
+  fareC = new Chart(document.getElementById('fareChart'),{type:'doughnut',data:{labels:['< €25','€25–50','> €50'],datasets:[{data:fd,backgroundColor:['#534AB7','#1A9E5C','#E0294A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
+  const fareLabels = ['< €25','€25–50','> €50'];
+  const fareColors = ['#534AB7','#1A9E5C','#E0294A'];
+  document.getElementById('fareLegend').innerHTML = fareLabels.map((l,i) =>
+    `<span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:2px;background:${fareColors[i]};"></span>${l}: ${fd[i]} (${Math.round(fd[i]/fdTotal*100)}%)</span>`
+  ).join('');
 
   // Week chart (all requests)
   const weeks={};
@@ -374,6 +380,15 @@ function render(rawRides) {
 
 let hasLoadedOnce = false;
 
+async function safeJson(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: res.status === 504 ? 'Server timeout — retrying shortly' : `Server error (${res.status})` };
+  }
+}
+
 async function refresh() {
   try {
     if (!hasLoadedOnce) {
@@ -382,7 +397,7 @@ async function refresh() {
 
       // First load only: show messages fast (no thread fetching) for instant feedback
       const res1 = await fetch('/api/slack?mode=messages');
-      const data1 = await res1.json();
+      const data1 = await safeJson(res1);
       if (data1.error) throw new Error(data1.error);
       render(parseRides(data1.messages || []));
       document.getElementById('liveLabel').textContent = `Loading statuses...`;
@@ -391,7 +406,7 @@ async function refresh() {
 
     // Load full data with thread statuses (confirmed/rejected/cancelled)
     const res2 = await fetch('/api/slack?mode=full');
-    const data2 = await res2.json();
+    const data2 = await safeJson(res2);
     if (data2.error) throw new Error(data2.error);
     render(parseRides(data2.messages || []));
     hasLoadedOnce = true;
