@@ -1,6 +1,6 @@
 // In-memory cache to avoid re-fetching all threads on every poll (resets on cold start)
 let cache = { data: null, timestamp: 0 };
-const CACHE_TTL_MS = 25000; // slightly less than the 30s frontend poll interval
+const CACHE_TTL_MS = 20000;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ messages: messages.map(m => ({ ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: false })) });
     }
 
-    // Serve from cache if fresh enough (avoids hammering Slack every 30s and reduces rate-limit risk)
+    // Serve from cache if fresh enough
     const now = Date.now();
     if (!forceRefresh && cache.data && (now - cache.timestamp) < CACHE_TTL_MS) {
       return res.status(200).json({ messages: cache.data, cached: true });
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     const withReplies = messages.filter(m => m.reply_count > 0);
     const confirmedMap = {};
 
-    // Sequential fetch with retries — slower but reliable, avoids parallel rate-limit storms
+    // Slack Pro has higher rate limits — fetch with 2 retries max, bigger parallel batches
     async function fetchThread(msg, attempt = 1) {
       try {
         const r = await fetch(
@@ -44,8 +44,8 @@ export default async function handler(req, res) {
         );
         const d = await r.json();
         if (!d.ok) {
-          if ((d.error === 'ratelimited' || d.error === 'rate_limited') && attempt < 5) {
-            await new Promise(res => setTimeout(res, 600 * attempt));
+          if ((d.error === 'ratelimited' || d.error === 'rate_limited') && attempt < 3) {
+            await new Promise(res => setTimeout(res, 300 * attempt));
             return fetchThread(msg, attempt + 1);
           }
           return { error: true };
@@ -57,16 +57,16 @@ export default async function handler(req, res) {
           cancelled: replies.some(r => /\bcancell?ed\b/i.test(r.text || ''))
         };
       } catch {
-        if (attempt < 5) {
-          await new Promise(res => setTimeout(res, 600 * attempt));
+        if (attempt < 3) {
+          await new Promise(res => setTimeout(res, 300 * attempt));
           return fetchThread(msg, attempt + 1);
         }
         return { error: true };
       }
     }
 
-    // Small batches (3) with delay to stay well under Slack's rate limit
-    const batchSize = 3;
+    // Bigger batches since Slack Pro has higher rate limits — faster overall
+    const batchSize = 8;
     for (let i = 0; i < withReplies.length; i += batchSize) {
       const batch = withReplies.slice(i, i + batchSize);
       await Promise.all(batch.map(async (msg) => {
@@ -74,13 +74,12 @@ export default async function handler(req, res) {
         confirmedMap[msg.ts] = result;
       }));
       if (i + batchSize < withReplies.length) {
-        await new Promise(r => setTimeout(r, 350));
+        await new Promise(r => setTimeout(r, 150));
       }
     }
 
     const enriched = messages.map(m => {
       const r = confirmedMap[m.ts];
-      // status_unknown = we couldn't determine the thread status (Slack error/timeout) — NOT a real "pending"
       const statusUnknown = m.reply_count > 0 && (!r || r.error);
       return {
         ...m,
@@ -91,7 +90,6 @@ export default async function handler(req, res) {
       };
     });
 
-    // Update cache
     cache = { data: enriched, timestamp: now };
 
     res.status(200).json({ messages: enriched });
