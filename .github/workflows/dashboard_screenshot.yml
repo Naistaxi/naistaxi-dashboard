@@ -2,9 +2,7 @@ name: Daily Dashboard Screenshot
 on:
   schedule:
     # 06:00 UTC = 09:00 Helsinki verano (EEST, UTC+3)
-    # 07:00 UTC = 09:00 Helsinki invierno (EET, UTC+2)
     - cron: '0 6 * * 1-5'
-    - cron: '0 7 * * 1-5'
   workflow_dispatch:
 jobs:
   screenshot:
@@ -29,22 +27,7 @@ jobs:
             const { WebClient } = require('@slack/web-api');
 
             async function run() {
-              // Si es un trigger automático (schedule), comprobamos que sean las 9am en Helsinki
-              const isScheduled = context.eventName === 'schedule';
-              if (isScheduled) {
-                const now = new Date();
-                const helsinkiHour = parseInt(new Intl.DateTimeFormat('fi', {
-                  timeZone: 'Europe/Helsinki',
-                  hour: 'numeric',
-                  hour12: false
-                }).format(now));
-                if (helsinkiHour !== 9) {
-                  console.log(`Son las ${helsinkiHour}h en Helsinki, no es hora de enviar. Saliendo.`);
-                  return;
-                }
-              }
-
-              console.log('Tomando pantallazo del dashboard...');
+              console.log('Taking dashboard screenshot...');
 
               const browser = await puppeteer.launch({
                 headless: 'new',
@@ -57,7 +40,7 @@ jobs:
                 timeout: 30000
               });
 
-              // Esperamos 15 segundos para que los datos de Slack carguen completamente
+              // Wait 15 seconds for Slack data to fully load
               await new Promise(r => setTimeout(r, 15000));
 
               await page.screenshot({ path: 'screenshot.jpg', fullPage: false });
@@ -71,7 +54,7 @@ jobs:
                 initial_comment: '📊 Good morning! Here is the current status of the dashboard to start the day.'
               });
 
-              console.log('Pantallazo enviado a Slack correctamente.');
+              console.log('Screenshot sent to Slack successfully.');
             }
 
             run().catch(err => {
