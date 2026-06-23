@@ -165,15 +165,17 @@ function toggleShowAll() {
 }
 
 function field(text, ...keys) {
+  // Strip Markdown bold (*text*) from the full text before searching
+  const clean = text.replace(/\*/g, '');
   for (const key of keys) {
-    const m = text.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
+    const m = clean.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
     if (m) return m[1].trim();
   }
   return null;
 }
 
 function parseRides(messages) {
-  return messages.filter(m => m.text && !m.subtype).map(m => {
+  return messages.filter(m => m.text && (!m.subtype || m.subtype === 'bot_message')).map(m => {
     const t = m.text;
     if (!/ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(t)) return null;
 
