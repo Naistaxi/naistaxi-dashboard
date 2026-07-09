@@ -325,7 +325,7 @@ export default [
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Runeberginkatu 14-16, 00100 Helsinki\n• Määränpää: Varustuksentie 14, 00940 Helsinki\n\n:straight_ruler: *Etäisyys:* 13.51 km\n:stopwatch: *Kesto:* 22 min\n:euro: *Arvioitu hinta:* 26,73 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-17\n• Aika: 23:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Marika Hardén\n• Puhelin: <tel:+358504133382|+358504133382>\n• Sähköposti: <mailto:marika_eve@hotmail.com|marika_eve@hotmail.com>\n\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!\n",
     "subtype": null,
     "reply_count": 5,
-    "confirmed": false,
+    "confirmed": true,
     "rejected": false,
     "cancelled": false,
     "archived_at": "2026-07-09T00:00:00.000Z",
