@@ -398,11 +398,6 @@ async function refresh() {
     if (!hasLoadedOnce) {
       document.getElementById('liveLabel').textContent = 'Loading...';
       document.getElementById('liveDot').style.background = '#D4820A';
-      const res1 = await fetch('/api/slack?mode=messages');
-      const data1 = await safeJson(res1);
-      if (data1.error) throw new Error(data1.error);
-      render(parseRides(data1.messages || []));
-      document.getElementById('liveLabel').textContent = 'Loading statuses...';
     }
     const res2 = await fetch('/api/slack?mode=full');
     const data2 = await safeJson(res2);
