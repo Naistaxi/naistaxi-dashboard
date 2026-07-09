@@ -93,37 +93,49 @@ async function main() {
     }
   }
 
-  // 4. Merge — new messages appended, existing ones get status refreshed
+  // 4. Merge — new messages appended; statuses only updated from SUCCESSFUL thread reads.
+  // A failed/rate-limited read must never wipe a previously saved definitive status.
   let added = 0, updated = 0;
   for (const m of messages) {
-    const status = statusMap[m.ts] || { confirmed: false, rejected: false, cancelled: false };
-    const record = {
-      ts: m.ts,
-      text: m.text,
-      subtype: m.subtype || null,
-      reply_count: m.reply_count || 0,
-      confirmed: status.confirmed,
-      rejected: status.rejected,
-      cancelled: status.cancelled,
-      archived_at: new Date().toISOString()
-    };
+    const fetched = statusMap[m.ts]; // undefined if the thread read failed or msg has no replies
+    const idx = archive.findIndex(b => b.ts === m.ts);
 
-    if (existingTs.has(m.ts)) {
-      // Refresh status of existing record (a booking may get confirmed later)
-      const idx = archive.findIndex(b => b.ts === m.ts);
-      const prev = archive[idx];
-      if (
-        prev.confirmed !== record.confirmed ||
-        prev.rejected !== record.rejected ||
-        prev.cancelled !== record.cancelled
-      ) {
-        archive[idx] = { ...prev, ...record, archived_at: prev.archived_at };
-        updated++;
-      }
-    } else {
-      archive.push(record);
+    if (idx === -1) {
+      // New booking — store it with whatever we know (all-false if no replies yet)
+      const status = fetched || { confirmed: false, rejected: false, cancelled: false };
+      archive.push({
+        ts: m.ts,
+        text: m.text,
+        subtype: m.subtype || null,
+        reply_count: m.reply_count || 0,
+        confirmed: status.confirmed,
+        rejected: status.rejected,
+        cancelled: status.cancelled,
+        archived_at: new Date().toISOString()
+      });
       added++;
+      continue;
     }
+
+    // Existing booking — refresh text/reply_count always, status only from a successful read
+    const prev = archive[idx];
+    const next = { ...prev, text: m.text, reply_count: m.reply_count || 0 };
+
+    if (fetched) {
+      const hadDefinitive = prev.confirmed || prev.rejected || prev.cancelled;
+      const fetchedDefinitive = fetched.confirmed || fetched.rejected || fetched.cancelled;
+      // Apply the fetched status unless it would erase a definitive one with all-false
+      // (all-false on a thread that previously had a status usually means a partial read)
+      if (fetchedDefinitive || !hadDefinitive) {
+        if (prev.confirmed !== fetched.confirmed || prev.rejected !== fetched.rejected || prev.cancelled !== fetched.cancelled) {
+          next.confirmed = fetched.confirmed;
+          next.rejected = fetched.rejected;
+          next.cancelled = fetched.cancelled;
+          updated++;
+        }
+      }
+    }
+    archive[idx] = next;
   }
 
   // 5. Sort newest first and save both formats
