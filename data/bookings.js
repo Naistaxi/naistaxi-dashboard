@@ -157,7 +157,7 @@ export default [
     "subtype": null,
     "reply_count": 3,
     "confirmed": false,
-    "rejected": false,
+    "rejected": true,
     "cancelled": false,
     "archived_at": "2026-07-09T20:55:47.400Z"
   },
@@ -348,7 +348,7 @@ export default [
     "subtype": null,
     "reply_count": 2,
     "confirmed": false,
-    "rejected": false,
+    "rejected": true,
     "cancelled": false,
     "archived_at": "2026-07-09T00:00:00.000Z",
     "source": "slack_export"
