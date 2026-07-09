@@ -126,10 +126,20 @@ async function main() {
     }
   }
 
-  // 5. Sort newest first and save
+  // 5. Sort newest first and save both formats
   archive.sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
   fs.mkdirSync(path.dirname(ARCHIVE_PATH), { recursive: true });
+
+  // Human-readable JSON (source of truth, easy to inspect in the repo)
   fs.writeFileSync(ARCHIVE_PATH, JSON.stringify(archive, null, 2));
+
+  // JS module — Vercel bundles this reliably into the serverless function,
+  // unlike a .json read at runtime with fs.
+  const jsPath = path.join(path.dirname(ARCHIVE_PATH), 'bookings.js');
+  const header =
+    "// Auto-generated historical archive of bookings older than Slack's 90-day free-plan window.\n" +
+    "// Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.\n";
+  fs.writeFileSync(jsPath, header + 'export default ' + JSON.stringify(archive, null, 2) + ';\n');
 
   console.log(`Archive updated: ${added} added, ${updated} status updates, ${archive.length} total`);
 }
