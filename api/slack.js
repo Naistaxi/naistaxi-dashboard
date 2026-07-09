@@ -98,16 +98,26 @@ export default async function handler(req, res) {
       }
     }
 
+    // Index archive statuses by ts — used as fallback when a live thread fetch fails
+    const archiveStatusByTs = {};
+    for (const a of archive) {
+      archiveStatusByTs[a.ts] = { confirmed: a.confirmed, rejected: a.rejected, cancelled: a.cancelled };
+    }
+
     const enrichedLive = liveMessages.map(m => {
       const r = confirmedMap[m.ts];
-      const statusUnknown = m.reply_count > 0 && (!r || r.error || r.unsupported);
-      return {
-        ...m,
-        confirmed: r && !r.error && !r.unsupported ? r.confirmed : false,
-        rejected: r && !r.error && !r.unsupported ? r.rejected : false,
-        cancelled: r && !r.error && !r.unsupported ? r.cancelled : false,
-        status_unknown: statusUnknown
-      };
+      const liveOk = r && !r.error && !r.unsupported;
+      const fallback = archiveStatusByTs[m.ts];
+
+      if (liveOk) {
+        return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, status_unknown: false };
+      }
+      // Live fetch failed (rate limit / free plan) — fall back to the archived status if we have one
+      if (fallback) {
+        return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, status_unknown: false };
+      }
+      const statusUnknown = m.reply_count > 0;
+      return { ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: statusUnknown };
     });
 
     const merged = mergeArchiveAndLive(archive, enrichedLive);
