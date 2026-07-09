@@ -1,25 +1,14 @@
-import fs from 'fs';
-import path from 'path';
+// Import the historical archive directly so Vercel bundles it with the function.
+// Reading it from disk with fs is unreliable on serverless.
+import archive from '../data/bookings.js';
 
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL_MS = 25000;
 
-function loadArchive() {
-  try {
-    const p = path.join(process.cwd(), 'data', 'bookings.json');
-    if (fs.existsSync(p)) {
-      return JSON.parse(fs.readFileSync(p, 'utf-8'));
-    }
-  } catch (e) {
-    console.error('Could not load archive:', e.message);
-  }
-  return [];
-}
-
 // Live Slack data wins for any ts present in both, since its status is freshest.
-function mergeArchiveAndLive(archive, live) {
+function mergeArchiveAndLive(archiveData, live) {
   const liveTs = new Set(live.map(m => m.ts));
-  const archiveOnly = archive.filter(a => !liveTs.has(a.ts));
+  const archiveOnly = archiveData.filter(a => !liveTs.has(a.ts));
   return [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
 }
 
@@ -33,8 +22,6 @@ export default async function handler(req, res) {
   const mode = req.query.mode || 'full';
   const forceRefresh = req.query.force === '1';
 
-  const archive = loadArchive();
-
   try {
     const histRes = await fetch(
       `https://slack.com/api/conversations.history?channel=${channelId}&limit=200`,
@@ -44,7 +31,9 @@ export default async function handler(req, res) {
 
     if (!histData.ok) {
       if (archive.length) {
-        return res.status(200).json({ messages: archive, archive_only: true, slack_error: histData.error });
+        return res.status(200).json({
+          messages: archive, archive_only: true, archive_count: archive.length, slack_error: histData.error
+        });
       }
       return res.status(500).json({ error: histData.error });
     }
@@ -55,12 +44,12 @@ export default async function handler(req, res) {
       const merged = mergeArchiveAndLive(archive, liveMessages.map(m => ({
         ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: false
       })));
-      return res.status(200).json({ messages: merged });
+      return res.status(200).json({ messages: merged, archive_count: archive.length });
     }
 
     const now = Date.now();
     if (!forceRefresh && cache.data && (now - cache.timestamp) < CACHE_TTL_MS) {
-      return res.status(200).json({ messages: cache.data, cached: true });
+      return res.status(200).json({ messages: cache.data, cached: true, archive_count: archive.length });
     }
 
     const withReplies = liveMessages.filter(m => m.reply_count > 0);
@@ -126,7 +115,9 @@ export default async function handler(req, res) {
     res.status(200).json({ messages: merged, archive_count: archive.length });
   } catch (err) {
     if (archive.length) {
-      return res.status(200).json({ messages: archive, archive_only: true, slack_error: err.message });
+      return res.status(200).json({
+        messages: archive, archive_only: true, archive_count: archive.length, slack_error: err.message
+      });
     }
     res.status(500).json({ error: err.message });
   }
