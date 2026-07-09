@@ -1,6 +1,5 @@
-// In-memory cache to avoid re-fetching all threads on every poll (resets on cold start)
 let cache = { data: null, timestamp: 0 };
-const CACHE_TTL_MS = 20000;
+const CACHE_TTL_MS = 25000;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,10 +22,11 @@ export default async function handler(req, res) {
     const messages = histData.messages || [];
 
     if (mode === 'messages') {
-      return res.status(200).json({ messages: messages.map(m => ({ ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: false })) });
+      return res.status(200).json({
+        messages: messages.map(m => ({ ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: false }))
+      });
     }
 
-    // Serve from cache if fresh enough
     const now = Date.now();
     if (!forceRefresh && cache.data && (now - cache.timestamp) < CACHE_TTL_MS) {
       return res.status(200).json({ messages: cache.data, cached: true });
@@ -35,7 +35,6 @@ export default async function handler(req, res) {
     const withReplies = messages.filter(m => m.reply_count > 0);
     const confirmedMap = {};
 
-    // Slack Pro has higher rate limits — fetch with 2 retries max, bigger parallel batches
     async function fetchThread(msg, attempt = 1) {
       try {
         const r = await fetch(
@@ -44,8 +43,11 @@ export default async function handler(req, res) {
         );
         const d = await r.json();
         if (!d.ok) {
+          if (d.error === 'method_not_supported_for_channel_type' || d.error === 'not_allowed_token_type') {
+            return { unsupported: true };
+          }
           if ((d.error === 'ratelimited' || d.error === 'rate_limited') && attempt < 3) {
-            await new Promise(res => setTimeout(res, 300 * attempt));
+            await new Promise(res => setTimeout(res, 500 * attempt));
             return fetchThread(msg, attempt + 1);
           }
           return { error: true };
@@ -58,19 +60,20 @@ export default async function handler(req, res) {
         };
       } catch {
         if (attempt < 3) {
-          await new Promise(res => setTimeout(res, 300 * attempt));
+          await new Promise(res => setTimeout(res, 500 * attempt));
           return fetchThread(msg, attempt + 1);
         }
         return { error: true };
       }
     }
 
-    // Bigger batches since Slack Pro has higher rate limits — faster overall
     const batchSize = 8;
+    let apiUnsupported = false;
     for (let i = 0; i < withReplies.length; i += batchSize) {
       const batch = withReplies.slice(i, i + batchSize);
       await Promise.all(batch.map(async (msg) => {
         const result = await fetchThread(msg);
+        if (result.unsupported) apiUnsupported = true;
         confirmedMap[msg.ts] = result;
       }));
       if (i + batchSize < withReplies.length) {
@@ -80,19 +83,18 @@ export default async function handler(req, res) {
 
     const enriched = messages.map(m => {
       const r = confirmedMap[m.ts];
-      const statusUnknown = m.reply_count > 0 && (!r || r.error);
+      const statusUnknown = m.reply_count > 0 && (!r || r.error || r.unsupported);
       return {
         ...m,
-        confirmed: r && !r.error ? r.confirmed : false,
-        rejected: r && !r.error ? r.rejected : false,
-        cancelled: r && !r.error ? r.cancelled : false,
+        confirmed: r && !r.error && !r.unsupported ? r.confirmed : false,
+        rejected: r && !r.error && !r.unsupported ? r.rejected : false,
+        cancelled: r && !r.error && !r.unsupported ? r.cancelled : false,
         status_unknown: statusUnknown
       };
     });
 
     cache = { data: enriched, timestamp: now };
-
-    res.status(200).json({ messages: enriched });
+    res.status(200).json({ messages: enriched, api_limited: apiUnsupported });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
