@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/slack.js": {
-      "includeFiles": "data/**"
-    }
-  },
   "rewrites": [
     { "source": "/api/slack", "destination": "/api/slack.js" },
     { "source": "/(.*)", "destination": "/index.html" }
