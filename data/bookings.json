@@ -1,0 +1,189 @@
+[
+  {
+    "ts": "1777561555.837879",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Urho Kekkosen katu 1\n• Määränpää: Kirjakuja 9\n\n:straight_ruler: *Etäisyys:* 13.62 km\n:stopwatch: *Kesto:* 16 min\n:euro: *Arvioitu hinta:* 37,48 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-05-01\n• Aika: 00:40\n\n:busts_in_silhouette: *Matkustajat:* 2\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Anna Borgström\n• Puhelin: <tel:0402157680|0402157680>\n• Sähköposti: <mailto:anna.e.borgstrom@icloud.com|anna.e.borgstrom@icloud.com>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1777102185.132259",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Rautatieasema \n• Määränpää: Helsinki Vantaan lentoasema \n\n:straight_ruler: *Etäisyys:* 19.18 km\n:stopwatch: *Kesto:* 28 min\n:euro: *Arvioitu hinta:* 53,54 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-27\n• Aika: 06:20\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Juri \n• Puhelin: <tel:0443210890|0443210890>\n• Sähköposti: <mailto:juri.krasikov@gmail.com|juri.krasikov@gmail.com>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 3,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1777040436.225389",
+    "text": ":car: *Naistaxi Pre-Book Ride Request*\n\n:round_pushpin: *Route:*\n• From: Nuottakallio 13a 02230\n• To: Kirjakuja 9 02250\n\n:straight_ruler: *Distance:* 6.43 km\n:stopwatch: *Duration:* 11 min\n:euro: *Estimated fare:* 23,94 €\n\n:date: *Date &amp; Time:*\n• Date: 2026-04-25\n• Time: 01:05\n\n:busts_in_silhouette: *Passengers:* 3\n:child: *Child seat:* No\n\n:bust_in_silhouette: *Contact Information:*\n• Name: Inga Borgström\n• Phone: <tel:3584578775920|3584578775920>\n• Email: <mailto:inga.borgstrom@icloud.com|inga.borgstrom@icloud.com>\n\n:memo: *Special Requests:* None\n\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776890857.181299",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Länsiterminaali 2\n• Määränpää: Katajanokka\n\n:straight_ruler: *Etäisyys:* 15€\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-23\n• Aika: 00:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Henna-Riikka Ahonen\n• Puhelin: <tel:+358451479977|+358451479977>\n• Sähköposti: <mailto:henna9472@gmail.com|henna9472@gmail.com>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776848360.433669",
+    "text": ":car: *Naistaxi Pre-Book Ride Request*\n\n:round_pushpin: *Route:*\n• From: Punavuorenkatu 21 b\n• To: Airport\n\n:straight_ruler: *Distance:* Not calculated\n\n:date: *Date &amp; Time:*\n• Date: 2026-04-24\n• Time: 17:00\n\n:busts_in_silhouette: *Passengers:* 1\n:child: *Child seat:* No\n\n:bust_in_silhouette: *Contact Information:*\n• Name: Anna Paulig\n• Phone: <tel:+358400329504|+358400329504>\n• Email: <mailto:anna.paulig@gmail.com|anna.paulig@gmail.com>\n\n:memo: *Special Requests:* Can I have a fixed price please?\n\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776833403.189539",
+    "text": "� *Naistaxi Pre-Book Ride Request*\n\n� *Route:*\n• From: Topeliusgatan 3 b\n• To: Helsingfors Vanda flygstation \n\n� *Distance:* Not calculated\n\n� *Date &amp; Time:*\n• Date: 2026-04-22\n• Time: 11:46\n\n� *Passengers:* 1\n� *Child seat:* No\n\n� *Contact Information:*\n• Name: Barbro Widing \n• Phone: <tel:+358400201192|+358400201192>\n• Email: <mailto:3widba@gmail.com|3widba@gmail.com>\n\n� *Special Requests:* None\n\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 7,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776778134.569069",
+    "text": " *Naistaxi Pre-Book Ride Request*\n *Route:*\n• From: Porarinkatu 3, 02650 Espoo\n• To: Helsinki-Vantaa airport\n *Distance:* 18.06 km\n *Duration:* 21 min\n *Estimated fare:* 49,88 €\n *Date &amp; Time:*\n• Date: 2026-04-26\n• Time: 04:20\n *Passengers:* 1\n *Child seat:* No\n *Contact Information:*\n• Name: Iaroslava Goncharova\n• Phone: +358417109670\n• Email: <mailto:iaroslava.goncharova@gmail.com|iaroslava.goncharova@gmail.com>\n *Special Requests:* None\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 2,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776668375.864709",
+    "text": "� *Naistaxi Pre-Book Ride Request*\n\n� *Route:*\n• From: Thurmanin Puistotie 4D \n• To: Helsinki Airport\n\n� *Distance:* 24.51 km\n� *Duration:* 27 min\n� *Estimated fare:* 57,98 €\n\n� *Date &amp; Time:*\n• Date: 2026-04-21\n• Time: 06:50\n\n� *Passengers:* 1\n� *Child seat:* No\n\n� *Contact Information:*\n• Name: Tatiana Iovich\n• Phone: <tel:+358449726340|+358449726340>\n• Email: <mailto:tatiovich@gmail.com|tatiovich@gmail.com>\n\n� *Special Requests:* None\n\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 4,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776657570.713729",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Keimolantie 12 01700 Vantaa \n• Määränpää: Lentoasemantie 1 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 8.94 km\n:stopwatch: *Kesto:* 14 min\n:euro: *Arvioitu hinta:* 29,95 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-20\n• Aika: 03:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Annasofia Lantto\n• Puhelin: <tel:+358400515663|+358400515663>\n• Sähköposti: <mailto:lanttoannasofia@gmail.com|lanttoannasofia@gmail.com>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 2,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776428991.008869",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Runeberginkatu 14-16, 00100 Helsinki\n• Määränpää: Varustuksentie 14, 00940 Helsinki\n\n:straight_ruler: *Etäisyys:* 13.51 km\n:stopwatch: *Kesto:* 22 min\n:euro: *Arvioitu hinta:* 26,73 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-17\n• Aika: 23:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Marika Hardén\n• Puhelin: <tel:+358504133382|+358504133382>\n• Sähköposti: <mailto:marika_eve@hotmail.com|marika_eve@hotmail.com>\n\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!\n",
+    "subtype": null,
+    "reply_count": 4,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776313352.733329",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Otaranta 2, Radisson Blu Espoo\n• Määränpää: Helsingin rautatieasema \n\n:straight_ruler: *Etäisyys:* 9.71 km\n:stopwatch: *Kesto:* 15 min\n:euro: *Arvioitu hinta:* 18,71 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-17\n• Aika: 07:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jonna Elsinen\n• Puhelin: <tel:+358451631136|+358451631136>\n• Sähköposti: <mailto:jonna.elsinen@gmail.com|jonna.elsinen@gmail.com>\n\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776247135.505759",
+    "text": "� *Naistaxi Ennakkovaraus*\n\n� *Reitti:*\n• Lähtö: Aino Ackten tie 5 B, 00400 Helsinki \n• Määränpää: Haartmaninkatu 4 (Meilahden tornisairaala) \n\n� *Etäisyys:* Ei laskettu\n\n� *Päivämäärä ja aika:*\n• Päivä: 2026-04-17\n• Aika: 07:30\n\n� *Matkustajat:* 1\n� *Lastenistuin:* Ei\n\n� *Yhteystiedot:*\n• Nimi: Meri Blomberg\n• Puhelin: <tel:+358505271060|+358505271060>\n• Sähköposti: <mailto:blomberg.meri@gmail.com|blomberg.meri@gmail.com>\n\n\n� *Lisätoiveet:* Toiveena olisi olla perillä tornisairaalassa 7.55 tai 8.00.\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1776163002.762739",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n:round_pushpin: *Reitti:*\n• Lähtö: Ratatie 11, 01300 Vantaa\n• Määränpää: Robert Huberin tie 6, 01510 Vantaa\n:straight_ruler: *Etäisyys:* 6.22 km\n:stopwatch: *Kesto:* 8 min\n:euro: *Arvioitu hinta:* 12,10 €\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-15\n• Aika: 17:30\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Kia Inga Maria Periviita\n• Puhelin: +358404112205\n• Sähköposti: <mailto:kiaperiviita@gmail.com|kiaperiviita@gmail.com>\n:memo: *Lisätoiveet:* Tiedoksi, että saavun junalla, se on perillä 17.22 mikäli aikataulut pitää paikkansa. En ole aikaisemmin ollut Tikkurilan asemalla joten yritän suunnistaa sitten oikeaan paikkaan, maksan toki lisää, jos lähtöaika viivästyy huonon suuntavaistoni vuoksi\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1775500612.628979",
+    "text": "� *Naistaxi Ennakkovaraus*\n\n� *Reitti:*\n• Lähtö: Niittykatu 7\n• Määränpää: Lentokenttä\n\n� *Etäisyys:* 27.77 km\n� *Kesto:* 30 min\n� *Arvioitu hinta:* 38,00 €\n\n� *Päivämäärä ja aika:*\n• Päivä: 2026-04-07\n• Aika: 03:50\n\n� *Matkustajat:* 1\n� *Lastenistuin:* Ei\n\n� *Yhteystiedot:*\n• Nimi: Maija Ranta-Puska\n• Puhelin: <tel:+358453222441|+358453222441>\n• Sähköposti: <mailto:maija.rp@gmail.com|maija.rp@gmail.com>\n\n� *Maksu:*\n• Maksutapa: Kortti tai MobilePay (Stripe Checkout)\n\n� *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1775415424.251399",
+    "text": ":car: *Naistaxi Pre-Book Ride Request*\n\n:round_pushpin: *Route:*\n• From: Helsinki-Vantaan lentoasema\n• To: Kaivokselantie 5, 01610 Vantaa\n\n:straight_ruler: *Distance:* 13.06 km\n:stopwatch: *Duration:* 15 min\n:euro: *Estimated fare:* 19,89 €\n\n:date: *Date &amp; Time:*\n• Date: 2026-04-07\n• Time: 01:30\n\n:busts_in_silhouette: *Passengers:* 1\n:child: *Child seat:* No\n\n:bust_in_silhouette: *Contact Information:*\n• Name: Ida Holmberg\n• Phone: <tel:+358405594083|+358405594083>\n• Email: <mailto:holmberg.ida.m@gmail.com|holmberg.ida.m@gmail.com>\n\n:credit_card: *Payment:*\n• Method: Card or MobilePay (Stripe Checkout)\n\n:memo: *Special Requests:* None\n\nPlease confirm this pre-booking request. Thank you!",
+    "subtype": null,
+    "reply_count": 8,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1775136739.206809",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Työnjohtajankatu 7 B 44\n• Määränpää: Lentoasemantie 1, Vantaa\n\n:straight_ruler: *Etäisyys:* 23.64 km\n:stopwatch: *Kesto:* 25 min\n:euro: *Arvioitu hinta:* 32,47 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-04-06\n• Aika: 04:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:child: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Kitty Ida Sinyama Sitwala\n• Puhelin: <tel:+358465288422|+358465288422>\n• Sähköposti: <mailto:kitty.sitwala@gmail.com|kitty.sitwala@gmail.com>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!\n\n",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  },
+  {
+    "ts": "1774816307.393799",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Gerkinkartano 2 C, Espoo\n• Määränpää: Lentokenttä, Helsinki-Vantaa\n\n:straight_ruler: *Etäisyys:* 24.67 km\n:stopwatch: *Kesto:* 27 min\n:euro: *Arvioitu hinta:* 32,30 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-03-30\n• Aika: 12:30\n\n:busts_in_silhouette: *Matkustajat:* 2\n:child: *Lastenistuin:* Kyllä\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Tilda Tuomela\n• Puhelin: <tel:+358442403789|+358442403789>\n• Sähköposti: <mailto:tilda.tuomela@gmail.com|tilda.tuomela@gmail.com>\n\n:memo: *Lisätoiveet:* Lapsi on 117 cm pitkä, eli pitäisi olla turvaistuin johon mahtuu\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 2,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-09T00:00:00.000Z",
+    "source": "slack_export"
+  }
+]
