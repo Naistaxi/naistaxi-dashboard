@@ -43,7 +43,7 @@ jobs:
               // Wait 15 seconds for Slack data to fully load
               await new Promise(r => setTimeout(r, 15000));
 
-              await page.screenshot({ path: 'screenshot.jpg', fullPage: false });
+              await page.screenshot({ path: 'screenshot.jpg', fullPage: true });
               await browser.close();
 
               const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
