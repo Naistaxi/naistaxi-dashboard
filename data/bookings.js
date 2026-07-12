@@ -66,7 +66,7 @@ export default [
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Rajatorpantie 5 (Vantaa)\n• Määränpää: Naavapolku 1 (Helsinki)\n\n:straight_ruler: *Etäisyys:* 0.78 km\n:stopwatch: *Kesto:* 2 min\n:euro: *Arvioitu hinta:* 8,09 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-06-27\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jenni Pakarinen\n• Puhelin: +358442692423\n• Sähköposti: <mailto:jenievelina@hotmail.com|jenievelina@hotmail.com>\n• WhatsApp: <https://wa.me/358442692423?text=Hi%20Jenni%20Pakarinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%202026-06-27%20at%2000%3A15.|https://wa.me/358442692423?text=Hi%20Jenni%20Pakarinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%202026-06-27%20at%2000%3A15.>\n\n:memo: *Lisätoiveet:* Haku myyrmannin apteekin vierestä\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
     "reply_count": 2,
-    "confirmed": true,
+    "confirmed": false,
     "rejected": false,
     "cancelled": true,
     "archived_at": "2026-07-09T20:55:47.400Z"
