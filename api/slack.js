@@ -15,7 +15,15 @@ function mergeArchiveAndLive(archiveData, live) {
   return merged.map(m => {
     const o = overrides[m.ts];
     if (o && o.fare && m.text) {
-      return { ...m, text: m.text.replace(/Estimated fare:\s*Not calculated/i, `Estimated fare: ${o.fare} €`) };
+      let text = m.text;
+      if (/Estimated fare:\s*Not calculated/i.test(text)) {
+        // Replace the placeholder fare line
+        text = text.replace(/Estimated fare:\s*Not calculated/i, `Estimated fare: ${o.fare} €`);
+      } else if (!/(Estimated fare|Arvioitu hinta)/i.test(text)) {
+        // Message has no fare line at all (old formats) — append one so the parser finds it
+        text = text + `\nEstimated fare: ${o.fare} €`;
+      }
+      return { ...m, text };
     }
     return m;
   });
