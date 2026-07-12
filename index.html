@@ -350,7 +350,15 @@ function render(rawRides) {
 
   // Weekly chart with trend line (all requests)
   const weeks={};
-  rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=mon.toLocaleDateString('en',{month:'short',day:'numeric'});weeks[k]=(weeks[k]||0)+1;});
+  // ISO week number helper
+  function isoWeek(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+  rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=`W${isoWeek(mon)} · ${mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`;weeks[k]=(weeks[k]||0)+1;});
   const wl=Object.keys(weeks).reverse(), wd=wl.map(k=>weeks[k]);
   if(weekC) weekC.destroy();
   weekC = new Chart(document.getElementById('weekChart'),{
