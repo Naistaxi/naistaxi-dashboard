@@ -73,11 +73,22 @@ export default async function handler(req, res) {
           return { error: true };
         }
         const replies = (d.messages || []).filter(r => r.ts !== msg.ts);
-        return {
-          confirmed: replies.some(r => /\bconfirmed\b/i.test(r.text || '')),
-          rejected: replies.some(r => /\brejected\b/i.test(r.text || '')),
-          cancelled: replies.some(r => /\bcancell?ed\b/i.test(r.text || ''))
-        };
+        const texts = replies.map(r => r.text || '');
+        const cancelled = texts.some(t => /\bcancell?ed\b/i.test(t));
+        const rejected = texts.some(t =>
+          /\brejected\b/i.test(t) ||
+          /\bno drivers?\b/i.test(t) ||
+          /emme l.yt.neet sinulle kuljettajaa/i.test(t)
+        );
+        // Confirmation: explicit word, driver claim phrases, or "Name 💜" style replies
+        let confirmed = texts.some(t =>
+          /\bconfirmed\b/i.test(t) ||
+          /\b(got it|took it|takes it|will take|taken by|is taking|its? done)\b/i.test(t) ||
+          /white_check_mark/i.test(t) ||
+          /[A-Za-zÀ-ÿÄÖÅäöå]+\s*(:purple_heart:|💜)/.test(t)
+        );
+        if (cancelled || rejected) confirmed = false;
+        return { confirmed, rejected, cancelled };
       } catch {
         if (attempt < 3) {
           await new Promise(res => setTimeout(res, 500 * attempt));
