@@ -2,6 +2,16 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1783801073.778879",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Vipusentie 29 (Helsinki)\n• Määränpää: Tulisuonkuja 1 (Helsinki)\n\n:straight_ruler: *Etäisyys:* 9.23 km\n:stopwatch: *Kesto:* 18 min\n:euro: *Arvioitu hinta:* 34.40 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-11\n• Aika: 23:55\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Hebla Hallinen\n• Puhelin: 0442353414\n• Sähköposti: <mailto:kristiina@kakadu.fi|kristiina@kakadu.fi>\n• WhatsApp: <https://wa.me/358442353414?text=Hi%20Hebla%20Hallinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%2011.07.2026%20at%2023%3A55.|https://wa.me/358442353414?text=Hi%20Hebla%20Hallinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%2011.07.2026%20at%2023%3A55.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 2,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-07-12T07:27:37.005Z"
+  },
+  {
     "ts": "1783417103.650159",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Ajolenkki 36 (Vantaa)\n• Määränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 9.47 km\n:stopwatch: *Kesto:* 19 min\n:euro: *Arvioitu hinta:* 35,70 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-08\n• Aika: 02:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Helena\n• Puhelin: +358405031788\n• Sähköposti: <mailto:helena.nummela@gmail.com|helena.nummela@gmail.com>\n• WhatsApp: <https://wa.me/358405031788?text=Hi%20Helena%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%202026-07-08%20at%2002%3A30.|https://wa.me/358405031788?text=Hi%20Helena%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%202026-07-08%20at%2002%3A30.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
