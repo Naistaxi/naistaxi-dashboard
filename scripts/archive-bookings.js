@@ -164,6 +164,71 @@ async function main() {
   fs.writeFileSync(jsPath, header + 'export default ' + JSON.stringify(archive, null, 2) + ';\n');
 
   console.log(`Archive updated: ${added} added, ${updated} status updates, ${archive.length} total`);
+
+  // 6. Validate new bookings for missing fields and notify Slack if anything looks off
+  await checkMissingFields(messages);
+}
+
+function fieldValue(text, ...keys) {
+  const clean = text.replace(/\*/g, '');
+  for (const key of keys) {
+    const m = clean.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
+    if (m) return m[1].trim();
+  }
+  return null;
+}
+
+async function checkMissingFields(messages) {
+  // Only check recent bookings (last 48h) so we don't re-alert on old known cases
+  const cutoff = Date.now() / 1000 - 48 * 3600;
+  const problems = [];
+
+  for (const m of messages) {
+    if (parseFloat(m.ts) < cutoff) continue;
+    const t = m.text || '';
+    const issues = [];
+
+    const price = fieldValue(t, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
+    if (!price || /not calculated/i.test(price)) issues.push('price');
+
+    const dist = fieldValue(t, 'Etäisyys', 'Distance');
+    if (!dist || /not calculated/i.test(dist)) issues.push('distance');
+
+    const name = fieldValue(t, 'Nimi', 'Name');
+    if (!name) issues.push('name');
+
+    const phone = fieldValue(t, 'Puhelin', 'Phone');
+    if (!phone) issues.push('phone');
+
+    if (issues.length) {
+      const who = name || 'Unknown';
+      const date = new Date(parseFloat(m.ts) * 1000).toISOString().slice(0, 10);
+      problems.push(`• *${who}* (${date}) — missing: ${issues.join(', ')}`);
+    }
+  }
+
+  if (!problems.length) {
+    console.log('Field check: all recent bookings complete');
+    return;
+  }
+
+  console.log(`Field check: ${problems.length} booking(s) with missing fields`);
+  try {
+    await fetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        channel: CHANNEL_ID,
+        text: `:warning: *Dashboard data check* — some recent bookings have missing fields and won't be tracked correctly:\n${problems.join('\n')}\n_Fix the booking data or add the real value to \`data/overrides.js\` in the dashboard repo._`
+      })
+    });
+    console.log('Notification sent to Slack');
+  } catch (e) {
+    console.error('Could not send Slack notification:', e.message);
+  }
 }
 
 main().catch(err => {
