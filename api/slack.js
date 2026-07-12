@@ -1,6 +1,7 @@
 // Import the historical archive directly so Vercel bundles it with the function.
 // Reading it from disk with fs is unreliable on serverless.
 import archive from '../data/bookings.js';
+import overrides from '../data/overrides.js';
 
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL_MS = 25000;
@@ -9,7 +10,15 @@ const CACHE_TTL_MS = 25000;
 function mergeArchiveAndLive(archiveData, live) {
   const liveTs = new Set(live.map(m => m.ts));
   const archiveOnly = archiveData.filter(a => !liveTs.has(a.ts));
-  return [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
+  const merged = [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
+  // Apply manual corrections (e.g. real fares for "Not calculated" bookings, sourced from Notion)
+  return merged.map(m => {
+    const o = overrides[m.ts];
+    if (o && o.fare && m.text) {
+      return { ...m, text: m.text.replace(/Estimated fare:\s*Not calculated/i, `Estimated fare: ${o.fare} €`) };
+    }
+    return m;
+  });
 }
 
 export default async function handler(req, res) {
