@@ -2,6 +2,16 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1784123115.034369",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Rajatorpantie 5 (Vantaa)\n• Määränpää: Naavapolku 1 (Helsinki)\n\n:straight_ruler: *Etäisyys:* 2.30 km\n:stopwatch: *Kesto:* 2 min\n:euro: *Arvioitu hinta:* 14.30 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-16\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jenni Pakarinen\n• Puhelin: <tel:+358442692423|+358442692423>\n• Sähköposti: <mailto:jenievelina@hotmail.com|jenievelina@hotmail.com>\n• WhatsApp: <https://wa.me/358442692423?text=Hi%20Jenni%20Pakarinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%2016.07.2026%20at%2000%3A15.|wa.me/358442692423?text=Hi%20Jenni%20Pakarin…>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-16T07:21:33.169Z"
+  },
+  {
     "ts": "1783801073.778879",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Vipusentie 29 (Helsinki)\n• Määränpää: Tulisuonkuja 1 (Helsinki)\n\n:straight_ruler: *Etäisyys:* 9.23 km\n:stopwatch: *Kesto:* 18 min\n:euro: *Arvioitu hinta:* 34.40 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-11\n• Aika: 23:55\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Hebla Hallinen\n• Puhelin: 0442353414\n• Sähköposti: <mailto:kristiina@kakadu.fi|kristiina@kakadu.fi>\n• WhatsApp: <https://wa.me/358442353414?text=Hi%20Hebla%20Hallinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%2011.07.2026%20at%2023%3A55.|https://wa.me/358442353414?text=Hi%20Hebla%20Hallinen%2C%20this%20is%20Naistaxi%20about%20your%20pre-book%20ride%20on%2011.07.2026%20at%2023%3A55.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
