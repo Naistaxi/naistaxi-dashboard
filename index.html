@@ -82,8 +82,9 @@
     <div class="metric"><div class="metric-label">Cancelled</div><div class="metric-value" style="color:var(--red);" id="mCancelled">—</div><div class="metric-sub">by the passenger</div></div>
     <div class="metric"><div class="metric-label">Avg. €/km</div><div class="metric-value" style="color:var(--amber);" id="mAvgEpk">—</div><div class="metric-sub">confirmed rides only</div></div>
   </div>
-  <div class="metrics" style="grid-template-columns:repeat(6,1fr); margin-top:0;">
+  <div class="metrics" style="grid-template-columns:repeat(7,1fr); margin-top:0;">
     <div class="metric"><div class="metric-label">GBV</div><div class="metric-value" style="color:var(--green);" id="mGBV">—</div><div class="metric-sub">gross booking value</div></div>
+    <div class="metric"><div class="metric-label">Revenue</div><div class="metric-value" style="color:var(--green);" id="mRevenue">—</div><div class="metric-sub">15% commission</div></div>
     <div class="metric"><div class="metric-label">CLV</div><div class="metric-value" style="color:var(--purple);" id="mCLV">—</div><div class="metric-sub">avg per customer</div></div>
     <div class="metric"><div class="metric-label">Conversion</div><div class="metric-value" id="mConversion">—</div><div class="metric-sub">requests → confirmed</div></div>
     <div class="metric"><div class="metric-label">Cancellation</div><div class="metric-value" style="color:var(--amber);" id="mCancelRate">—</div><div class="metric-sub">of total requests</div></div>
@@ -319,6 +320,12 @@ function render(rawRides) {
 
   const gbv = confirmed.reduce((s,r) => s + r.price, 0);
   document.getElementById('mGBV').textContent = '€' + gbv.toFixed(0);
+
+  // Revenue — Naistaxi's 15% commission, only on confirmed bookings from Jul 15, 2026 onwards
+  const COMMISSION_START = new Date('2026-07-15T00:00:00');
+  const commissionable = confirmed.filter(r => r.date >= COMMISSION_START);
+  const revenue = commissionable.reduce((s,r) => s + r.price, 0) * 0.15;
+  document.getElementById('mRevenue').textContent = '€' + revenue.toFixed(0);
 
   const custSpend = {};
   confirmed.forEach(r => { const k = r.phone||r.name||'?'; custSpend[k]=(custSpend[k]||0)+r.price; });
