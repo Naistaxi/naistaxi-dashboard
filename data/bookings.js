@@ -2,6 +2,26 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1784652944.893619",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Viides linja 2 (Helsingfors Helsinki)\n• Määränpää: Helsinki Airport (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 18.77 km\n:stopwatch: *Kesto:* 38 min\n:euro: *Arvioitu hinta:* 68.15 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-27\n• Aika: 04:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Lavinia Runge\n• Puhelin: +4901573012989\n• Sähköposti: <mailto:vonschwarte.kenny@gmx.de|vonschwarte.kenny@gmx.de>\n• WhatsApp: <https://wa.me/4901573012989?text=Hi%20Lavinia%20Runge%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2027.07.2026%20at%2004%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.|https://wa.me/4901573012989?text=Hi%20Lavinia%20Runge%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2027.07.2026%20at%2004%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-22T07:33:03.053Z"
+  },
+  {
+    "ts": "1784646645.494329",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Helsinki Airport (HEL), Lentoasemantie 1, 01530 Vantaa\n• Määränpää: Kolmas linja 8 (Helsingfors Helsinki)\n\n:straight_ruler: *Etäisyys:* 18.86 km\n:stopwatch: *Kesto:* 38 min\n:euro: *Arvioitu hinta:* 66.18 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-21\n• Aika: 23:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Antonia Stöcker\n• Puhelin: +4915784020903\n• Sähköposti: <mailto:sonnenblumenfeld18@web.de|sonnenblumenfeld18@web.de>\n• WhatsApp: <https://wa.me/4915784020903?text=Hi%20Antonia%20St%C3%B6cker%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2021.07.2026%20at%2023%3A45.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.|https://wa.me/4915784020903?text=Hi%20Antonia%20St%C3%B6cker%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2021.07.2026%20at%2023%3A45.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.>\n\n:memo: *Lisätoiveet:* Unfortunately, I can't give you an exact time. I'm scheduled to land at 10:45 p.m. Is there any way we can stay in touch?\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-22T07:33:03.053Z"
+  },
+  {
     "ts": "1784290546.558349",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Promenadi (Vanda Vantaa)\n• Määränpää: Tuohikuja 6 (Esbo Espoo)\n\n:straight_ruler: *Etäisyys:* 18.3 km\n:stopwatch: *Kesto:* 37 min\n:euro: *Arvioitu hinta:* 64.50 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-18\n• Aika: 20:30\n\n:busts_in_silhouette: *Matkustajat:* 3\n:baby: *Lastenistuin:* Kyllä\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Elizabeth Lautjärvi\n• Puhelin: +358402187447\n• Sähköposti: <mailto:elizabeth.devolld@gmail.com|elizabeth.devolld@gmail.com>\n• WhatsApp: <https://wa.me/358402187447?text=Hi%20Elizabeth%20Lautj%C3%A4rvi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2018.07.2026%20at%2020%3A30.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.|https://wa.me/358402187447?text=Hi%20Elizabeth%20Lautj%C3%A4rvi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2018.07.2026%20at%2020%3A30.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.>\n\n:memo: *Lisätoiveet:* I am with two young children, almost 3 and 6. We have car seats that can be installed in the taxi, but would require help with installing and removing if the seats are needed\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
