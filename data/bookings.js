@@ -2,6 +2,16 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1784734545.302119",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Rajatorpantie 5 (Vantaa)\n• Määränpää: Naavapolku 1 (Helsinki)\n\n:straight_ruler: *Etäisyys:* 0.78 km\n:stopwatch: *Kesto:* 2 min\n:euro: *Arvioitu hinta:* 16.50 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-23\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jenni Pakarinen\n• Puhelin: +358442692423\n• Sähköposti: <mailto:jenievelina@hotmail.com|jenievelina@hotmail.com> Applied tariff weekdayNight\n• WhatsApp: <https://wa.me/358442692423?text=Hei%20Jenni%20Pakarinen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2023.07.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian.|https://wa.me/358442692423?text=Hei%20Jenni%20Pakarinen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2023.07.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "archived_at": "2026-07-23T07:31:25.722Z"
+  },
+  {
     "ts": "1784652944.893619",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Viides linja 2 (Helsingfors Helsinki)\n• Määränpää: Helsinki Airport (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 18.77 km\n:stopwatch: *Kesto:* 38 min\n:euro: *Arvioitu hinta:* 68.15 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-07-27\n• Aika: 04:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Lavinia Runge\n• Puhelin: +4901573012989\n• Sähköposti: <mailto:vonschwarte.kenny@gmx.de|vonschwarte.kenny@gmx.de>\n• WhatsApp: <https://wa.me/4901573012989?text=Hi%20Lavinia%20Runge%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2027.07.2026%20at%2004%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.|https://wa.me/4901573012989?text=Hi%20Lavinia%20Runge%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2027.07.2026%20at%2004%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged.>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
