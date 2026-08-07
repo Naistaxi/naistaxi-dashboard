@@ -129,6 +129,19 @@
     </div>
   </div>
 
+  <!-- Full-width revenue chart -->
+  <div class="card mb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="card-title" style="margin-bottom:0">Revenue by week</div>
+      <div style="display:flex;gap:14px;font-size:11px;color:var(--text2);">
+        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:var(--green);"></span>15% commission · from Jul 15</span>
+      </div>
+    </div>
+    <div style="position:relative;height:160px;">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </div>
+
   <!-- Two charts side by side -->
   <div class="grid-2">
     <div class="card">
@@ -146,7 +159,7 @@
 <footer id="footer">Connecting to Slack...</footer>
 <script>
 const POLL_MS = 30000;
-let fareC, weekC, distC;
+let fareC, weekC, distC, revC;
 let allRides = [];
 let currentTab = 'all';
 let showAll = false;
@@ -377,6 +390,17 @@ function render(rawRides) {
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#A89BB8',font:{size:9},maxRotation:35,autoSkip:false}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#A89BB8',font:{size:10}},grid:{color:'rgba(106,54,157,0.06)'}}}}
+  });
+
+  // Revenue by week — 15% commission on confirmed rides from Jul 15 onwards (by ride date)
+  const revWeeks={};
+  commissionable.forEach(r=>{const d=r.date;const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=`W${isoWeek(mon)} · ${mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`;revWeeks[k]=(revWeeks[k]||0)+r.price*0.15;});
+  const rl=Object.keys(revWeeks), rd=rl.map(k=>+revWeeks[k].toFixed(2));
+  if(revC) revC.destroy();
+  revC = new Chart(document.getElementById('revenueChart'),{
+    type:'bar',
+    data:{labels:rl,datasets:[{label:'Revenue',data:rd,backgroundColor:'#1A9E5C',borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>'€'+c.parsed.y.toFixed(2)}}},scales:{x:{grid:{display:false},ticks:{color:'#A89BB8',font:{size:9},maxRotation:35,autoSkip:false}},y:{beginAtZero:true,ticks:{color:'#A89BB8',font:{size:10},callback:(v)=>'€'+v},grid:{color:'rgba(106,54,157,0.06)'}}}}
   });
 
   // Fare chart (confirmed only)
