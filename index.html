@@ -378,8 +378,13 @@ function render(rawRides) {
     const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
     return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
   }
-  rides.forEach(r=>{const d=new Date(r.ts*1000);const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=`W${isoWeek(mon)} · ${mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`;weeks[k]=(weeks[k]||0)+1;});
-  const wl=Object.keys(weeks).reverse(), wd=wl.map(k=>weeks[k]);
+  // Week start = Monday (handles Sunday correctly: (getDay()+6)%7 days back)
+  function weekStart(d){const m=new Date(d);m.setDate(m.getDate()-((m.getDay()+6)%7));m.setHours(0,0,0,0);return m;}
+  const weekMap={};
+  rides.forEach(r=>{const mon=weekStart(new Date(r.ts*1000));const t=mon.getTime();if(!weekMap[t])weekMap[t]={mon,count:0};weekMap[t].count++;});
+  const weekEntries=Object.values(weekMap).sort((a,b)=>a.mon-b.mon);
+  const wl=weekEntries.map(e=>`W${isoWeek(e.mon)} · ${e.mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`);
+  const wd=weekEntries.map(e=>e.count);
   if(weekC) weekC.destroy();
   weekC = new Chart(document.getElementById('weekChart'),{
     data:{
@@ -393,9 +398,11 @@ function render(rawRides) {
   });
 
   // Revenue by week — 15% commission on confirmed rides from Jul 15 onwards (by ride date)
-  const revWeeks={};
-  commissionable.forEach(r=>{const d=r.date;const mon=new Date(d);mon.setDate(d.getDate()-d.getDay()+1);const k=`W${isoWeek(mon)} · ${mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`;revWeeks[k]=(revWeeks[k]||0)+r.price*0.15;});
-  const rl=Object.keys(revWeeks), rd=rl.map(k=>+revWeeks[k].toFixed(2));
+  const revMap={};
+  commissionable.forEach(r=>{const mon=weekStart(r.date);const t=mon.getTime();if(!revMap[t])revMap[t]={mon,sum:0};revMap[t].sum+=r.price*0.15;});
+  const revEntries=Object.values(revMap).sort((a,b)=>a.mon-b.mon);
+  const rl=revEntries.map(e=>`W${isoWeek(e.mon)} · ${e.mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`);
+  const rd=revEntries.map(e=>+e.sum.toFixed(2));
   if(revC) revC.destroy();
   revC = new Chart(document.getElementById('revenueChart'),{
     type:'bar',
