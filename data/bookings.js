@@ -16,8 +16,8 @@ export default [
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Tontunmäentie 32, 02200 Espoo, Finland\n• Määränpää: Uudenmaankatu 38, 00120 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 11.37 km\n:stopwatch: *Kesto:* 16 min\n:euro: *Arvioitu hinta:* 29.60 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-12\n• Aika: 08:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Petra Nyman\n• Puhelin: +358456576800\n• Sähköposti: <mailto:nymanpetras@gmail.com|nymanpetras@gmail.com> Applied tariff weekdayDay\n• WhatsApp: <https://wa.me/358456576800?text=Hei%20Petra%20Nyman!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2012.08.2026%20klo%2008.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358456576800?text=Hei%20Petra%20Nyman!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2012.08.2026%20klo%2008.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
     "reply_count": 1,
-    "confirmed": true,
-    "rejected": false,
+    "confirmed": false,
+    "rejected": true,
     "cancelled": false,
     "archived_at": "2026-08-12T06:12:00.013Z"
   },
