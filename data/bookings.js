@@ -2,6 +2,16 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1786778499.605479",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Hanasaarenkatu 10 00500 Helsinki, Finland\n• Määränpää: Siltasaarenkatu 14, 01660 Vantaa, Finland\n\n:straight_ruler: *Etäisyys:* 1.3 km\n:stopwatch: *Kesto:* 4 min\n:euro: *Arvioitu hinta:* 16.50 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-15\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Sanni Virta\n• Puhelin: <tel:+358449863499|+358 449863499>\n• Sähköposti: <mailto:sanni.aurora08@gmail.com|sanni.aurora08@gmail.com> Applied tariff weekendNight\n• WhatsApp: <https://wa.me/358405887456?text=Hi%20Ella%20Korhonen%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2016.08.2026%20at%2000%3A30.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|wa.me/358405887456?text=…>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "archived_at": "2026-08-16T05:24:56.314Z"
+  },
+  {
     "ts": "1786457676.776289",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Käenkuja 4, 00500 Helsinki, Finland\n• Määränpää: Aitanavain 7, 01660 Vantaa, Finland\n\n:straight_ruler: *Etäisyys:* 18.42 km\n:stopwatch: *Kesto:* 29 min\n:euro: *Arvioitu hinta:* 49.88 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-16\n• Aika: 00:30\n\n:busts_in_silhouette: *Matkustajat:* 2\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Ella Korhonen\n• Puhelin: +358405887456\n• Sähköposti: <mailto:ellakkorhonen@outlook.com|ellakkorhonen@outlook.com> Applied tariff weekdayNight\n• WhatsApp: <https://wa.me/358405887456?text=Hi%20Ella%20Korhonen%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2016.08.2026%20at%2000%3A30.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358405887456?text=Hi%20Ella%20Korhonen%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2016.08.2026%20at%2000%3A30.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
