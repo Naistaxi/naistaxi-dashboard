@@ -46,7 +46,8 @@ async function fetchThreadStatus(ts, attempt = 1) {
       /[A-Za-zÀ-ÿÄÖÅäöå]+\s*(:purple_heart:|💜)/.test(t)
     );
     if (cancelled || rejected) confirmed = false;
-    return { confirmed, rejected, cancelled };
+    const driver = confirmed ? extractDriver(texts) : null;
+    return { confirmed, rejected, cancelled, driver };
   } catch {
     if (attempt < 4) {
       await new Promise(r => setTimeout(r, 800 * attempt));
@@ -59,6 +60,27 @@ async function fetchThreadStatus(ts, attempt = 1) {
 function isBookingMessage(text) {
   if (!text) return false;
   return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(text);
+}
+
+// Pull the driver's name out of the confirmation reply ("Confirmed - Oksana", "Tara got it", "Angela 💜")
+function extractDriver(texts) {
+  const clean = s => (s || '').replace(/[<>|]/g, ' ').trim();
+  for (const raw of texts) {
+    const t = clean(raw);
+    let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m && !/^(by|the|for|it|ride|booking)$/i.test(m[1])) return titleCase(m[1]);
+    m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m) return titleCase(m[1]);
+    m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s+(?:got it|took it|takes it|will take|is taking)/i);
+    if (m && !/^(she|he|they|it|we|i)$/i.test(m[1])) return titleCase(m[1]);
+    m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
+    if (m) return titleCase(m[1]);
+  }
+  return null;
+}
+
+function titleCase(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
 async function main() {
@@ -121,6 +143,7 @@ async function main() {
         confirmed: status.confirmed,
         rejected: status.rejected,
         cancelled: status.cancelled,
+        driver: status.driver || null,
         archived_at: new Date().toISOString()
       });
       added++;
@@ -136,6 +159,11 @@ async function main() {
       const fetchedDefinitive = fetched.confirmed || fetched.rejected || fetched.cancelled;
       // Apply the fetched status unless it would erase a definitive one with all-false
       // (all-false on a thread that previously had a status usually means a partial read)
+      // A discovered driver name is always worth saving, even if the status didn't change
+      if (fetched.driver && !prev.driver) {
+        next.driver = fetched.driver;
+        updated++;
+      }
       if (fetchedDefinitive || !hadDefinitive) {
         if (prev.confirmed !== fetched.confirmed || prev.rejected !== fetched.rejected || prev.cancelled !== fetched.cancelled) {
           next.confirmed = fetched.confirmed;
