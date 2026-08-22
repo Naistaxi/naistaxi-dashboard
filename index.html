@@ -53,6 +53,7 @@
     .tag-pending { background: rgba(240,168,74,0.12); color: var(--amber); }
     .tag-rejected { background: rgba(240,90,74,0.12); color: var(--red); }
     .tag-cancelled { background: rgba(140,140,140,0.15); color: #8A8A85; }
+    .tag-driver { background: rgba(90,30,140,0.1); color: var(--purple-dark); font-weight: 600; }
     .chart-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: var(--text2); margin-top: 10px; justify-content: center; }
     .chart-legend span { display: flex; align-items: center; gap: 4px; }
     .swatch { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
@@ -119,9 +120,12 @@
   <div class="card mb">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div class="card-title" style="margin-bottom:0">Bookings by week</div>
-      <div style="display:flex;gap:14px;font-size:11px;color:var(--text2);">
-        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:var(--purple);"></span>Bookings</span>
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:16px;height:2px;background:var(--red);display:inline-block;border-radius:1px;"></span>Trend</span>
+      <div style="display:flex;gap:12px;font-size:11px;color:var(--text2);flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:var(--purple);"></span>Requests</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:var(--green);"></span>Confirmed</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:var(--red);"></span>Rejected</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span class="swatch" style="background:#8A8A85;"></span>Cancelled</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:16px;height:2px;background:var(--amber);display:inline-block;border-radius:1px;"></span>Trend</span>
       </div>
     </div>
     <div style="position:relative;height:200px;">
@@ -140,6 +144,15 @@
     <div style="position:relative;height:160px;">
       <canvas id="revenueChart"></canvas>
     </div>
+  </div>
+
+  <!-- Rides by driver -->
+  <div class="card mb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div class="card-title" style="margin-bottom:0">Rides by driver</div>
+      <div style="font-size:11px;color:var(--text3);">confirmed rides · reply "Confirmed - Name" in Slack to track</div>
+    </div>
+    <div id="driverList"><div class="state-msg">Loading...</div></div>
   </div>
 
   <!-- Two charts side by side -->
@@ -239,8 +252,9 @@ function parseRides(messages) {
     const rejected = m.rejected === true;
     const cancelled = m.cancelled === true;
     const statusUnknown = m.status_unknown === true;
+    const driver = m.driver || null;
 
-    return { name, phone, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected, cancelled, statusUnknown };
+    return { name, phone, from, to, price, dist, epk, time, pax, isAirport, childSeat, ts, date, confirmed, rejected, cancelled, statusUnknown, driver };
   }).filter(Boolean).sort((a,b) => b.ts - a.ts);
 }
 
@@ -292,6 +306,7 @@ function renderRideList() {
           ${r.dist?'· '+r.dist+' km':''}
           <span class="type-tag ${r.isAirport?'tag-air':'tag-city'}">${r.isAirport?'airport':'city'}</span>
           <span class="status-tag ${r.cancelled?'tag-cancelled':r.rejected?'tag-rejected':r.confirmed?'tag-confirmed':'tag-pending'}">${r.cancelled?'🚫 cancelled':r.rejected?'❌ rejected':r.confirmed?'✅ confirmed':r.statusUnknown?'⚠ loading...':'⏳ pending'}</span>
+          ${r.driver?`<span class="status-tag tag-driver">🚗 ${r.driver}</span>`:''}
         </div>
       </div>
       <div class="ride-price">
@@ -368,6 +383,38 @@ function render(rawRides) {
 
   renderRideList();
 
+  // Rides by driver (confirmed only)
+  const byDriver = {};
+  let unattributed = 0;
+  confirmed.forEach(r => {
+    if (r.driver) {
+      if (!byDriver[r.driver]) byDriver[r.driver] = { rides: 0, gbv: 0 };
+      byDriver[r.driver].rides++;
+      byDriver[r.driver].gbv += r.price;
+    } else {
+      unattributed++;
+    }
+  });
+  const driverEntries = Object.entries(byDriver).sort((a,b) => b[1].rides - a[1].rides);
+  const maxRides = driverEntries.length ? driverEntries[0][1].rides : 1;
+  const dColors = ['#8B2FC9','#1A9E5C','#D4820A','#4A9CF0','#E0294A','#5A1E8C'];
+  document.getElementById('driverList').innerHTML = driverEntries.length
+    ? driverEntries.map(([name, s], i) => `
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;${i<driverEntries.length-1?'border-bottom:1px solid var(--border);':''}">
+          <div class="avatar" style="background:${dColors[i%6]}1f;color:${dColors[i%6]};">${name.substring(0,2).toUpperCase()}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="ride-name">${name}</div>
+            <div style="height:4px;background:var(--surface2);border-radius:2px;margin-top:5px;overflow:hidden;">
+              <div style="height:100%;width:${s.rides/maxRides*100}%;background:${dColors[i%6]};border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="price-val">${s.rides} ${s.rides===1?'ride':'rides'}</div>
+            <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;">€${s.gbv.toFixed(0)}</div>
+          </div>
+        </div>`).join('') + (unattributed ? `<div class="state-msg" style="padding-top:10px;">${unattributed} confirmed ${unattributed===1?'ride has':'rides have'} no driver recorded.</div>` : '')
+    : `<div class="state-msg">No driver names recorded yet. Reply "Confirmed - Name" in the Slack thread and they'll show up here.</div>`;
+
   // Weekly chart with trend line (all requests)
   const weeks={};
   // ISO week number helper
@@ -381,20 +428,34 @@ function render(rawRides) {
   // Week start = Monday (handles Sunday correctly: (getDay()+6)%7 days back)
   function weekStart(d){const m=new Date(d);m.setDate(m.getDate()-((m.getDay()+6)%7));m.setHours(0,0,0,0);return m;}
   const weekMap={};
-  rides.forEach(r=>{const mon=weekStart(new Date(r.ts*1000));const t=mon.getTime();if(!weekMap[t])weekMap[t]={mon,count:0};weekMap[t].count++;});
+  rides.forEach(r=>{
+    const mon=weekStart(new Date(r.ts*1000));
+    const t=mon.getTime();
+    if(!weekMap[t]) weekMap[t]={mon,requests:0,confirmed:0,rejected:0,cancelled:0};
+    weekMap[t].requests++;
+    if(r.cancelled) weekMap[t].cancelled++;
+    else if(r.rejected) weekMap[t].rejected++;
+    else if(r.confirmed) weekMap[t].confirmed++;
+  });
   const weekEntries=Object.values(weekMap).sort((a,b)=>a.mon-b.mon);
   const wl=weekEntries.map(e=>`W${isoWeek(e.mon)} · ${e.mon.toLocaleDateString('en',{month:'short',day:'numeric'})}`);
-  const wd=weekEntries.map(e=>e.count);
+  const wReq=weekEntries.map(e=>e.requests);
+  const wConf=weekEntries.map(e=>e.confirmed);
+  const wRej=weekEntries.map(e=>e.rejected);
+  const wCanc=weekEntries.map(e=>e.cancelled);
   if(weekC) weekC.destroy();
   weekC = new Chart(document.getElementById('weekChart'),{
     data:{
       labels:wl,
       datasets:[
-        {type:'bar',label:'Bookings',data:wd,backgroundColor:'#8B2FC9',borderRadius:4,order:2},
-        {type:'line',label:'Trend',data:trendLine(wd),borderColor:'#E0294A',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0.3,fill:false,order:1}
+        {type:'bar',label:'Requests',data:wReq,backgroundColor:'rgba(139,47,201,0.18)',borderColor:'#8B2FC9',borderWidth:1,borderRadius:4,order:5},
+        {type:'line',label:'Confirmed',data:wConf,borderColor:'#1A9E5C',backgroundColor:'#1A9E5C',borderWidth:2.5,pointRadius:3,pointHoverRadius:5,tension:0.3,fill:false,order:2},
+        {type:'line',label:'Rejected',data:wRej,borderColor:'#E0294A',backgroundColor:'#E0294A',borderWidth:2,pointRadius:2.5,tension:0.3,fill:false,order:3},
+        {type:'line',label:'Cancelled',data:wCanc,borderColor:'#8A8A85',backgroundColor:'#8A8A85',borderWidth:2,pointRadius:2.5,tension:0.3,fill:false,order:4},
+        {type:'line',label:'Trend',data:trendLine(wReq),borderColor:'#D4820A',borderWidth:1.5,borderDash:[5,4],pointRadius:0,tension:0.3,fill:false,order:1}
       ]
     },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#A89BB8',font:{size:9},maxRotation:35,autoSkip:false}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#A89BB8',font:{size:10}},grid:{color:'rgba(106,54,157,0.06)'}}}}
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>`${ctx.dataset.label}: ${ctx.parsed.y}`}}},scales:{x:{grid:{display:false},ticks:{color:'#A89BB8',font:{size:9},maxRotation:35,autoSkip:false}},y:{beginAtZero:true,ticks:{stepSize:1,color:'#A89BB8',font:{size:10}},grid:{color:'rgba(106,54,157,0.06)'}}}}
   });
 
   // Revenue by week — 15% commission on confirmed rides from Jul 15 onwards (by ride date)
