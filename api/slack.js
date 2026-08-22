@@ -3,6 +3,39 @@
 import archive from '../data/bookings.js';
 import overrides from '../data/overrides.js';
 
+// Pull the driver's name out of the confirmation reply.
+// Supported formats, in priority order:
+//   "Confirmed - Oksana" / "Confirmed: Tara" / "Confirmed Angela"
+//   "Tara got it" / "will be taken by Oksana" / "Olga took it"
+//   "Angela 💜"
+function extractDriver(texts) {
+  const clean = s => (s || '').replace(/[<>|]/g, ' ').trim();
+  for (const raw of texts) {
+    const t = clean(raw);
+
+    // "Confirmed - Name" (the agreed convention)
+    let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m && !/^(by|the|for|it|ride|booking)$/i.test(m[1])) return titleCase(m[1]);
+
+    // "taken by Name" / "will be taken by Name"
+    m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m) return titleCase(m[1]);
+
+    // "Name got it" / "Name took it" / "Name will take it" / "Name is taking"
+    m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s+(?:got it|took it|takes it|will take|is taking)/i);
+    if (m && !/^(she|he|they|it|we|i)$/i.test(m[1])) return titleCase(m[1]);
+
+    // "Name 💜" — a bare driver claim
+    m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
+    if (m) return titleCase(m[1]);
+  }
+  return null;
+}
+
+function titleCase(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL_MS = 25000;
 
@@ -105,7 +138,8 @@ export default async function handler(req, res) {
           /[A-Za-zÀ-ÿÄÖÅäöå]+\s*(:purple_heart:|💜)/.test(t)
         );
         if (cancelled || rejected) confirmed = false;
-        return { confirmed, rejected, cancelled };
+        const driver = confirmed ? extractDriver(texts) : null;
+        return { confirmed, rejected, cancelled, driver };
       } catch {
         if (attempt < 3) {
           await new Promise(res => setTimeout(res, 500 * attempt));
@@ -129,7 +163,7 @@ export default async function handler(req, res) {
     // Index archive statuses by ts — used as fallback when a live thread fetch fails
     const archiveStatusByTs = {};
     for (const a of archive) {
-      archiveStatusByTs[a.ts] = { confirmed: a.confirmed, rejected: a.rejected, cancelled: a.cancelled };
+      archiveStatusByTs[a.ts] = { confirmed: a.confirmed, rejected: a.rejected, cancelled: a.cancelled, driver: a.driver || null };
     }
 
     const enrichedLive = liveMessages.map(m => {
@@ -138,11 +172,11 @@ export default async function handler(req, res) {
       const fallback = archiveStatusByTs[m.ts];
 
       if (liveOk) {
-        return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, status_unknown: false };
+        return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: r.driver || null, status_unknown: false };
       }
       // Live fetch failed (rate limit / free plan) — fall back to the archived status if we have one
       if (fallback) {
-        return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, status_unknown: false };
+        return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, driver: fallback.driver || null, status_unknown: false };
       }
       const statusUnknown = m.reply_count > 0;
       return { ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: statusUnknown };
