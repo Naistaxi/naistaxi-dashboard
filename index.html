@@ -35,6 +35,10 @@
     .grid-2 > .card { min-width: 0; }
     .mb { margin-bottom: 12px; }
     .tabs { display: flex; gap: 8px; }
+    .page-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+    .page-tab { font-size: 13px; padding: 7px 18px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; transition: all 0.15s; }
+    .page-tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .page-tab:hover:not(.active) { border-color: var(--purple); color: var(--purple); }
     .tab { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; font-weight: 600; }
     .tab.active { background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 700; }
     .tab:hover:not(.active) { border-color: var(--text3); color: var(--text); }
@@ -75,6 +79,12 @@
   </div>
 </header>
 <main>
+  <div class="page-tabs">
+    <button class="page-tab active" onclick="switchPage('overview', this)">Overview</button>
+    <button class="page-tab" onclick="switchPage('drivers', this)">Drivers</button>
+  </div>
+
+  <div id="page-overview">
   <div class="metrics" style="grid-template-columns:repeat(6,1fr);">
     <div class="metric"><div class="metric-label">Total requests</div><div class="metric-value" id="mTotal">—</div><div class="metric-sub" id="mSince">Loading...</div></div>
     <div class="metric"><div class="metric-label">Confirmed</div><div class="metric-value" style="color:var(--green);" id="mConfirmed">—</div><div class="metric-sub">with "confirmed" reply</div></div>
@@ -146,15 +156,6 @@
     </div>
   </div>
 
-  <!-- Rides by driver -->
-  <div class="card mb">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div class="card-title" style="margin-bottom:0">Rides by driver</div>
-      <div style="font-size:11px;color:var(--text3);">confirmed rides · reply "Confirmed - Name" in Slack to track</div>
-    </div>
-    <div id="driverList"><div class="state-msg">Loading...</div></div>
-  </div>
-
   <!-- Two charts side by side -->
   <div class="grid-2">
     <div class="card">
@@ -168,6 +169,17 @@
       <div id="distLegend" class="chart-legend"></div>
     </div>
   </div>
+  </div>
+
+  <div id="page-drivers" style="display:none;">
+    <div class="card mb">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="card-title" style="margin-bottom:0">Rides by driver</div>
+        <div style="font-size:11px;color:var(--text3);">confirmed rides · reply "Confirmed - Name" in Slack to track</div>
+      </div>
+      <div id="driverList"><div class="state-msg">Loading...</div></div>
+    </div>
+  </div>
 </main>
 <footer id="footer">Connecting to Slack...</footer>
 <script>
@@ -176,6 +188,13 @@ let fareC, weekC, distC, revC;
 let allRides = [];
 let currentTab = 'all';
 let showAll = false;
+
+function switchPage(page, btn) {
+  document.getElementById('page-overview').style.display = page === 'overview' ? 'block' : 'none';
+  document.getElementById('page-drivers').style.display = page === 'drivers' ? 'block' : 'none';
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
 
 function clearDates() {
   document.getElementById('dateFrom').value = '';
