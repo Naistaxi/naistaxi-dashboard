@@ -37,7 +37,11 @@ function titleCase(s) {
 }
 
 let cache = { data: null, timestamp: 0 };
-const CACHE_TTL_MS = 25000;
+const CACHE_TTL_MS = 300000; // 5 minutes — the dashboard answers instantly from cache
+
+// Bookings older than this are settled: their thread status won't change any more,
+// so we trust the archive instead of re-querying Slack for every one of them.
+const FRESH_WINDOW_MS = 7 * 24 * 3600 * 1000; // 7 days
 
 // Live Slack data wins for any ts present in both, since its status is freshest.
 function mergeArchiveAndLive(archiveData, live) {
@@ -102,7 +106,19 @@ export default async function handler(req, res) {
       return res.status(200).json({ messages: cache.data, cached: true, archive_count: archive.length });
     }
 
-    const withReplies = liveMessages.filter(m => m.reply_count > 0);
+    // Index what the archive already knows, so we can skip settled bookings
+    const archiveByTs = {};
+    for (const a of archive) archiveByTs[a.ts] = a;
+
+    const freshCutoff = (Date.now() - FRESH_WINDOW_MS) / 1000;
+    const withReplies = liveMessages.filter(m => {
+      if (!m.reply_count) return false;
+      const known = archiveByTs[m.ts];
+      const settled = known && (known.confirmed || known.rejected || known.cancelled);
+      const isRecent = parseFloat(m.ts) >= freshCutoff;
+      // Re-check only recent bookings, or older ones we never managed to resolve
+      return isRecent || !settled;
+    });
     const confirmedMap = {};
 
     async function fetchThread(msg, attempt = 1) {
