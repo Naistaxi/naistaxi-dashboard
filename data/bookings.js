@@ -5,11 +5,12 @@ export default [
     "ts": "1787372976.040589",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Malmin kauppatie 43, 00730 Helsinki, Finland\n• Määränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 10.46 km\n:stopwatch: *Kesto:* 16 min\n:euro: *Arvioitu hinta:* 32.24 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-24\n• Aika: 05:50\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Cristina Harvonen\n• Puhelin: 408328579\n• Sähköposti: <mailto:cristina.harvonen@hotmail.fi|cristina.harvonen@hotmail.fi> Applied tariff sundayAll\n• WhatsApp: <https://wa.me/408328579?text=Hei%20Cristina%20Harvonen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2024.08.2026%20klo%2005.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/408328579?text=Hei%20Cristina%20Harvonen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2024.08.2026%20klo%2005.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 0,
-    "confirmed": false,
+    "reply_count": 2,
+    "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "archived_at": "2026-08-22T05:24:37.852Z"
+    "archived_at": "2026-08-22T05:24:37.852Z",
+    "driver": "Inna"
   },
   {
     "ts": "1787333376.438599",
@@ -27,8 +28,8 @@ export default [
     "subtype": "bot_message",
     "reply_count": 1,
     "confirmed": false,
-    "rejected": true,
-    "cancelled": false,
+    "rejected": false,
+    "cancelled": true,
     "archived_at": "2026-08-22T05:24:37.852Z"
   },
   {
@@ -239,7 +240,8 @@ export default [
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "archived_at": "2026-07-09T20:55:47.400Z"
+    "archived_at": "2026-07-09T20:55:47.400Z",
+    "driver": "Tara"
   },
   {
     "ts": "1782644602.255549",
@@ -319,7 +321,8 @@ export default [
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "archived_at": "2026-07-09T20:55:47.400Z"
+    "archived_at": "2026-07-09T20:55:47.400Z",
+    "driver": "Oksana"
   },
   {
     "ts": "1780852609.832879",
@@ -329,7 +332,8 @@ export default [
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "archived_at": "2026-07-09T20:55:47.400Z"
+    "archived_at": "2026-07-09T20:55:47.400Z",
+    "driver": "Oksana"
   },
   {
     "ts": "1780834426.664009",
@@ -339,7 +343,8 @@ export default [
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "archived_at": "2026-07-09T20:55:47.400Z"
+    "archived_at": "2026-07-09T20:55:47.400Z",
+    "driver": "Oksana"
   },
   {
     "ts": "1780688943.772049",
