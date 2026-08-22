@@ -183,7 +183,7 @@
 </main>
 <footer id="footer">Connecting to Slack...</footer>
 <script>
-const POLL_MS = 30000;
+const POLL_MS = 120000; // 2 minutes
 let fareC, weekC, distC, revC;
 let allRides = [];
 let currentTab = 'all';
@@ -536,7 +536,7 @@ async function refresh() {
     const now = new Date().toLocaleTimeString('fi',{hour:'2-digit',minute:'2-digit',hour12:false});
     document.getElementById('liveLabel').textContent = `Updated ${now}`;
     document.getElementById('liveDot').style.background = '#1A9E5C';
-    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Refreshes every 30s`;
+    document.getElementById('footer').textContent = `Naistaxi · #ride-requests · Updated ${now} · Refreshes every 2 min`;
   } catch(err) {
     document.getElementById('liveLabel').textContent = 'Error';
     document.getElementById('liveDot').style.background = '#E0294A';
