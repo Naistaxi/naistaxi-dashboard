@@ -211,7 +211,8 @@ function toggleShowAll() {
 function field(text, ...keys) {
   const clean = text.replace(/\*/g, '');
   for (const key of keys) {
-    const m = clean.match(new RegExp(key + '\\s*:?\\s*(.+)', 'i'));
+    // \b prefix stops short keys matching inside words — e.g. "To" inside "mailto:"
+    const m = clean.match(new RegExp('\\b' + key + '\\s*:?\\s*(.+)', 'i'));
     if (m) return m[1].trim();
   }
   return null;
@@ -239,7 +240,7 @@ function parseRides(messages) {
     const dist = dm ? parseFloat(dm[1] + (dm[2] ? '.' + dm[2] : '')) : null;
 
     const from = field(t, 'Lähtö', 'From', 'Pickup address', 'Pickup', 'Lähtöpaikka') || '?';
-    const to = field(t, 'Määränpää', 'To', 'Destination', 'Kohde') || '?';
+    const to = field(t, 'Määränpää', 'Destination', 'Kohde', 'To') || '?';
     const name = field(t, 'Nimi', 'Name') || 'Unknown';
     const phoneRaw = field(t, 'Puhelin', 'Phone');
     const phoneMatch = phoneRaw && phoneRaw.match(/[+\d][\d\s\-().]{6,}/);
