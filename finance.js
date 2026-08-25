@@ -23,7 +23,10 @@ const FIN_DEFAULT_PARAMS = {
   avgSalaryPerIntern: 0,
   marketingBudgetYear1: 0,
   operatingCostsMonthly: 0,
-  paymentProcessingFee: 0,
+  // Real Stripe EEA card rate, confirmed against 19 live balance_transactions
+  // on the account (Aug 2026): fee = 1.5% * amount + €0.25, fit residual ~0.
+  paymentProcessingFee: 0.015,
+  paymentProcessingFeeFixed: 0.25, // € per ride — the part a flat % alone misses
   avgRidesPerCustomerLifetime: 0,
   newCustomersYear1: 0,
   socialSecurityTax: 0,
@@ -204,7 +207,10 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
       operatingCosts = params.operatingCostsMonthly * prevYearEndMultiplier * Math.pow(monthlyGrowthFactor, monthInYearIdx);
     }
 
-    const paymentFees = gmv * params.paymentProcessingFee;
+    // Stripe fee has a fixed-per-charge part too — a flat % alone understates
+    // it, especially at low ride prices (verified against real balance_transactions:
+    // fee = 1.5% * amount + €0.25, see FIN_DEFAULT_PARAMS).
+    const paymentFees = gmv * params.paymentProcessingFee + rides * (params.paymentProcessingFeeFixed || 0);
     const costs = Math.max(0, teamCosts + operatingCosts + marketingCosts + paymentFees);
     const profit = revenue - costs;
 
@@ -245,8 +251,9 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
   let breakEven = null;
   for (const m of monthly) {
     const netRate = params.standardCommissionRate - params.paymentProcessingFee;
+    const netRevenuePerRideBE = avgActualPrice * netRate - (params.paymentProcessingFeeFixed || 0);
     const fixed = m.teamCosts + m.operatingCosts + m.marketingCosts;
-    const beRides = avgActualPrice > 0 && netRate > 0 ? fixed / (avgActualPrice * netRate) : 0;
+    const beRides = netRevenuePerRideBE > 0 ? fixed / netRevenuePerRideBE : 0;
     if (m.rides >= beRides && beRides > 0) { breakEven = m; break; }
   }
 
@@ -258,7 +265,7 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
   // LTV / CAC — same formula as the standalone investor model: net revenue per
   // ride (after commission & payment fees) × lifetime rides, vs. Year-1
   // marketing spend spread over new customers acquired.
-  const netRevenuePerRide = Math.max(0, avgActualPrice * (params.standardCommissionRate - params.paymentProcessingFee));
+  const netRevenuePerRide = Math.max(0, avgActualPrice * (params.standardCommissionRate - params.paymentProcessingFee) - (params.paymentProcessingFeeFixed || 0));
   const customerLifetimeValue = netRevenuePerRide * params.avgRidesPerCustomerLifetime;
   const customerAcquisitionCost = params.newCustomersYear1 > 0 ? params.marketingBudgetYear1 / params.newCustomersYear1 : 0;
   const ltvCacRatio = customerAcquisitionCost > 0 ? customerLifetimeValue / customerAcquisitionCost : 0;
