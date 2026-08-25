@@ -273,7 +273,8 @@
       <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em;margin:18px 0 8px;">Marketing, operating &amp; customers</div>
       <div class="fin-grid">
         <div class="fin-field"><label>Operating costs (€/mo)</label><input type="number" id="fin-operatingCostsMonthly" step="1"><div class="fin-hint">+10%/year from Year 2</div></div>
-        <div class="fin-field"><label>Payment processing fee (%)</label><input type="number" id="fin-paymentProcessingFee" step="1"></div>
+        <div class="fin-field"><label>Payment processing fee (%)</label><input type="number" id="fin-paymentProcessingFee" step="0.1"><div class="fin-hint">Verified against real Stripe fees: 1.5%</div></div>
+        <div class="fin-field"><label>Payment processing fixed fee (€/ride)</label><input type="number" id="fin-paymentProcessingFeeFixed" step="0.01"><div class="fin-hint">Verified against real Stripe fees: €0.25/charge</div></div>
         <div class="fin-field"><label>Marketing budget Year 1 (€/yr)</label><input type="number" id="fin-marketingBudgetYear1" step="1"><div class="fin-hint">×1.5 each following year</div></div>
         <div class="fin-field"><label>Avg rides per customer (lifetime)</label><input type="number" id="fin-avgRidesPerCustomerLifetime" step="1"></div>
         <div class="fin-field"><label>New customers Year 1</label><input type="number" id="fin-newCustomersYear1" step="1"></div>
@@ -716,7 +717,9 @@ function finWriteParamsToInputs(params) {
     if (!el) return;
     const val = params[key];
     if (val === null || val === undefined) { el.value = ''; return; }
-    el.value = finPctFields.has(key) ? Math.round(val * 100) : val;
+    // Round to 2 decimals (not whole numbers) — a flat Math.round(val*100) was
+    // silently turning 1.5% into "2", which then got read back and computed as 2%.
+    el.value = finPctFields.has(key) ? Math.round(val * 10000) / 100 : val;
   });
 }
 
