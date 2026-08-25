@@ -288,13 +288,23 @@
 
     <div class="card mb">
       <div class="card-title">Annual targets</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Set a € goal per year — rides needed comes out of your avg price, commission and costs above, so it's never guesswork that can drift from the numbers.</div>
       <div class="fin-grid">
-        <div class="fin-field"><label>Year 1 target revenue (€)</label><input type="number" id="fin-target-0-revenue" step="1"></div>
-        <div class="fin-field"><label>Year 2 target revenue (€)</label><input type="number" id="fin-target-1-revenue" step="1"></div>
-        <div class="fin-field"><label>Year 3 target revenue (€)</label><input type="number" id="fin-target-2-revenue" step="1"></div>
-        <div class="fin-field"><label>Year 1 target rides</label><input type="number" id="fin-target-0-rides" step="1"></div>
-        <div class="fin-field"><label>Year 2 target rides</label><input type="number" id="fin-target-1-rides" step="1"></div>
-        <div class="fin-field"><label>Year 3 target rides</label><input type="number" id="fin-target-2-rides" step="1"></div>
+        <div class="fin-field">
+          <label>Year 1 target revenue (€)</label>
+          <input type="number" id="fin-target-0-revenue" step="1">
+          <div class="fin-hint" id="fin-target-0-derived">—</div>
+        </div>
+        <div class="fin-field">
+          <label>Year 2 target revenue (€)</label>
+          <input type="number" id="fin-target-1-revenue" step="1">
+          <div class="fin-hint" id="fin-target-1-derived">—</div>
+        </div>
+        <div class="fin-field">
+          <label>Year 3 target revenue (€)</label>
+          <input type="number" id="fin-target-2-revenue" step="1">
+          <div class="fin-hint" id="fin-target-2-derived">—</div>
+        </div>
       </div>
       <button class="fin-copy-btn" style="margin-top:10px;" onclick="finToggleMonthTable()" id="finToggleTableBtn">Show month-by-month actual vs target</button>
       <div class="fin-scroll" style="margin-top:10px;display:none;" id="finMonthTableWrap">
@@ -316,10 +326,13 @@
 
     <div class="card">
       <div class="card-title">Yearly summary</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Forecast = actual + trend/manual growth. Target columns = rides needed and resulting profit to hit your € goal, given your price and costs.</div>
+      <div class="fin-scroll" style="max-height:none;overflow-x:auto;">
       <table class="fin-table" style="width:100%;">
-        <thead><tr><th>Year</th><th>Revenue</th><th>Costs</th><th>Profit</th></tr></thead>
+        <thead><tr><th>Year</th><th>Revenue</th><th>Costs</th><th>Profit</th><th>Rides needed</th><th>Target profit</th></tr></thead>
         <tbody id="finYearlyTableBody"></tbody>
       </table>
+      </div>
     </div>
   </div>
 </main>
@@ -740,19 +753,19 @@ function finReadParamsFromInputs() {
 function finWriteTargetsToInputs(targets) {
   targets.forEach((t, i) => {
     const rEl = document.getElementById(`fin-target-${i}-revenue`);
-    const dEl = document.getElementById(`fin-target-${i}-rides`);
     if (rEl) rEl.value = t.targetRevenue || 0;
-    if (dEl) dEl.value = t.targetRides || 0;
   });
 }
 
+// Rides are no longer typed in — they're derived from target revenue ÷ (avg
+// price × commission) inside finComputeModel, using whatever price/costs are
+// set above. See finRenderAll's "rides needed" readout under each year.
 function finReadTargetsFromInputs() {
   return [0, 1, 2].map(i => {
     const rEl = document.getElementById(`fin-target-${i}-revenue`);
-    const dEl = document.getElementById(`fin-target-${i}-rides`);
     return {
       targetRevenue: rEl ? Number(rEl.value) || 0 : 0,
-      targetRides: dEl ? Number(dEl.value) || 0 : 0,
+      targetRides: 0,
       targetProfit: 0,
     };
   });
@@ -912,7 +925,21 @@ function finRenderAll() {
       <td>${finFormatCurrency(y.revenue)}</td>
       <td>${finFormatCurrency(y.costs)}</td>
       <td style="color:${y.profit >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:700;">${finFormatCurrency(y.profit)}</td>
+      <td>${y.targetRevenue > 0 ? y.targetRides.toLocaleString() + ' (' + y.targetRidesPerMonth.toLocaleString() + '/mo)' : '—'}</td>
+      <td style="color:${y.targetRevenue === 0 ? 'inherit' : (y.targetProfit >= 0 ? 'var(--green)' : 'var(--red)')};font-weight:${y.targetRevenue === 0 ? 400 : 700};">${y.targetRevenue > 0 ? finFormatCurrency(y.targetProfit) : '—'}</td>
     </tr>`).join('');
+
+  // "Rides needed" readout under each year's target-revenue input — the
+  // direct answer to "how many rides, at my price, with my costs, to hit this?"
+  model.yearly.forEach((y, i) => {
+    const el = document.getElementById(`fin-target-${i}-derived`);
+    if (!el) return;
+    if (y.targetRevenue <= 0) { el.textContent = 'Set a € goal to see rides needed'; el.style.color = ''; return; }
+    if (model.meta.avgActualPrice <= 0) { el.textContent = 'Set an avg ride price above first'; el.style.color = 'var(--amber)'; return; }
+    const profitLabel = y.targetProfit >= 0 ? `+${finFormatCurrency(y.targetProfit)} profit` : `${finFormatCurrency(y.targetProfit)} loss`;
+    el.innerHTML = `→ needs <strong>${y.targetRides.toLocaleString()} rides</strong> (${y.targetRidesPerMonth.toLocaleString()}/mo) at €${model.meta.avgActualPrice.toFixed(0)} avg → ${profitLabel} at current costs`;
+    el.style.color = 'var(--purple-dark)';
+  });
 
   // Vertical "today" marker separating actual data from forecast — a small
   // custom Chart.js plugin, no external library needed.
