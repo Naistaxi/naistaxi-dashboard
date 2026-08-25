@@ -1,5 +1,16 @@
 [
   {
+    "ts": "1787597753.690139",
+    "text": "Pickup address\tPasilan Asema-aukio 1, 00520 Helsinki, Finland\nDestination\tMannerheimintie 109, 00280 Helsinki, Finland\nDistance\t4.02 km\nDuration\t9 min\nEstimated fare\t17.03 EUR\nDate\t2026-08-25\nTime\t20:55\nPassengers\t1\nChild seat\tNo\nName\tHenna Norrgård\nPhone\t<tel:+358504318460|+358504318460>\nEmail\t<mailto:henna.norrgard@gmail.com|henna.norrgard@gmail.com>\nApplied tariff\tweekdayNight\nSpecial requests\t None",
+    "subtype": null,
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Oksana",
+    "archived_at": "2026-08-25T05:40:15.492Z"
+  },
+  {
     "ts": "1787405076.020249",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Hevosmiehenkatu 7a, 00770 Helsinki, Finland\n• Määränpää: Henrik Lättiläisen katu 8 a, 00710 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 7.07 km\n:stopwatch: *Kesto:* 14 min\n:euro: *Arvioitu hinta:* 24.60 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-22\n• Aika: 23:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Tanja Maarit Männistö\n• Puhelin: +358503274624\n• Sähköposti: <mailto:tanjamanna@gmail.com|tanjamanna@gmail.com> Applied tariff weekdayNight\n• WhatsApp: <https://wa.me/358503274624?text=Hei%20Tanja%20Maarit%20M%C3%A4nnist%C3%B6!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2022.08.2026%20klo%2023.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358503274624?text=Hei%20Tanja%20Maarit%20M%C3%A4nnist%C3%B6!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2022.08.2026%20klo%2023.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Kyyti on tyttären ensimmäinen taksimatka yksin, joten voi jännittää\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
@@ -346,6 +357,17 @@
     "rejected": true,
     "cancelled": false,
     "archived_at": "2026-07-09T20:55:47.400Z"
+  },
+  {
+    "ts": "1781291654.594509",
+    "text": "Pickup address\tVäinämöisenkatu 15 A\nTo\nHelsinki-Vantaan lentoasema\n69,50€ \n13.06.2026 4:00 \n\n<https://maps.app.goo.gl/K853PeG6umjZFRCt5?g_st=ic|https://maps.app.goo.gl/K853PeG6umjZFRCt5?g_st=ic>\n : 19.94 km · Duration: 40 min\nApplied tariff: Mon–Sat 18–06\nEstimated fair: 69,50€",
+    "subtype": null,
+    "reply_count": 3,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": true,
+    "driver": null,
+    "archived_at": "2026-08-25T05:40:15.493Z"
   },
   {
     "ts": "1781077128.505899",
