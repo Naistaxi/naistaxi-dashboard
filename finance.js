@@ -22,7 +22,12 @@ const FIN_DEFAULT_PARAMS = {
   avgSalaryPerPerson: 0,
   avgSalaryPerIntern: 0,
   marketingBudgetYear1: 0,
-  operatingCostsMonthly: 0,
+  // From the "Naistaxi Expenses" Notion table — the confirmed recurring items
+  // only: bank account (€10/mo) + Gmail (€15.31/mo) + Apple Developer Program
+  // (€100.15/yr ÷ 12). LinkedIn Premium (€120.99) was checked and confirmed
+  // one-off, not recurring, so it's excluded. Doesn't include team/payroll —
+  // those are separate params, still 0 until there's real payroll data.
+  operatingCostsMonthly: 33.66,
   // Real Stripe EEA card rate, confirmed against 19 live balance_transactions
   // on the account (Aug 2026): fee = 1.5% * amount + €0.25, fit residual ~0.
   paymentProcessingFee: 0.015,
@@ -170,6 +175,18 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
     avgActualPrice = totalRides > 0 ? totalGbv / totalRides : 0;
   }
 
+  // Targets work backwards now: you set a € revenue goal, the model tells you
+  // the rides that requires at your assumed avg price and commission — instead
+  // of you having to guess a rides number that may not reconcile with the
+  // revenue number and the real economics (price, commission, costs).
+  const derivedAnnualTargets = annualTargets.map(t => {
+    const targetRevenue = (t && t.targetRevenue) || 0;
+    const targetRides = avgActualPrice > 0 && params.standardCommissionRate > 0
+      ? targetRevenue / (avgActualPrice * params.standardCommissionRate)
+      : 0;
+    return { targetRevenue, targetRides };
+  });
+
   let runningRides = null;
   const monthly = months.map((m) => {
     const actual = actualsByMonth[m.monthKey] || null;
@@ -214,7 +231,7 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
     const costs = Math.max(0, teamCosts + operatingCosts + marketingCosts + paymentFees);
     const profit = revenue - costs;
 
-    const annual = annualTargets[m.year - 1] || FIN_DEFAULT_ANNUAL_TARGET;
+    const annual = derivedAnnualTargets[m.year - 1] || FIN_DEFAULT_ANNUAL_TARGET;
     const override = monthTargetOverrides[m.index] || {};
     const targetRides = override.targetRides != null ? override.targetRides : annual.targetRides / 12;
     const targetRevenue = override.targetRevenue != null ? override.targetRevenue : annual.targetRevenue / 12;
@@ -245,7 +262,25 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
     const yearData = monthly.filter(m => m.year === year);
     const revenue = yearData.reduce((s, m) => s + m.revenue, 0);
     const costs = yearData.reduce((s, m) => s + m.costs, 0);
-    return { year, revenue, costs, profit: revenue - costs };
+
+    // "Rides needed" for this year's target — worked out from the target
+    // revenue at your avg price/commission, then checked against your actual
+    // cost assumptions (team + operating + marketing; payment fees scale with
+    // the rides themselves) to show whether hitting the target is profitable.
+    const target = derivedAnnualTargets[year - 1] || { targetRevenue: 0, targetRides: 0 };
+    const fixedCostsYear = yearData.reduce((s, m) => s + m.teamCosts + m.operatingCosts + m.marketingCosts, 0);
+    const targetPaymentFees = target.targetRides * (avgActualPrice * params.paymentProcessingFee + (params.paymentProcessingFeeFixed || 0));
+    const targetCosts = fixedCostsYear + targetPaymentFees;
+    const targetProfit = target.targetRevenue - targetCosts;
+
+    return {
+      year, revenue, costs, profit: revenue - costs,
+      targetRevenue: target.targetRevenue,
+      targetRides: Math.round(target.targetRides),
+      targetRidesPerMonth: Math.round(target.targetRides / 12),
+      targetCosts: Math.round(targetCosts),
+      targetProfit: Math.round(targetProfit),
+    };
   });
 
   let breakEven = null;
