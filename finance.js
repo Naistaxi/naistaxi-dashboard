@@ -1,5 +1,5 @@
 // ============================================================================
-// Naistaxi Financials — 36-month scenario model, driven by real confirmed
+// Naistaxi Financials — 24-month scenario model, driven by real confirmed
 // rides from the #ride-requests Slack feed (via allRides in index.html).
 //
 // No build step, no framework: plain functions + Chart.js, matching the rest
@@ -8,7 +8,7 @@
 // own.
 // ============================================================================
 
-const FIN_TOTAL_MONTHS = 36;
+const FIN_TOTAL_MONTHS = 24; // 2-year horizon — a 3rd forecast year was too speculative to be useful
 const FIN_COMMISSION_START = new Date('2026-07-15T00:00:00');
 const FIN_SCENARIOS = ['pessimistic', 'realistic', 'optimistic'];
 
@@ -64,12 +64,12 @@ function finLoadAnnualTargets() {
     const saved = localStorage.getItem('nais-fin-annual-targets');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed) && parsed.length === 3) return parsed;
+      if (Array.isArray(parsed) && parsed.length === 2) return parsed;
     }
   } catch (e) { console.error('finLoadAnnualTargets', e); }
   const seed = (window.FIN_SEED_CONFIG && window.FIN_SEED_CONFIG.annualTargets) || null;
-  if (Array.isArray(seed) && seed.length === 3) return seed;
-  return [{ ...FIN_DEFAULT_ANNUAL_TARGET }, { ...FIN_DEFAULT_ANNUAL_TARGET }, { ...FIN_DEFAULT_ANNUAL_TARGET }];
+  if (Array.isArray(seed) && seed.length === 2) return seed;
+  return [{ ...FIN_DEFAULT_ANNUAL_TARGET }, { ...FIN_DEFAULT_ANNUAL_TARGET }];
 }
 
 function finSaveAnnualTargets(targets) {
@@ -258,7 +258,7 @@ function finComputeModel({ params, annualTargets, monthTargetOverrides, actualsB
     };
   });
 
-  const yearly = [1, 2, 3].map(year => {
+  const yearly = [1, 2].map(year => {
     const yearData = monthly.filter(m => m.year === year);
     const revenue = yearData.reduce((s, m) => s + m.revenue, 0);
     const costs = yearData.reduce((s, m) => s + m.costs, 0);
