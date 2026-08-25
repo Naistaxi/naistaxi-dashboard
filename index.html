@@ -220,7 +220,7 @@ function field(text, ...keys) {
 function parseRides(messages) {
   return messages.filter(m => m.text && (!m.subtype || m.subtype === 'bot_message')).map(m => {
     const t = m.text;
-    if (!/ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(t)) return null;
+    if (!/ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request|pickup address|estimated fare|arvioitu hinta|applied tariff|l\u00e4ht\u00f6paikka/i.test(t)) return null;
 
     const priceRaw = field(t, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Price', 'Hinta');
     let price = null;
