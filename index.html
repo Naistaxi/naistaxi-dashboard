@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Naistaxi · Ride Requests</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="finance-config.js"></script>
+  <script src="finance.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,6 +67,40 @@
     .err { color: var(--red) !important; }
     footer { text-align: center; font-size: 11px; color: var(--text3); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
     @media(max-width:700px){ .metrics{grid-template-columns:repeat(2,1fr)} .grid-2{grid-template-columns:1fr} header{padding:14px 16px} main{padding:16px 14px 40px} }
+
+    /* Financials tab */
+    .fin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .fin-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media(max-width:900px){ .fin-grid{grid-template-columns:1fr} .fin-grid-2{grid-template-columns:1fr} }
+    .fin-field label { display:block; font-size: 11px; color: var(--text2); font-weight: 600; margin-bottom: 4px; }
+    .fin-field input { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); color: var(--text); font-family: 'Nunito', sans-serif; font-size: 13px; }
+    .fin-field input:focus { outline: none; border-color: var(--purple); background: var(--surface); }
+    .fin-hint { font-size: 10px; color: var(--text3); margin-top: 3px; }
+    .fin-scenario-btn { font-size: 12px; padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; transition: all 0.15s; }
+    .fin-scenario-btn.active-pessimistic { background: var(--red); color:#fff; border-color: var(--red); }
+    .fin-scenario-btn.active-realistic { background: var(--purple); color:#fff; border-color: var(--purple); }
+    .fin-scenario-btn.active-optimistic { background: var(--green); color:#fff; border-color: var(--green); }
+    .fin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .fin-table th { text-align: right; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); padding: 6px 8px; position: sticky; top: 0; background: var(--surface2); }
+    .fin-table th:first-child, .fin-table td:first-child { text-align: left; }
+    .fin-table td { padding: 4px 8px; border-top: 1px solid var(--border); text-align: right; }
+    .fin-table input { width: 80px; padding: 3px 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface2); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-align: right; }
+    .fin-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+    .fin-badge.actual { background: rgba(26,158,92,0.12); color: var(--green); }
+    .fin-badge.forecast { background: rgba(139,47,201,0.12); color: var(--purple); }
+    .fin-scroll { max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; }
+    .fin-copy-btn { font-size: 11px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--purple); cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 600; }
+    .fin-copy-btn:hover { background: var(--purple-light); }
+    tr.fin-row-actual { background: rgba(26,158,92,0.05); }
+    tr.fin-row-actual td:first-child { box-shadow: inset 3px 0 0 var(--green); }
+    .fin-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(0); background: var(--purple-dark); color: #fff; font-size: 12px; font-weight: 600; padding: 10px 20px; border-radius: 20px; box-shadow: 0 8px 24px rgba(90,30,140,0.35); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+    .fin-toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    .fin-modal-backdrop { position: fixed; inset: 0; background: rgba(26,16,37,0.45); display: flex; align-items: center; justify-content: center; z-index: 300; }
+    .fin-modal { background: var(--surface); border-radius: var(--radius); padding: 20px; width: min(560px, 90vw); max-height: 80vh; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 20px 60px rgba(26,16,37,0.3); }
+    .fin-modal h3 { margin: 0; font-size: 14px; color: var(--text); }
+    .fin-modal p { margin: 0; font-size: 11px; color: var(--text2); }
+    .fin-modal textarea { width: 100%; flex: 1; min-height: 240px; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); resize: vertical; }
+    .fin-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
   </style>
 </head>
 <body>
@@ -82,6 +118,7 @@
   <div class="page-tabs">
     <button class="page-tab active" onclick="switchPage('overview', this)">Overview</button>
     <button class="page-tab" onclick="switchPage('drivers', this)">Drivers</button>
+    <button class="page-tab" onclick="switchPage('financials', this)">Financials</button>
   </div>
 
   <div id="page-overview">
@@ -180,8 +217,113 @@
       <div id="driverList"><div class="state-msg">Loading...</div></div>
     </div>
   </div>
+
+  <div id="page-financials" style="display:none;">
+    <div id="finEmptyBanner" class="card mb" style="display:none;background:var(--purple-light);border-color:rgba(139,47,201,0.25);">
+      <div style="font-size:12px;color:var(--purple-dark);"><strong>No confirmed rides yet.</strong> This model comes alive as soon as the first confirmed booking lands in #ride-requests — costs and targets below still work in the meantime.</div>
+    </div>
+
+    <div class="card mb">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
+        <div class="card-title" style="margin-bottom:0">Scenario</div>
+        <div style="display:flex;gap:8px;">
+          <button class="fin-scenario-btn" id="finScenarioBtn-pessimistic" onclick="finSwitchScenario('pessimistic')">Pessimistic</button>
+          <button class="fin-scenario-btn" id="finScenarioBtn-realistic" onclick="finSwitchScenario('realistic')">Realistic</button>
+          <button class="fin-scenario-btn" id="finScenarioBtn-optimistic" onclick="finSwitchScenario('optimistic')">Optimistic</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Rides &amp; revenue below come live from confirmed Slack bookings. Costs and targets are your assumptions per scenario.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <div style="font-size:11px;color:var(--text2);">Forecast basis for months with no actual data yet: <strong id="finGrowthRate" style="color:var(--purple);">—</strong></div>
+        <div style="display:flex;gap:8px;">
+          <button class="fin-scenario-btn" id="finGrowthBtn-trend" onclick="finSetGrowthBasis('trend')">Trend from actuals</button>
+          <button class="fin-scenario-btn" id="finGrowthBtn-manual" onclick="finSetGrowthBasis('manual')">Manual rate</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics" style="grid-template-columns:repeat(6,1fr);">
+      <div class="metric"><div class="metric-label">3yr Revenue</div><div class="metric-value" style="color:var(--green);" id="finRevenue3y">—</div><div class="metric-sub" id="finRevenueVsTarget">—</div></div>
+      <div class="metric"><div class="metric-label">3yr Rides</div><div class="metric-value" id="finRides3y">—</div><div class="metric-sub" id="finActualMonths">—</div></div>
+      <div class="metric"><div class="metric-label">3yr Team Cost</div><div class="metric-value" id="finTeamCost3y">—</div><div class="metric-sub" id="finTeamSize">—</div></div>
+      <div class="metric"><div class="metric-label">3yr Profit</div><div class="metric-value" id="finProfit3y">—</div><div class="metric-sub" id="finBreakEven">—</div></div>
+      <div class="metric"><div class="metric-label">Cash gap</div><div class="metric-value" style="color:var(--amber);" id="finCashGap">—</div><div class="metric-sub">funding needed until break-even</div></div>
+      <div class="metric"><div class="metric-label">LTV / CAC</div><div class="metric-value" id="finLtvCac">—</div><div class="metric-sub" id="finLtvCacSub">target &gt; 3.0x</div></div>
+    </div>
+
+    <div class="card mb" style="margin-top:12px;">
+      <div class="card-title">Model parameters</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Rides &amp; pricing</div>
+      <div class="fin-grid">
+        <div class="fin-field"><label>Commission rate (%)</label><input type="number" id="fin-standardCommissionRate" step="1"><div class="fin-hint">Real business rule is 15%</div></div>
+        <div class="fin-field"><label>Ride price for forecast (€, optional)</label><input type="number" id="fin-standardRidePrice" step="1"><div class="fin-hint">Blank = use the real average €/ride from actuals</div></div>
+        <div class="fin-field"><label>Manual ride growth (rides/month)</label><input type="number" id="fin-monthlyRideGrowth" step="1"><div class="fin-hint">Used only when forecast basis = manual</div></div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em;margin:18px 0 8px;">Team &amp; payroll</div>
+      <div class="fin-grid">
+        <div class="fin-field"><label>Full-time team size</label><input type="number" id="fin-fullTimeTeamSize" step="1"></div>
+        <div class="fin-field"><label>Avg salary per person (€/mo)</label><input type="number" id="fin-avgSalaryPerPerson" step="1"></div>
+        <div class="fin-field"><label>Interns team size</label><input type="number" id="fin-internsTeamSize" step="1"></div>
+        <div class="fin-field"><label>Avg salary per intern (€/mo)</label><input type="number" id="fin-avgSalaryPerIntern" step="1"></div>
+        <div class="fin-field"><label>Social security tax (%)</label><input type="number" id="fin-socialSecurityTax" step="1"></div>
+      </div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em;margin:18px 0 8px;">Marketing, operating &amp; customers</div>
+      <div class="fin-grid">
+        <div class="fin-field"><label>Operating costs (€/mo)</label><input type="number" id="fin-operatingCostsMonthly" step="1"><div class="fin-hint">+10%/year from Year 2</div></div>
+        <div class="fin-field"><label>Payment processing fee (%)</label><input type="number" id="fin-paymentProcessingFee" step="1"></div>
+        <div class="fin-field"><label>Marketing budget Year 1 (€/yr)</label><input type="number" id="fin-marketingBudgetYear1" step="1"><div class="fin-hint">×1.5 each following year</div></div>
+        <div class="fin-field"><label>Avg rides per customer (lifetime)</label><input type="number" id="fin-avgRidesPerCustomerLifetime" step="1"></div>
+        <div class="fin-field"><label>New customers Year 1</label><input type="number" id="fin-newCustomersYear1" step="1"></div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button class="fin-copy-btn" onclick="finCopyConfig()">📋 Copy config for finance-config.js</button>
+        <span style="font-size:10px;color:var(--text3);">Saves to your browser automatically. Use this to make your numbers the shared default for everyone.</span>
+      </div>
+    </div>
+
+    <div class="card mb">
+      <div class="card-title">Annual targets</div>
+      <div class="fin-grid">
+        <div class="fin-field"><label>Year 1 target revenue (€)</label><input type="number" id="fin-target-0-revenue" step="1"></div>
+        <div class="fin-field"><label>Year 2 target revenue (€)</label><input type="number" id="fin-target-1-revenue" step="1"></div>
+        <div class="fin-field"><label>Year 3 target revenue (€)</label><input type="number" id="fin-target-2-revenue" step="1"></div>
+        <div class="fin-field"><label>Year 1 target rides</label><input type="number" id="fin-target-0-rides" step="1"></div>
+        <div class="fin-field"><label>Year 2 target rides</label><input type="number" id="fin-target-1-rides" step="1"></div>
+        <div class="fin-field"><label>Year 3 target rides</label><input type="number" id="fin-target-2-rides" step="1"></div>
+      </div>
+      <button class="fin-copy-btn" style="margin-top:10px;" onclick="finToggleMonthTable()" id="finToggleTableBtn">Show month-by-month actual vs target</button>
+      <div class="fin-scroll" style="margin-top:10px;display:none;" id="finMonthTableWrap">
+        <table class="fin-table">
+          <thead><tr><th>Month</th><th>Rides</th><th>Revenue</th><th>Target rides</th><th>Target revenue</th><th>Status</th></tr></thead>
+          <tbody id="finMonthTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mb">
+      <div class="card-title">Revenue: actual vs forecast vs target</div>
+      <div style="position:relative;height:220px;"><canvas id="finRevenueChart"></canvas></div>
+    </div>
+    <div class="card mb">
+      <div class="card-title">Rides: actual vs forecast vs target</div>
+      <div style="position:relative;height:220px;"><canvas id="finRidesChart"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Yearly summary</div>
+      <table class="fin-table" style="width:100%;">
+        <thead><tr><th>Year</th><th>Revenue</th><th>Costs</th><th>Profit</th></tr></thead>
+        <tbody id="finYearlyTableBody"></tbody>
+      </table>
+    </div>
+  </div>
 </main>
 <footer id="footer">Connecting to Slack...</footer>
+<div id="finToast" class="fin-toast"></div>
 <script>
 const POLL_MS = 120000; // 2 minutes
 let fareC, weekC, distC, revC;
@@ -192,8 +334,10 @@ let showAll = false;
 function switchPage(page, btn) {
   document.getElementById('page-overview').style.display = page === 'overview' ? 'block' : 'none';
   document.getElementById('page-drivers').style.display = page === 'drivers' ? 'block' : 'none';
+  document.getElementById('page-financials').style.display = page === 'financials' ? 'block' : 'none';
   document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  if (page === 'financials' && typeof finRenderAll === 'function') finRenderAll();
 }
 
 function clearDates() {
@@ -513,6 +657,11 @@ function render(rawRides) {
   document.getElementById('distLegend').innerHTML=distLabels.map((l,i)=>
     `<span><span class="swatch" style="background:${distColors[i]};"></span>${l}: ${distData[i]} (${Math.round(distData[i]/dt*100)}%)</span>`
   ).join('');
+
+  // Keep the Financials tab live too, if it's the one currently visible.
+  if (typeof finRenderAll === 'function' && document.getElementById('page-financials').style.display !== 'none') {
+    finRenderAll();
+  }
 }
 
 let hasLoadedOnce = false;
@@ -546,6 +695,310 @@ async function refresh() {
 }
 refresh();
 setInterval(refresh, POLL_MS);
+</script>
+
+<script>
+// ============================================================================
+// Financials tab controller — binds finance.js's pure model to the DOM.
+// Rides/revenue actuals come from the same `allRides` the Overview tab
+// already parses from Slack; only cost assumptions & targets are manual.
+// ============================================================================
+
+const finPctFields = new Set(['standardCommissionRate', 'socialSecurityTax', 'paymentProcessingFee']);
+let finState = { scenario: 'realistic', growthBasis: 'trend' };
+let finRevChart, finRidesChartInstance;
+
+function finFieldId(key) { return 'fin-' + key; }
+
+function finWriteParamsToInputs(params) {
+  Object.keys(params).forEach(key => {
+    const el = document.getElementById(finFieldId(key));
+    if (!el) return;
+    const val = params[key];
+    if (val === null || val === undefined) { el.value = ''; return; }
+    el.value = finPctFields.has(key) ? Math.round(val * 100) : val;
+  });
+}
+
+function finReadParamsFromInputs() {
+  const params = { ...finLoadParams(finState.scenario) };
+  Object.keys(FIN_DEFAULT_PARAMS).forEach(key => {
+    const el = document.getElementById(finFieldId(key));
+    if (!el) return;
+    const raw = el.value;
+    if (raw === '') { params[key] = key === 'standardRidePrice' ? 0 : params[key]; return; }
+    const num = Number(raw);
+    if (isNaN(num)) return;
+    params[key] = finPctFields.has(key) ? num / 100 : num;
+  });
+  return params;
+}
+
+function finWriteTargetsToInputs(targets) {
+  targets.forEach((t, i) => {
+    const rEl = document.getElementById(`fin-target-${i}-revenue`);
+    const dEl = document.getElementById(`fin-target-${i}-rides`);
+    if (rEl) rEl.value = t.targetRevenue || 0;
+    if (dEl) dEl.value = t.targetRides || 0;
+  });
+}
+
+function finReadTargetsFromInputs() {
+  return [0, 1, 2].map(i => {
+    const rEl = document.getElementById(`fin-target-${i}-revenue`);
+    const dEl = document.getElementById(`fin-target-${i}-rides`);
+    return {
+      targetRevenue: rEl ? Number(rEl.value) || 0 : 0,
+      targetRides: dEl ? Number(dEl.value) || 0 : 0,
+      targetProfit: 0,
+    };
+  });
+}
+
+function finSwitchScenario(scenario) {
+  finState.scenario = scenario;
+  ['pessimistic', 'realistic', 'optimistic'].forEach(s => {
+    document.getElementById(`finScenarioBtn-${s}`).className = 'fin-scenario-btn' + (s === scenario ? ` active-${s}` : '');
+  });
+  finWriteParamsToInputs(finLoadParams(scenario));
+  finRenderAll();
+}
+
+function finSetGrowthBasis(basis) {
+  finState.growthBasis = basis;
+  document.getElementById('finGrowthBtn-trend').className = 'fin-scenario-btn' + (basis === 'trend' ? ' active-realistic' : '');
+  document.getElementById('finGrowthBtn-manual').className = 'fin-scenario-btn' + (basis === 'manual' ? ' active-realistic' : '');
+  finRenderAll();
+}
+
+function finOnParamsChanged() {
+  const params = finReadParamsFromInputs();
+  finSaveParams(finState.scenario, params);
+  finRenderAll();
+}
+
+function finOnTargetsChanged() {
+  const targets = finReadTargetsFromInputs();
+  finSaveAnnualTargets(targets);
+  finRenderAll();
+}
+
+function finToggleMonthTable() {
+  const wrap = document.getElementById('finMonthTableWrap');
+  const isHidden = wrap.style.display === 'none';
+  wrap.style.display = isHidden ? 'block' : 'none';
+  document.getElementById('finToggleTableBtn').textContent = isHidden ? 'Hide month-by-month actual vs target' : 'Show month-by-month actual vs target';
+}
+
+let finToastTimer = null;
+function finShowToast(text) {
+  const toast = document.getElementById('finToast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(finToastTimer);
+  finToastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+function finShowCopyModal(config) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'fin-modal-backdrop';
+  backdrop.innerHTML = `
+    <div class="fin-modal">
+      <h3>Copy config for finance-config.js</h3>
+      <p>Clipboard access wasn't available — select the text below and copy it manually.</p>
+      <textarea readonly></textarea>
+      <div class="fin-modal-actions">
+        <button class="fin-copy-btn" id="finModalCloseBtn">Close</button>
+      </div>
+    </div>`;
+  backdrop.querySelector('textarea').value = config;
+  document.body.appendChild(backdrop);
+  const textarea = backdrop.querySelector('textarea');
+  textarea.focus();
+  textarea.select();
+  const close = () => backdrop.remove();
+  backdrop.querySelector('#finModalCloseBtn').addEventListener('click', close);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+}
+
+function finCopyConfig() {
+  const allParams = {};
+  FIN_SCENARIOS.forEach(s => { allParams[s] = finLoadParams(s); });
+  const config = `window.FIN_SEED_CONFIG = ${JSON.stringify({ params: allParams, annualTargets: finLoadAnnualTargets() }, null, 2)};\n`;
+  navigator.clipboard?.writeText(config).then(() => {
+    finShowToast('📋 Config copied — paste it into finance-config.js and commit.');
+  }).catch(() => {
+    finShowCopyModal(config);
+  });
+}
+
+function finFormatCurrency(v) {
+  if (Math.abs(v) >= 1000000) return '€' + (v / 1000000).toFixed(2) + 'M';
+  if (Math.abs(v) >= 1000) return '€' + (v / 1000).toFixed(1) + 'K';
+  return '€' + Math.round(v).toLocaleString();
+}
+
+function finRenderAll() {
+  if (typeof allRides === 'undefined') return;
+
+  const params = finReadParamsFromInputs();
+  const annualTargets = finReadTargetsFromInputs();
+  const monthTargetOverrides = finLoadMonthTargetOverrides();
+  const actualsByMonth = finAggregateActualsByMonth(allRides);
+  const startDate = finEarliestRideDate(allRides) || new Date();
+
+  const model = finComputeModel({
+    params, annualTargets, monthTargetOverrides, actualsByMonth, startDate,
+    growthBasis: finState.growthBasis,
+  });
+
+  // Empty state — first-run banner while there's no confirmed Slack data yet.
+  document.getElementById('finEmptyBanner').style.display = model.meta.actualMonthsCount === 0 ? 'block' : 'none';
+
+  // KPI cards
+  document.getElementById('finRevenue3y').textContent = finFormatCurrency(model.meta.totalRevenue);
+  document.getElementById('finRevenueVsTarget').textContent = model.meta.totalTargetRevenue > 0
+    ? `${((model.meta.totalRevenue / model.meta.totalTargetRevenue) * 100).toFixed(1)}% of ${finFormatCurrency(model.meta.totalTargetRevenue)} target`
+    : 'no target set';
+  document.getElementById('finRides3y').textContent = model.monthly.reduce((s, m) => s + m.rides, 0).toLocaleString();
+  document.getElementById('finActualMonths').textContent = `${model.meta.actualMonthsCount} actual months from Slack`;
+  document.getElementById('finTeamCost3y').textContent = finFormatCurrency(model.monthly.reduce((s, m) => s + m.teamCosts, 0));
+  document.getElementById('finTeamSize').textContent = `${params.fullTimeTeamSize} full-time · ${params.internsTeamSize} interns`;
+  document.getElementById('finProfit3y').textContent = finFormatCurrency(model.meta.totalProfit);
+  document.getElementById('finProfit3y').style.color = model.meta.totalProfit >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('finBreakEven').textContent = model.meta.breakEven ? `Break-even: ${model.meta.breakEven.label}` : 'Break-even not reached';
+  document.getElementById('finCashGap').textContent = model.meta.cashGap > 0 ? finFormatCurrency(model.meta.cashGap) : '€0';
+  const hasLtvCacInputs = model.meta.customerAcquisitionCost > 0;
+  document.getElementById('finLtvCac').textContent = hasLtvCacInputs ? `${model.meta.ltvCacRatio.toFixed(1)}x` : '—';
+  document.getElementById('finLtvCac').style.color = hasLtvCacInputs ? (model.meta.isLtvCacHealthy ? 'var(--green)' : 'var(--red)') : '';
+  document.getElementById('finLtvCacSub').textContent = hasLtvCacInputs
+    ? (model.meta.isLtvCacHealthy ? 'healthy — target > 3.0x' : 'below target of 3.0x')
+    : 'set marketing + customer inputs';
+
+  // Forecast-basis label lives inline in the Scenario card header now.
+  const finBasisLabel = finState.growthBasis === 'trend' ? 'Trend from actuals' : 'Manual rate';
+  const finRateKnown = finState.growthBasis === 'manual' || model.meta.trend !== null;
+  const finRateLabel = finRateKnown
+    ? `${model.meta.growthRate >= 0 ? '+' : ''}${model.meta.growthRate.toFixed(1)} rides/mo`
+    : 'need 2+ actual months — using manual rate for now';
+  document.getElementById('finGrowthRate').textContent = `${finBasisLabel} (${finRateLabel})`;
+
+  // Scenario / growth-basis button states (in case called before a click set them)
+  ['pessimistic', 'realistic', 'optimistic'].forEach(s => {
+    const btn = document.getElementById(`finScenarioBtn-${s}`);
+    if (btn) btn.className = 'fin-scenario-btn' + (s === finState.scenario ? ` active-${s}` : '');
+  });
+  document.getElementById('finGrowthBtn-trend').className = 'fin-scenario-btn' + (finState.growthBasis === 'trend' ? ' active-realistic' : '');
+  document.getElementById('finGrowthBtn-manual').className = 'fin-scenario-btn' + (finState.growthBasis === 'manual' ? ' active-realistic' : '');
+
+  // Month-by-month table
+  document.getElementById('finMonthTableBody').innerHTML = model.monthly.map(m => `
+    <tr class="${m.isActual ? 'fin-row-actual' : ''}">
+      <td>${m.label}</td>
+      <td>${m.rides.toLocaleString()}</td>
+      <td>${finFormatCurrency(m.revenue)}</td>
+      <td>${Math.round(m.targetRides).toLocaleString()}</td>
+      <td>${finFormatCurrency(m.targetRevenue)}</td>
+      <td><span class="fin-badge ${m.isActual ? 'actual' : 'forecast'}">${m.isActual ? '✓ actual' : '○ forecast'}</span></td>
+    </tr>`).join('');
+
+  // Yearly summary table
+  document.getElementById('finYearlyTableBody').innerHTML = model.yearly.map(y => `
+    <tr>
+      <td>Year ${y.year}</td>
+      <td>${finFormatCurrency(y.revenue)}</td>
+      <td>${finFormatCurrency(y.costs)}</td>
+      <td style="color:${y.profit >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:700;">${finFormatCurrency(y.profit)}</td>
+    </tr>`).join('');
+
+  // Vertical "today" marker separating actual data from forecast — a small
+  // custom Chart.js plugin, no external library needed.
+  function finTodayLinePlugin(boundaryIndex) {
+    return {
+      id: 'finTodayLine',
+      afterDraw(chart) {
+        if (boundaryIndex == null || boundaryIndex < 0 || boundaryIndex >= model.monthly.length - 1) return;
+        const xScale = chart.scales.x, yScale = chart.scales.y;
+        if (!xScale || !yScale) return;
+        // getPixelForValue (not getPixelForTick) — ticks are auto-skipped for
+        // readability, so tick *array* index doesn't line up with data index.
+        const xStart = xScale.getPixelForValue(boundaryIndex);
+        const xEnd = xScale.getPixelForValue(boundaryIndex + 1);
+        if (xStart == null || xEnd == null) return;
+        const x = (xStart + xEnd) / 2;
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.beginPath();
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(212,130,10,0.55)';
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#D4820A';
+        ctx.font = '600 9px Nunito, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('today', x, yScale.top - 4);
+        ctx.restore();
+      },
+    };
+  }
+
+  const labels = model.monthly.map(m => m.label);
+  const chartOpts = (yFmt) => ({
+    responsive: true, maintainAspectRatio: false,
+    layout: { padding: { top: 14 } },
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#A89BB8', font: { size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } },
+      y: { ticks: { color: '#A89BB8', font: { size: 10 }, callback: yFmt }, grid: { color: 'rgba(106,54,157,0.06)' } },
+    },
+  });
+
+  if (finRevChart) finRevChart.destroy();
+  finRevChart = new Chart(document.getElementById('finRevenueChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Actual', data: model.monthly.map(m => m.actualRevenueSeries), borderColor: '#8B2FC9', backgroundColor: '#8B2FC9', borderWidth: 3, pointRadius: 2, spanGaps: false },
+        { label: 'Forecast', data: model.monthly.map(m => m.forecastRevenueSeries), borderColor: '#B873B6', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, spanGaps: false },
+        { label: 'Target', data: model.monthly.map(m => m.targetRevenue), borderColor: '#A89BB8', borderDash: [2, 2], borderWidth: 1.5, pointRadius: 0 },
+      ],
+    },
+    options: chartOpts((v) => '€' + (v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v)),
+    plugins: [finTodayLinePlugin(model.meta.lastActualIndex)],
+  });
+
+  if (finRidesChartInstance) finRidesChartInstance.destroy();
+  finRidesChartInstance = new Chart(document.getElementById('finRidesChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Actual', data: model.monthly.map(m => m.actualRidesSeries), borderColor: '#8B2FC9', backgroundColor: '#8B2FC9', borderWidth: 3, pointRadius: 2, spanGaps: false },
+        { label: 'Forecast', data: model.monthly.map(m => m.forecastRidesSeries), borderColor: '#B873B6', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, spanGaps: false },
+        { label: 'Target', data: model.monthly.map(m => m.targetRides), borderColor: '#A89BB8', borderDash: [2, 2], borderWidth: 1.5, pointRadius: 0 },
+      ],
+    },
+    options: chartOpts((v) => v),
+    plugins: [finTodayLinePlugin(model.meta.lastActualIndex)],
+  });
+}
+
+// Initial load: populate scenario buttons + inputs from saved/seed state.
+finWriteParamsToInputs(finLoadParams(finState.scenario));
+finWriteTargetsToInputs(finLoadAnnualTargets());
+document.getElementById(`finScenarioBtn-${finState.scenario}`).className = `fin-scenario-btn active-${finState.scenario}`;
+document.getElementById('finGrowthBtn-trend').className = 'fin-scenario-btn active-realistic';
+document.querySelectorAll('#page-financials input').forEach(el => {
+  el.addEventListener('change', () => {
+    if (el.id.startsWith('fin-target-')) finOnTargetsChanged();
+    else finOnParamsChanged();
+  });
+});
 </script>
 </body>
 </html>
