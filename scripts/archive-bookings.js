@@ -59,7 +59,7 @@ async function fetchThreadStatus(ts, attempt = 1) {
 
 function isBookingMessage(text) {
   if (!text) return false;
-  return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request/i.test(text);
+  return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request|pickup address|estimated fare|arvioitu hinta|applied tariff|l\u00e4ht\u00f6paikka/i.test(text);
 }
 
 // Pull the driver's name out of the confirmation reply ("Confirmed - Oksana", "Tara got it", "Angela 💜")
