@@ -242,11 +242,19 @@
       </div>
     </div>
 
+    <div class="card mb" style="display:flex;align-items:center;gap:10px;padding:10px 20px;">
+      <div class="live-dot"></div>
+      <div style="font-size:12px;color:var(--text2);">
+        This month (<span id="finPulseMonthLabel">—</span>): <strong id="finPulseRides" style="color:var(--text);">—</strong> rides · <strong id="finPulseRevenue" style="color:var(--green);">—</strong> revenue
+        <span style="color:var(--text3);"> — live from Slack, updates every 2 min. The totals below are 2-year projections, so they move slowly by design.</span>
+      </div>
+    </div>
+
     <div class="metrics" style="grid-template-columns:repeat(6,1fr);">
-      <div class="metric"><div class="metric-label">3yr Revenue</div><div class="metric-value" style="color:var(--green);" id="finRevenue3y">—</div><div class="metric-sub" id="finRevenueVsTarget">—</div></div>
-      <div class="metric"><div class="metric-label">3yr Rides</div><div class="metric-value" id="finRides3y">—</div><div class="metric-sub" id="finActualMonths">—</div></div>
-      <div class="metric"><div class="metric-label">3yr Team Cost</div><div class="metric-value" id="finTeamCost3y">—</div><div class="metric-sub" id="finTeamSize">—</div></div>
-      <div class="metric"><div class="metric-label">3yr Profit</div><div class="metric-value" id="finProfit3y">—</div><div class="metric-sub" id="finBreakEven">—</div></div>
+      <div class="metric"><div class="metric-label">2yr Revenue</div><div class="metric-value" style="color:var(--green);" id="finRevenue3y">—</div><div class="metric-sub" id="finRevenueVsTarget">—</div></div>
+      <div class="metric"><div class="metric-label">2yr Rides</div><div class="metric-value" id="finRides3y">—</div><div class="metric-sub" id="finActualMonths">—</div></div>
+      <div class="metric"><div class="metric-label">2yr Team Cost</div><div class="metric-value" id="finTeamCost3y">—</div><div class="metric-sub" id="finTeamSize">—</div></div>
+      <div class="metric"><div class="metric-label">2yr Profit</div><div class="metric-value" id="finProfit3y">—</div><div class="metric-sub" id="finBreakEven">—</div></div>
       <div class="metric"><div class="metric-label">Cash gap</div><div class="metric-value" style="color:var(--amber);" id="finCashGap">—</div><div class="metric-sub">funding needed until break-even</div></div>
       <div class="metric"><div class="metric-label">LTV / CAC</div><div class="metric-value" id="finLtvCac">—</div><div class="metric-sub" id="finLtvCacSub">target &gt; 3.0x</div></div>
     </div>
@@ -289,7 +297,7 @@
     <div class="card mb">
       <div class="card-title">Annual targets</div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Set a € goal per year — rides needed comes out of your avg price, commission and costs above, so it's never guesswork that can drift from the numbers.</div>
-      <div class="fin-grid">
+      <div class="fin-grid-2">
         <div class="fin-field">
           <label>Year 1 target revenue (€)</label>
           <input type="number" id="fin-target-0-revenue" step="1">
@@ -299,11 +307,6 @@
           <label>Year 2 target revenue (€)</label>
           <input type="number" id="fin-target-1-revenue" step="1">
           <div class="fin-hint" id="fin-target-1-derived">—</div>
-        </div>
-        <div class="fin-field">
-          <label>Year 3 target revenue (€)</label>
-          <input type="number" id="fin-target-2-revenue" step="1">
-          <div class="fin-hint" id="fin-target-2-derived">—</div>
         </div>
       </div>
       <button class="fin-copy-btn" style="margin-top:10px;" onclick="finToggleMonthTable()" id="finToggleTableBtn">Show month-by-month actual vs target</button>
@@ -761,7 +764,7 @@ function finWriteTargetsToInputs(targets) {
 // price × commission) inside finComputeModel, using whatever price/costs are
 // set above. See finRenderAll's "rides needed" readout under each year.
 function finReadTargetsFromInputs() {
-  return [0, 1, 2].map(i => {
+  return [0, 1].map(i => {
     const rEl = document.getElementById(`fin-target-${i}-revenue`);
     return {
       targetRevenue: rEl ? Number(rEl.value) || 0 : 0,
@@ -867,6 +870,15 @@ function finRenderAll() {
     params, annualTargets, monthTargetOverrides, actualsByMonth, startDate,
     growthBasis: finState.growthBasis,
   });
+
+  // Live pulse — this calendar month's real numbers, straight from
+  // actualsByMonth (not the 2-year projection), so day-to-day movement is
+  // visible without waiting for the slow-moving totals below to shift.
+  const finPulseNow = new Date();
+  const finPulseMonth = actualsByMonth[finMonthKey(finPulseNow)] || { rides: 0, revenue: 0 };
+  document.getElementById('finPulseMonthLabel').textContent = finPulseNow.toLocaleDateString('en', { month: 'short', year: 'numeric' });
+  document.getElementById('finPulseRides').textContent = finPulseMonth.rides.toLocaleString();
+  document.getElementById('finPulseRevenue').textContent = finFormatCurrency(finPulseMonth.revenue);
 
   // Empty state — first-run banner while there's no confirmed Slack data yet.
   document.getElementById('finEmptyBanner').style.display = model.meta.actualMonthsCount === 0 ? 'block' : 'none';
