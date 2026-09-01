@@ -2,6 +2,28 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1788202131.822819",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Klökarsintie 10, 01300 Vantaa, Finland\n• Määränpää: Annankatu 12, 00120 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 20.16 km\n:stopwatch: *Kesto:* 34 min\n:euro: *Arvioitu hinta:* 37.79 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-03\n• Aika: 07:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Susanna Suomi\n• Puhelin: +358449446305\n• Sähköposti: <mailto:susa.suomi@gmail.com|susa.suomi@gmail.com> Applied tariff daytime\n• WhatsApp: <https://wa.me/358449446305?text=Hi%20Susanna%20Suomi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2003.09.2026%20at%2007%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358449446305?text=Hi%20Susanna%20Suomi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2003.09.2026%20at%2007%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Payal",
+    "archived_at": "2026-09-01T09:44:22.699Z"
+  },
+  {
+    "ts": "1788192231.727309",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Nauriskaski 6, 02340 Espoo, Finland\n• Määränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 31.41 km\n:stopwatch: *Kesto:* 32 min\n:euro: *Arvioitu hinta:* 53.08 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-05\n• Aika: 03:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Mihaela Järvi\n• Puhelin: +358405066977\n• Sähköposti: <mailto:j-p.jarvi@kolumbus.fi|j-p.jarvi@kolumbus.fi> Applied tariff night\n• WhatsApp: <https://wa.me/358405066977?text=Hei%20Mihaela%20J%C3%A4rvi!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2005.09.2026%20klo%2003.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358405066977?text=Hei%20Mihaela%20J%C3%A4rvi!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2005.09.2026%20klo%2003.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Dance",
+    "archived_at": "2026-09-01T09:44:22.699Z"
+  },
+  {
     "ts": "1788032931.053269",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n• Määränpää: Hakalantie 46, 04380 Tuusula, Finland\n\n:straight_ruler: *Etäisyys:* 20.1 km\n:stopwatch: *Kesto:* 25 min\n:euro: *Arvioitu hinta:* 42.47 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-30\n• Aika: 23:40\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Clara Feller\n• Puhelin: +3584578370020\n• Sähköposti: <mailto:clara.feller@outlook.com|clara.feller@outlook.com> Applied tariff sunday\n• WhatsApp: <https://wa.me/3584578370020?text=Hei%20Clara%20Feller!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2030.08.2026%20klo%2023.40.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/3584578370020?text=Hei%20Clara%20Feller!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2030.08.2026%20klo%2023.40.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Tulen lennolla AY1756 (Milano, laskeutuminen 22.55) aikataulun mukaan.\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
