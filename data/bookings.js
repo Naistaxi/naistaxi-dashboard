@@ -2,6 +2,39 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1788369831.813509",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Torkkelinkatu 11, 00500 Helsinki, Finland\n• Määränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 16.95 km\n:stopwatch: *Kesto:* 24 min\n:euro: *Arvioitu hinta:* 33.36 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-08\n• Aika: 03:30\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Kristiina Greijus\n• Puhelin: +358505712023\n• Sähköposti: <mailto:greijuskristiina@gmail.com|greijuskristiina@gmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358505712023?text=Hei%20Kristiina%20Greijus!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2008.09.2026%20klo%2003.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358505712023?text=Hei%20Kristiina%20Greijus!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2008.09.2026%20klo%2003.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-09-03T09:26:42.407Z"
+  },
+  {
+    "ts": "1788366922.563329",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Myyrmanni, Rajatorpantie 5, 01600 Vantaa, Finland\n• Määränpää: Naavapolku 1N, Naavapolku 1, 00410 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 2.37 km\n:stopwatch: *Kesto:* 6 min\n:euro: *Arvioitu hinta:* 11.50 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-03\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jenni Pakarinen\n• Puhelin: +358442692423\n• Sähköposti: <mailto:jenievelina@hotmail.com|jenievelina@hotmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358442692423?text=Hei%20Jenni%20Pakarinen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2003.09.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358442692423?text=Hei%20Jenni%20Pakarinen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2003.09.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Magdalen",
+    "archived_at": "2026-09-03T09:26:42.407Z"
+  },
+  {
+    "ts": "1788353931.530509",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Tukkipolku 9, 00760 Helsinki, Finland\n• Määränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 11.07 km\n:stopwatch: *Kesto:* 13 min\n:euro: *Arvioitu hinta:* 22.63 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-03\n• Aika: 04:50\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Susanne Björk\n• Puhelin: +358503635975\n• Sähköposti: <mailto:susa.bjork@gmail.com|susa.bjork@gmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358503635975?text=Hei%20Susanne%20Bj%C3%B6rk!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2003.09.2026%20klo%2004.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358503635975?text=Hei%20Susanne%20Bj%C3%B6rk!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2003.09.2026%20klo%2004.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Magdalen",
+    "archived_at": "2026-09-03T09:26:42.407Z"
+  },
+  {
     "ts": "1788202131.822819",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Klökarsintie 10, 01300 Vantaa, Finland\n• Määränpää: Annankatu 12, 00120 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 20.16 km\n:stopwatch: *Kesto:* 34 min\n:euro: *Arvioitu hinta:* 37.79 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-03\n• Aika: 07:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Susanna Suomi\n• Puhelin: +358449446305\n• Sähköposti: <mailto:susa.suomi@gmail.com|susa.suomi@gmail.com> Applied tariff daytime\n• WhatsApp: <https://wa.me/358449446305?text=Hi%20Susanna%20Suomi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2003.09.2026%20at%2007%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358449446305?text=Hi%20Susanna%20Suomi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2003.09.2026%20at%2007%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* Ei\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
@@ -181,7 +214,7 @@ export default [
     "ts": "1787326477.088989",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Jengipolku 8, 00710 Helsinki, Finland\n• Määränpää: Jollaksentie 60 A, 00850 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 12.9 km\n:stopwatch: *Kesto:* 27 min\n:euro: *Arvioitu hinta:* 41.82 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-08-22\n• Aika: 00:45\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Virpi Grönlund\n• Puhelin: +358400296435\n• Sähköposti: <mailto:virpi.gronlund@gmail.com|virpi.gronlund@gmail.com> Applied tariff weekdayNight\n• WhatsApp: <https://wa.me/358400296435?text=Hei%20Virpi%20Gr%C3%B6nlund!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2022.08.2026%20klo%2000.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358400296435?text=Hei%20Virpi%20Gr%C3%B6nlund!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2022.08.2026%20klo%2000.45.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Kyseessä on tyttäreni Sofian haku. Kyydin tilaa Sofian äiti Virpi, puh.0400941635\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 3,
+    "reply_count": 1,
     "confirmed": false,
     "rejected": false,
     "cancelled": true,
