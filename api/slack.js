@@ -8,6 +8,11 @@ import overrides from '../data/overrides.js';
 //   "Confirmed - Oksana" / "Confirmed: Tara" / "Confirmed Angela"
 //   "Tara got it" / "will be taken by Oksana" / "Olga took it"
 //   "Angela 💜"
+// Replies that are never a driver's name, even when they stand alone on
+// their own line. Extend this list if the team starts using a new short
+// acknowledgement word that gets mistaken for a name.
+const NON_NAME_WORDS = /^(by|the|for|it|ride|booking|confirmed|rejected|cancelled|canceled|driver|available|yes|no|ok|okay|okey|done|thanks|thank|sure|kiitos|joo|jep|kylla|kyll[aä]|selv[aä]|hyv[aä])$/i;
+
 function extractDriver(texts) {
   const clean = s => (s || '').replace(/[<>|]/g, ' ').trim();
   for (const raw of texts) {
@@ -15,7 +20,7 @@ function extractDriver(texts) {
 
     // "Confirmed - Name" (the agreed convention)
     let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
-    if (m && !/^(by|the|for|it|ride|booking)$/i.test(m[1])) return titleCase(m[1]);
+    if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
 
     // "taken by Name" / "will be taken by Name"
     m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
@@ -25,15 +30,45 @@ function extractDriver(texts) {
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s+(?:got it|took it|takes it|will take|is taking)/i);
     if (m && !/^(she|he|they|it|we|i)$/i.test(m[1])) return titleCase(m[1]);
 
+    // "Your driver: Name" / "Driver: Name" (colon required, so a plain
+    // sentence like "no driver available" never matches)
+    m = t.match(/\bdriver\s*:\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
+
     // "Name 💜" — a bare driver claim
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
     if (m) return titleCase(m[1]);
+  }
+
+  // Second pass: a reply that is JUST a name and nothing else (optionally
+  // with a trailing heart) — the most common real pattern in this channel is
+  // two separate messages: one teammate replies "confirmed", another replies
+  // with only the driver's first name on its own line.
+  for (const raw of texts) {
+    const t = clean(raw).replace(/(:purple_heart:|💜)\s*$/, '').trim();
+    if (/^[A-Za-zÀ-ÿÄÖÅäöå]{2,}$/.test(t) && !NON_NAME_WORDS.test(t)) {
+      return titleCase(t);
+    }
   }
   return null;
 }
 
 function titleCase(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+// Known driver-name variants that should collapse into one canonical name.
+// Needed because extractDriver() reads whatever a driver literally typed in a
+// PAST Slack reply — a typo in an old, already-sent message never rewrites
+// itself, even after the team agrees on the correct spelling going forward.
+// Add new entries as { "typo, lowercase": "Canonical Name" }.
+const DRIVER_ALIASES = {
+  'dance': 'Danche',
+};
+function normalizeDriverName(name) {
+  if (!name) return name;
+  const canonical = DRIVER_ALIASES[name.toLowerCase()];
+  return canonical || name;
 }
 
 let cache = { data: null, timestamp: 0 };
@@ -50,6 +85,9 @@ function mergeArchiveAndLive(archiveData, live) {
   const merged = [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
   // Apply manual corrections (e.g. real fares for "Not calculated" bookings, sourced from Notion)
   return merged.map(m => {
+    // Collapse known driver-name typos/variants into one canonical name, regardless
+    // of whether this entry came from a fresh Slack read or the settled archive.
+    const driver = m.driver ? normalizeDriverName(m.driver) : m.driver;
     const o = overrides[m.ts];
     if (o && o.fare && m.text) {
       let text = m.text;
@@ -60,9 +98,9 @@ function mergeArchiveAndLive(archiveData, live) {
         // Message has no fare line at all (old formats) — append one so the parser finds it
         text = text + `\nEstimated fare: ${o.fare} €`;
       }
-      return { ...m, text };
+      return { ...m, text, driver };
     }
-    return m;
+    return { ...m, driver };
   });
 }
 
