@@ -62,25 +62,49 @@ function isBookingMessage(text) {
   return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request|pickup address|estimated fare|arvioitu hinta|applied tariff|l\u00e4ht\u00f6paikka/i.test(text);
 }
 
-// Pull the driver's name out of the confirmation reply ("Confirmed - Oksana", "Tara got it", "Angela 💜")
+// Pull the driver's name out of the confirmation reply ("Confirmed - Oksana", "Tara got it", "Angela 💜",
+// or two separate messages: "confirmed" then a bare "Oksana").
+// NOTE: this is a duplicate of extractDriver() in api/slack.js (this script runs standalone via
+// GitHub Actions, not through the Vercel function bundle) — keep the two in sync when editing either.
+const NON_NAME_WORDS = /^(by|the|for|it|ride|booking|confirmed|rejected|cancelled|canceled|driver|available|yes|no|ok|okay|okey|done|thanks|thank|sure|kiitos|joo|jep|kylla|kyll[aä]|selv[aä]|hyv[aä])$/i;
+
 function extractDriver(texts) {
   const clean = s => (s || '').replace(/[<>|]/g, ' ').trim();
   for (const raw of texts) {
     const t = clean(raw);
     let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
-    if (m && !/^(by|the|for|it|ride|booking)$/i.test(m[1])) return titleCase(m[1]);
+    if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
     m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m) return titleCase(m[1]);
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s+(?:got it|took it|takes it|will take|is taking)/i);
     if (m && !/^(she|he|they|it|we|i)$/i.test(m[1])) return titleCase(m[1]);
+    m = t.match(/\bdriver\s*:\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
     if (m) return titleCase(m[1]);
+  }
+  // Bare-name fallback: a reply that is only a name and nothing else.
+  for (const raw of texts) {
+    const t = clean(raw).replace(/(:purple_heart:|💜)\s*$/, '').trim();
+    if (/^[A-Za-zÀ-ÿÄÖÅäöå]{2,}$/.test(t) && !NON_NAME_WORDS.test(t)) {
+      return titleCase(t);
+    }
   }
   return null;
 }
 
 function titleCase(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+// Known driver-name variants that should collapse into one canonical name —
+// keep this in sync with DRIVER_ALIASES in api/slack.js.
+const DRIVER_ALIASES = {
+  'dance': 'Danche',
+};
+function normalizeDriverName(name) {
+  if (!name) return name;
+  return DRIVER_ALIASES[name.toLowerCase()] || name;
 }
 
 async function main() {
@@ -176,7 +200,10 @@ async function main() {
     archive[idx] = next;
   }
 
-  // 5. Sort newest first and save both formats
+  // 5. Normalize known driver-name typos across the whole archive (covers
+  // entries written before an alias existed, not just today's updates),
+  // then sort newest first and save both formats
+  archive = archive.map(b => b.driver ? { ...b, driver: normalizeDriverName(b.driver) } : b);
   archive.sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
   fs.mkdirSync(path.dirname(ARCHIVE_PATH), { recursive: true });
 
