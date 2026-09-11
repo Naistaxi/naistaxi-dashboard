@@ -2,12 +2,34 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1789110830.917329",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Pitkänkalliontie 11, 02170 Espoo, Finland\n• Määränpää: Helsinki Airport (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 28.9 km\n:stopwatch: *Kesto:* 30 min\n:euro: *Arvioitu hinta:* 54.84 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-15\n• Aika: 05:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Viktoria Shevchenko\n• Puhelin: +358449446305\n• Sähköposti: <mailto:viktoriia_shevchenko@ukr.net|viktoriia_shevchenko@ukr.net> Applied tariff night\n• WhatsApp: <https://wa.me/358449446305?text=Hi%20Viktoria%20Shevchenko%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2015.09.2026%20at%2005%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358449446305?text=Hi%20Viktoria%20Shevchenko%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2015.09.2026%20at%2005%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* None Luggage 0\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Danche",
+    "archived_at": "2026-09-11T09:21:07.323Z"
+  },
+  {
+    "ts": "1789052030.923919",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n• Määränpää: Bulevardi 28, 00120 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 31.03 km\n:stopwatch: *Kesto:* 32 min\n:euro: *Arvioitu hinta:* 71.35 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-11\n• Aika: 20:10\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Anna-Reetta Toiviainen\n• Puhelin: +358405708814\n• Sähköposti: <mailto:a_toiviainen@hotmail.com|a_toiviainen@hotmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358405708814?text=Hei%20Anna-Reetta%20Toiviainen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2011.09.2026%20klo%2020.10.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358405708814?text=Hei%20Anna-Reetta%20Toiviainen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2011.09.2026%20klo%2020.10.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Luggage pieces: 1 Luggage 1\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Oksana",
+    "archived_at": "2026-09-11T09:21:07.323Z"
+  },
+  {
     "ts": "1788983032.920539",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Sofiankatu 4c, 00170 Helsinki, Finland\n• Määränpää: Helsingin päärautatieasema, Kaivokatu 1, 00100 Helsinki, Finland\n\n:straight_ruler: *Etäisyys:* 2.21 km\n:stopwatch: *Kesto:* 10 min\n:euro: *Arvioitu hinta:* 16.48 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-10\n• Aika: 20:40\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Tuula Starck-Schreiber\n• Puhelin: +358440880268\n• Sähköposti: <mailto:tuula.starck.schreiber@gmail.com|tuula.starck.schreiber@gmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358440880268?text=Hei%20Tuula%20Starck-Schreiber!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2010.09.2026%20klo%2020.40.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358440880268?text=Hei%20Tuula%20Starck-Schreiber!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2010.09.2026%20klo%2020.40.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* None Luggage 0\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 0,
+    "reply_count": 1,
     "confirmed": false,
-    "rejected": false,
+    "rejected": true,
     "cancelled": false,
     "driver": null,
     "archived_at": "2026-09-10T09:22:47.754Z"
