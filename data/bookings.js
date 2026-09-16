@@ -2,6 +2,17 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1789480730.863009",
+    "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Evertinkatu 3, 20780 Kaarina, Finland\n• Määränpää: Turku Airport, Lentoasemantie 150, 20360 Turku, Finland\n\n:straight_ruler: *Etäisyys:* 20.86 km\n:stopwatch: *Kesto:* 24 min\n:euro: *Arvioitu hinta:* 50.05 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-16\n• Aika: 04:50\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Jenna Sirviö\n• Puhelin: +358405110221\n• Sähköposti: <mailto:jenna.sirvio1@outlook.com|jenna.sirvio1@outlook.com> Applied tariff night\n• WhatsApp: <https://wa.me/358405110221?text=Hei%20Jenna%20Sirvi%C3%B6!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2016.09.2026%20klo%2004.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358405110221?text=Hei%20Jenna%20Sirvi%C3%B6!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2016.09.2026%20klo%2004.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* None Luggage 0 Flight number\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": false,
+    "rejected": true,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-09-16T09:40:03.677Z"
+  },
+  {
     "ts": "1789152830.818149",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Reviisorinkatu 3, 02770 Espoo, Finland\n• Määränpää: Helsinki Airport (HEL), Lentoasemantie 1, 01530 Vantaa\n\n:straight_ruler: *Etäisyys:* 25.1 km\n:stopwatch: *Kesto:* 26 min\n:euro: *Arvioitu hinta:* 50.39 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-12\n• Aika: 12:00\n\n:busts_in_silhouette: *Matkustajat:* 3\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Arlinda Ilazi\n• Puhelin: +358413144825\n• Sähköposti: <mailto:ilaziarlinda96@gmail.com|ilaziarlinda96@gmail.com> Applied tariff daytime\n• WhatsApp: <https://wa.me/358413144825?text=Hi%20Arlinda%20Ilazi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2012.09.2026%20at%2012%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358413144825?text=Hi%20Arlinda%20Ilazi%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2012.09.2026%20at%2012%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* Luggage pieces: 0 Luggage 0 Flight number\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
