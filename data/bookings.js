@@ -5,9 +5,9 @@ export default [
     "ts": "1789715031.011789",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Lahti, Matkakeskus, 15100 Lahti, Finland\n• Määränpää: Kivakatu, Lahti, Finland\n\n:straight_ruler: *Etäisyys:* 2.81 km\n:stopwatch: *Kesto:* 10 min\n:euro: *Arvioitu hinta:* 17.56 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-09-20\n• Aika: 00:15\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Saarnia Sara\n• Puhelin: 0442955036\n• Sähköposti: <mailto:saarnia.sara@gmail.com|saarnia.sara@gmail.com> Applied tariff night\n• WhatsApp: <https://wa.me/358442955036?text=Hei%20Saarnia%20Sara!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2020.09.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|https://wa.me/358442955036?text=Hei%20Saarnia%20Sara!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2020.09.2026%20klo%2000.15.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian>\n\n:memo: *Lisätoiveet:* Tulen junalta Pasilasta, junan saapumisaika ilmoitettu Lahdessa 00.15. Luggage 0 Flight number\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 0,
+    "reply_count": 1,
     "confirmed": false,
-    "rejected": false,
+    "rejected": true,
     "cancelled": false,
     "driver": null,
     "archived_at": "2026-09-18T09:22:31.128Z"
