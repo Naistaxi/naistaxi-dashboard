@@ -200,7 +200,9 @@ export default async function handler(req, res) {
       const fallback = archiveStatusByTs[m.ts];
 
       if (liveOk) {
-        return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: r.driver || null, status_unknown: false };
+        // If live fetch got no driver, fall back to archive driver before giving up
+        const liveDriver = r.driver || (archiveStatusByTs[m.ts] && archiveStatusByTs[m.ts].driver) || null;
+        return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: liveDriver, status_unknown: false };
       }
       if (fallback) {
         return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, driver: fallback.driver || null, status_unknown: false };
