@@ -3,47 +3,23 @@
 import archive from '../data/bookings.js';
 import overrides from '../data/overrides.js';
 
-// Pull the driver's name out of the confirmation reply.
-// Supported formats, in priority order:
-//   "Confirmed - Oksana" / "Confirmed: Tara" / "Confirmed Angela"
-//   "Tara got it" / "will be taken by Oksana" / "Olga took it"
-//   "Angela 💜"
-// Replies that are never a driver's name, even when they stand alone on
-// their own line. Extend this list if the team starts using a new short
-// acknowledgement word that gets mistaken for a name.
 const NON_NAME_WORDS = /^(by|the|for|it|ride|booking|confirmed|rejected|cancelled|canceled|driver|available|yes|no|ok|okay|okey|done|thanks|thank|sure|kiitos|joo|jep|kylla|kyll[aä]|selv[aä]|hyv[aä])$/i;
 
 function extractDriver(texts) {
   const clean = s => (s || '').replace(/[<>|]/g, ' ').trim();
   for (const raw of texts) {
     const t = clean(raw);
-
-    // "Confirmed - Name" (the agreed convention)
     let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
-
-    // "taken by Name" / "will be taken by Name"
     m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m) return titleCase(m[1]);
-
-    // "Name got it" / "Name took it" / "Name will take it" / "Name is taking"
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s+(?:got it|took it|takes it|will take|is taking)/i);
     if (m && !/^(she|he|they|it|we|i)$/i.test(m[1])) return titleCase(m[1]);
-
-    // "Your driver: Name" / "Driver: Name" (colon required, so a plain
-    // sentence like "no driver available" never matches)
     m = t.match(/\bdriver\s*:\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
-
-    // "Name 💜" — a bare driver claim
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
     if (m) return titleCase(m[1]);
   }
-
-  // Second pass: a reply that is JUST a name and nothing else (optionally
-  // with a trailing heart) — the most common real pattern in this channel is
-  // two separate messages: one teammate replies "confirmed", another replies
-  // with only the driver's first name on its own line.
   for (const raw of texts) {
     const t = clean(raw).replace(/(:purple_heart:|💜)\s*$/, '').trim();
     if (/^[A-Za-zÀ-ÿÄÖÅäöå]{2,}$/.test(t) && !NON_NAME_WORDS.test(t)) {
@@ -57,11 +33,6 @@ function titleCase(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-// Known driver-name variants that should collapse into one canonical name.
-// Needed because extractDriver() reads whatever a driver literally typed in a
-// PAST Slack reply — a typo in an old, already-sent message never rewrites
-// itself, even after the team agrees on the correct spelling going forward.
-// Add new entries as { "typo, lowercase": "Canonical Name" }.
 const DRIVER_ALIASES = {
   'dance': 'Danche',
 };
@@ -72,33 +43,40 @@ function normalizeDriverName(name) {
 }
 
 let cache = { data: null, timestamp: 0 };
-const CACHE_TTL_MS = 300000; // 5 minutes — the dashboard answers instantly from cache
+const CACHE_TTL_MS = 300000;
+const FRESH_WINDOW_MS = 7 * 24 * 3600 * 1000;
 
-// Bookings older than this are settled: their thread status won't change any more,
-// so we trust the archive instead of re-querying Slack for every one of them.
-const FRESH_WINDOW_MS = 7 * 24 * 3600 * 1000; // 7 days
-
-// Live Slack data wins for any ts present in both, since its status is freshest.
 function mergeArchiveAndLive(archiveData, live) {
   const liveTs = new Set(live.map(m => m.ts));
   const archiveOnly = archiveData.filter(a => !liveTs.has(a.ts));
   const merged = [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
-  // Apply manual corrections (e.g. real fares for "Not calculated" bookings, sourced from Notion)
   return merged.map(m => {
-    // Collapse known driver-name typos/variants into one canonical name, regardless
-    // of whether this entry came from a fresh Slack read or the settled archive.
     const driver = m.driver ? normalizeDriverName(m.driver) : m.driver;
     const o = overrides[m.ts];
-    if (o && o.fare && m.text) {
+    if (o && m.text) {
       let text = m.text;
-      if (/Estimated fare:\s*Not calculated/i.test(text)) {
-        // Replace the placeholder fare line
-        text = text.replace(/Estimated fare:\s*Not calculated/i, `Estimated fare: ${o.fare} €`);
-      } else if (!/(Estimated fare|Arvioitu hinta)/i.test(text)) {
-        // Message has no fare line at all (old formats) — append one so the parser finds it
-        text = text + `\nEstimated fare: ${o.fare} €`;
+      if (o.fare) {
+        if (/Estimated fare:\s*Not calculated/i.test(text)) {
+          text = text.replace(/Estimated fare:\s*Not calculated/i, `Estimated fare: ${o.fare} €`);
+        } else if (!/(Estimated fare|Arvioitu hinta)/i.test(text)) {
+          text = text + `\nEstimated fare: ${o.fare} €`;
+        }
       }
-      return { ...m, text, driver };
+      if (o.name && !/(Nimi|Name)\s*:/i.test(text)) {
+        text = text + `\nNimi: ${o.name}`;
+      }
+      if (o.from && !/(Lähtö|From|Pickup address)\s*:/i.test(text)) {
+        text = text + `\nFrom: ${o.from}`;
+      }
+      if (o.to && !/(Määränpää|Destination|To)\s*:/i.test(text)) {
+        text = text + `\nDestination: ${o.to}`;
+      }
+      if (o.dist && !/(Etäisyys|Distance)\s*:/i.test(text)) {
+        text = text + `\nDistance: ${o.dist} km`;
+      }
+      // Override driver if explicitly set
+      const finalDriver = o.driver ? normalizeDriverName(o.driver) : driver;
+      return { ...m, text, driver: finalDriver };
     }
     return { ...m, driver };
   });
@@ -144,7 +122,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ messages: cache.data, cached: true, archive_count: archive.length });
     }
 
-    // Index what the archive already knows, so we can skip settled bookings
     const archiveByTs = {};
     for (const a of archive) archiveByTs[a.ts] = a;
 
@@ -154,7 +131,6 @@ export default async function handler(req, res) {
       const known = archiveByTs[m.ts];
       const settled = known && (known.confirmed || known.rejected || known.cancelled);
       const isRecent = parseFloat(m.ts) >= freshCutoff;
-      // Re-check only recent bookings, or older ones we never managed to resolve
       return isRecent || !settled;
     });
     const confirmedMap = {};
@@ -184,7 +160,6 @@ export default async function handler(req, res) {
           /\bno drivers?\b/i.test(t) ||
           /emme l.yt.neet sinulle kuljettajaa/i.test(t)
         );
-        // Confirmation: explicit word, driver claim phrases, or "Name 💜" style replies
         let confirmed = texts.some(t =>
           /\bconfirmed\b/i.test(t) ||
           /\b(got it|took it|takes it|will take|taken by|is taking|its? done)\b/i.test(t) ||
@@ -214,7 +189,6 @@ export default async function handler(req, res) {
       }
     }
 
-    // Index archive statuses by ts — used as fallback when a live thread fetch fails
     const archiveStatusByTs = {};
     for (const a of archive) {
       archiveStatusByTs[a.ts] = { confirmed: a.confirmed, rejected: a.rejected, cancelled: a.cancelled, driver: a.driver || null };
@@ -228,7 +202,6 @@ export default async function handler(req, res) {
       if (liveOk) {
         return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: r.driver || null, status_unknown: false };
       }
-      // Live fetch failed (rate limit / free plan) — fall back to the archived status if we have one
       if (fallback) {
         return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, driver: fallback.driver || null, status_unknown: false };
       }
