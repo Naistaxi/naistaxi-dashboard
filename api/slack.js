@@ -10,6 +10,7 @@ function extractDriver(texts) {
   for (const raw of texts) {
     const t = clean(raw);
     let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (!m) m = t.match(/\bconfirmed-([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
     m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m) return titleCase(m[1]);
@@ -200,8 +201,9 @@ export default async function handler(req, res) {
       const fallback = archiveStatusByTs[m.ts];
 
       if (liveOk) {
-        // If live fetch got no driver, fall back to archive driver before giving up
-        const liveDriver = r.driver || (archiveStatusByTs[m.ts] && archiveStatusByTs[m.ts].driver) || null;
+        // If live fetch got no driver, fall back to archive driver or override before giving up
+        const overrideDriver = overrides[m.ts] && overrides[m.ts].driver ? overrides[m.ts].driver : null;
+        const liveDriver = r.driver || overrideDriver || (archiveStatusByTs[m.ts] && archiveStatusByTs[m.ts].driver) || null;
         return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: liveDriver, status_unknown: false };
       }
       if (fallback) {
