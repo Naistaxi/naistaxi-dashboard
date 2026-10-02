@@ -356,7 +356,19 @@ function switchPage(page, btn) {
   document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   if (page === 'financials' && typeof finRenderAll === 'function') finRenderAll();
+  try { localStorage.setItem('naistaxi_tab', page); } catch(e) {}
 }
+
+// Restore last active tab on load
+(function() {
+  try {
+    const saved = localStorage.getItem('naistaxi_tab');
+    if (saved && saved !== 'overview') {
+      const btn = document.querySelector('.page-tab[onclick*="' + saved + '"]');
+      if (btn) switchPage(saved, btn);
+    }
+  } catch(e) {}
+})();
 
 function clearDates() {
   document.getElementById('dateFrom').value = '';
