@@ -395,13 +395,22 @@ function parseRides(messages) {
       const fb = t.match(/(\d+)[,.](\d{2})\s*€/);
       if (fb) price = parseFloat(fb[1] + '.' + fb[2]);
     }
+    // New format: ":euro: *15.03 €*"
+    if (!price) {
+      const fe = t.match(/:euro:\s*\*(\d+)[,.](\d{2})\s*€\*/);
+      if (fe) price = parseFloat(fe[1] + '.' + fe[2]);
+    }
     if (!price) return null;
 
     let distRaw = field(t, 'Etäisyys', 'Distance');
     if (!distRaw) {
-      // New format: "11.87 km | 22 min | ..."
-      const dr2 = t.match(/([0-9]+[.,][0-9]+)\s*km\s*\|/);
+      // New format: ":straight_ruler: 0.85 km |"
+      const dr2 = t.match(/(?::straight_ruler:|📏)\s*([0-9]+[.,][0-9]+)\s*km/);
       if (dr2) distRaw = dr2[1];
+      else {
+        const dr3 = t.match(/([0-9]+[.,][0-9]+)\s*km\s*[|]/);
+        if (dr3) distRaw = dr3[1];
+      }
     }
     const dm = distRaw && distRaw.match(/(\d+)[,.]?(\d*)/);
     const dist = dm ? parseFloat(dm[1] + (dm[2] ? '.' + dm[2] : '')) : null;
@@ -411,8 +420,8 @@ function parseRides(messages) {
     const to = field(t, 'Määränpää', 'Destination', 'Kohde', 'To') || '?';
     let name = field(t, 'Nimi', 'Name');
     if (!name) {
-      // New compact format: 👤 *ROOSA KONSTER*
-      const nm = t.match(/👤\s*\*([^*]+)\*/);
+      // New compact format: ":bust_in_silhouette: *ROOSA KONSTER* | ..."
+      const nm = t.match(/:bust_in_silhouette:\s*\*([^*|]+)\*/);
       if (nm) name = nm[1].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
     }
     name = name || 'Unknown';
@@ -425,10 +434,10 @@ function parseRides(messages) {
     const timeFromText = t.match(/\b(\d{1,2}:\d{2})\b/);
     const time = timem ? timem[1] : (timeFromText ? timeFromText[1] : '');
 
-    // New format: 🕐 *01.10.2026 — 16:00*
+    // New format: ":clock1: *18:45 — 01.10.2026*"
     let dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
     if (!dateRaw) {
-      const dm2 = t.match(/🕐\s*\*([0-9]{2})\.([0-9]{2})\.([0-9]{4})\s*[—–-]/);
+      const dm2 = t.match(/:clock[^:]*:\s*\*[0-9]{1,2}:[0-9]{2}\s*[—–-]\s*([0-9]{2})\.([0-9]{2})\.([0-9]{4})\*/);
       if (dm2) dateRaw = dm2[3] + '-' + dm2[2] + '-' + dm2[1];
     }
     let date;
