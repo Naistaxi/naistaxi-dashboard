@@ -397,13 +397,25 @@ function parseRides(messages) {
     }
     if (!price) return null;
 
-    const distRaw = field(t, 'Etäisyys', 'Distance');
+    let distRaw = field(t, 'Etäisyys', 'Distance');
+    if (!distRaw) {
+      // New format: "11.87 km | 22 min | ..."
+      const dr2 = t.match(/([0-9]+[.,][0-9]+)\s*km\s*\|/);
+      if (dr2) distRaw = dr2[1];
+    }
     const dm = distRaw && distRaw.match(/(\d+)[,.]?(\d*)/);
     const dist = dm ? parseFloat(dm[1] + (dm[2] ? '.' + dm[2] : '')) : null;
 
+    // New format: "From: address" / "Lähtö: address" (no bullets)
     const from = field(t, 'Lähtö', 'From', 'Pickup address', 'Pickup', 'Lähtöpaikka') || '?';
     const to = field(t, 'Määränpää', 'Destination', 'Kohde', 'To') || '?';
-    const name = field(t, 'Nimi', 'Name') || 'Unknown';
+    let name = field(t, 'Nimi', 'Name');
+    if (!name) {
+      // New compact format: 👤 *ROOSA KONSTER*
+      const nm = t.match(/👤\s*\*([^*]+)\*/);
+      if (nm) name = nm[1].trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    }
+    name = name || 'Unknown';
     const phoneRaw = field(t, 'Puhelin', 'Phone');
     const phoneMatch = phoneRaw && phoneRaw.match(/[+\d][\d\s\-().]{6,}/);
     const phone = phoneMatch ? phoneMatch[0].replace(/\s/g,'') : name;
@@ -413,7 +425,12 @@ function parseRides(messages) {
     const timeFromText = t.match(/\b(\d{1,2}:\d{2})\b/);
     const time = timem ? timem[1] : (timeFromText ? timeFromText[1] : '');
 
-    const dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
+    // New format: 🕐 *01.10.2026 — 16:00*
+    let dateRaw = field(t, 'Päivä', 'Date', 'Päivämäärä');
+    if (!dateRaw) {
+      const dm2 = t.match(/🕐\s*\*([0-9]{2})\.([0-9]{2})\.([0-9]{4})\s*[—–-]/);
+      if (dm2) dateRaw = dm2[3] + '-' + dm2[2] + '-' + dm2[1];
+    }
     let date;
     if (dateRaw) {
       const parts = dateRaw.match(/(\d{4})-(\d{2})-(\d{2})/);
