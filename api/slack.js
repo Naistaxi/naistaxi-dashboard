@@ -45,7 +45,7 @@ function normalizeDriverName(name) {
 
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL_MS = 300000;
-const FRESH_WINDOW_MS = 7 * 24 * 3600 * 1000;
+const FRESH_WINDOW_MS = 1 * 24 * 3600 * 1000; // Only re-fetch today's bookings from live
 
 function mergeArchiveAndLive(archiveData, live) {
   const liveTs = new Set(live.map(m => m.ts));
