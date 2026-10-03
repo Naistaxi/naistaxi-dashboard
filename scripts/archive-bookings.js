@@ -227,12 +227,13 @@ function parseBookingFields(text) {
   // New format: ":euro: 17.23 €" on its own line
   let price = fieldValue(text, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
   if (!price || /not calculated/i.test(price || '')) {
-    const m = clean.match(/:euro:\s*([\d.,]+\s*[€\u20ac])/m);
-    if (m) price = m[1].trim();
-    else {
-      // Fallback: any number followed by € anywhere in text
-      const m2 = clean.match(/([\d.,]+)\s*[€\u20ac]/m);
-      if (m2) price = m2[1] + ' €';
+    // New format: ":euro: *17.23 €*" — after removing * becomes ":euro: 17.23 €"
+    const euroMatch = clean.match(/:euro:\s*([\d]+[.,][\d]+)/m);
+    if (euroMatch) price = euroMatch[1] + ' €';
+    if (!price || /not calculated/i.test(price || '')) {
+      // Last fallback: number + € anywhere
+      const anyEuro = text.match(/([\d]+[.,][\d]+)\s*\u20ac/m);
+      if (anyEuro) price = anyEuro[1] + ' €';
     }
   }
 
