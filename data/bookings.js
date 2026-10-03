@@ -82,11 +82,11 @@ export default [
     "ts": "1791005571.103219",
     "text": ":oncoming_taxi: *Naistaxi Ennakkovaraus*\n\n:bust_in_silhouette: *KATJA-MARIA JOUTSEN*\n:clock1: *12.10.2026 — 04:30*\n:euro: *44.52 €*\n\nLähtö: Kaljaasi Fortunan katu 4, 00540 Helsinki, Finland\nMääränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n17.79 km | 26 min | 1 pax\n\n:telephone_receiver: +358503600079\n:e-mail: <mailto:katja.joutsen@gmail.com|katja.joutsen@gmail.com>\n:speech_balloon: <https://wa.me/358503600079?text=Hei%20Katja-Maria%20Joutsen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2012.10.2026%20klo%2004.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\nLisätoiveet: —\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 0,
-    "confirmed": false,
+    "reply_count": 1,
+    "confirmed": true,
     "rejected": false,
     "cancelled": false,
-    "driver": null,
+    "driver": "Vesna",
     "archived_at": "2026-10-03T08:01:07.536Z"
   },
   {
@@ -137,7 +137,7 @@ export default [
     "ts": "1790849633.815899",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Fabianinkatu 5 A, 00130 Helsinki, Finland\n• Määränpää: Sepontie 4, 02130 Espoo, Finland\n\n:straight_ruler: *Etäisyys:* 11.87 km\n:stopwatch: *Kesto:* 22 min\n:euro: *Arvioitu hinta:* 31.49 €\n\n:date: *Päivämäärä ja aika:*\n• Päivä: 2026-10-01\n• Aika: 16:00\n\n:busts_in_silhouette: *Matkustajat:* 1\n:baby: *Lastenistuin:* Ei\n\n:bust_in_silhouette: *Yhteystiedot:*\n• Nimi: Eva Ahlstrom\n• Puhelin: 0406582828\n• Sähköposti: <mailto:eainnyc@gmail.com|eainnyc@gmail.com> Applied tariff rushHour\n• WhatsApp: <https://wa.me/358406582828?text=Hi%20Eva%20Ahlstrom%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2001.10.2026%20at%2016%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged|https://wa.me/358406582828?text=Hi%20Eva%20Ahlstrom%2C%20this%20is%20Naistaxi%20about%20your%20pre-booked%20ride%20on%2001.10.2026%20at%2016%3A00.%20Your%20payment%20has%20been%20pre-authorized%2C%20and%20we%20are%20looking%20for%20a%20driver%20for%20your%20ride.%20If%20we%20can't%20find%20a%20driver%2C%20you%20won't%20be%20charged>\n\n:memo: *Lisätoiveet:* My daughter only speaks English and Swedish. She is going to pohjois tapiolan koulu. Luggage 0 Flight number\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 1,
+    "reply_count": 2,
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
