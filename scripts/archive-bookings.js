@@ -62,10 +62,6 @@ function isBookingMessage(text) {
   return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request|pickup address|estimated fare|arvioitu hinta|applied tariff|l\u00e4ht\u00f6paikka/i.test(text);
 }
 
-// Pull the driver's name out of the confirmation reply ("Confirmed - Oksana", "Tara got it", "Angela 💜",
-// or two separate messages: "confirmed" then a bare "Oksana").
-// NOTE: this is a duplicate of extractDriver() in api/slack.js (this script runs standalone via
-// GitHub Actions, not through the Vercel function bundle) — keep the two in sync when editing either.
 const NON_NAME_WORDS = /^(by|the|for|it|ride|booking|confirmed|rejected|cancelled|canceled|driver|available|yes|no|ok|okay|okey|done|thanks|thank|sure|kiitos|joo|jep|kylla|kyll[aä]|selv[aä]|hyv[aä])$/i;
 
 function extractDriver(texts) {
@@ -73,6 +69,8 @@ function extractDriver(texts) {
   for (const raw of texts) {
     const t = clean(raw);
     let m = t.match(/\bconfirmed\b\s*[-–:,]?\s*([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
+    if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
+    if (!m) m = t.match(/\bconfirmed-([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m && !NON_NAME_WORDS.test(m[1])) return titleCase(m[1]);
     m = t.match(/\btaken by\s+([A-Za-zÀ-ÿÄÖÅäöå]{2,})/i);
     if (m) return titleCase(m[1]);
@@ -83,7 +81,6 @@ function extractDriver(texts) {
     m = t.match(/\b([A-Za-zÀ-ÿÄÖÅäöå]{2,})\s*(?::purple_heart:|💜)/);
     if (m) return titleCase(m[1]);
   }
-  // Bare-name fallback: a reply that is only a name and nothing else.
   for (const raw of texts) {
     const t = clean(raw).replace(/(:purple_heart:|💜)\s*$/, '').trim();
     if (/^[A-Za-zÀ-ÿÄÖÅäöå]{2,}$/.test(t) && !NON_NAME_WORDS.test(t)) {
@@ -97,8 +94,6 @@ function titleCase(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-// Known driver-name variants that should collapse into one canonical name —
-// keep this in sync with DRIVER_ALIASES in api/slack.js.
 const DRIVER_ALIASES = {
   'dance': 'Danche',
 };
@@ -108,7 +103,6 @@ function normalizeDriverName(name) {
 }
 
 async function main() {
-  // 1. Load existing archive
   let archive = [];
   if (fs.existsSync(ARCHIVE_PATH)) {
     try {
@@ -120,7 +114,6 @@ async function main() {
   }
   const existingTs = new Set(archive.map(b => b.ts));
 
-  // 2. Fetch from Slack
   const hist = await slackFetch(
     `https://slack.com/api/conversations.history?channel=${CHANNEL_ID}&limit=200`
   );
@@ -134,7 +127,6 @@ async function main() {
   );
   console.log(`Slack returned ${messages.length} booking messages`);
 
-  // 3. Fetch thread statuses in small batches
   const withReplies = messages.filter(m => m.reply_count > 0);
   const statusMap = {};
   const batchSize = 5;
@@ -149,15 +141,12 @@ async function main() {
     }
   }
 
-  // 4. Merge — new messages appended; statuses only updated from SUCCESSFUL thread reads.
-  // A failed/rate-limited read must never wipe a previously saved definitive status.
   let added = 0, updated = 0;
   for (const m of messages) {
-    const fetched = statusMap[m.ts]; // undefined if the thread read failed or msg has no replies
+    const fetched = statusMap[m.ts];
     const idx = archive.findIndex(b => b.ts === m.ts);
 
     if (idx === -1) {
-      // New booking — store it with whatever we know (all-false if no replies yet)
       const status = fetched || { confirmed: false, rejected: false, cancelled: false };
       archive.push({
         ts: m.ts,
@@ -174,16 +163,12 @@ async function main() {
       continue;
     }
 
-    // Existing booking — refresh text/reply_count always, status only from a successful read
     const prev = archive[idx];
     const next = { ...prev, text: m.text, reply_count: m.reply_count || 0 };
 
     if (fetched) {
       const hadDefinitive = prev.confirmed || prev.rejected || prev.cancelled;
       const fetchedDefinitive = fetched.confirmed || fetched.rejected || fetched.cancelled;
-      // Apply the fetched status unless it would erase a definitive one with all-false
-      // (all-false on a thread that previously had a status usually means a partial read)
-      // A discovered driver name is always worth saving, even if the status didn't change
       if (fetched.driver && !prev.driver) {
         next.driver = fetched.driver;
         updated++;
@@ -200,18 +185,12 @@ async function main() {
     archive[idx] = next;
   }
 
-  // 5. Normalize known driver-name typos across the whole archive (covers
-  // entries written before an alias existed, not just today's updates),
-  // then sort newest first and save both formats
   archive = archive.map(b => b.driver ? { ...b, driver: normalizeDriverName(b.driver) } : b);
   archive.sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
   fs.mkdirSync(path.dirname(ARCHIVE_PATH), { recursive: true });
 
-  // Human-readable JSON (source of truth, easy to inspect in the repo)
   fs.writeFileSync(ARCHIVE_PATH, JSON.stringify(archive, null, 2));
 
-  // JS module — Vercel bundles this reliably into the serverless function,
-  // unlike a .json read at runtime with fs.
   const jsPath = path.join(path.dirname(ARCHIVE_PATH), 'bookings.js');
   const header =
     "// Auto-generated historical archive of bookings older than Slack's 90-day free-plan window.\n" +
@@ -220,10 +199,10 @@ async function main() {
 
   console.log(`Archive updated: ${added} added, ${updated} status updates, ${archive.length} total`);
 
-  // 6. Validate new bookings for missing fields and notify Slack if anything looks off
   await checkMissingFields(messages);
 }
 
+// Extract a field value supporting both old format (label: value) and new format (emoji *VALUE*)
 function fieldValue(text, ...keys) {
   const clean = text.replace(/\*/g, '');
   for (const key of keys) {
@@ -233,8 +212,45 @@ function fieldValue(text, ...keys) {
   return null;
 }
 
+function parseBookingFields(text) {
+  const clean = text.replace(/\*/g, '');
+
+  // Name: old format "Nimi: X" / "Name: X", new format ":bust_in_silhouette: NAME |"
+  let name = fieldValue(text, 'Nimi', 'Name');
+  if (!name) {
+    const m = clean.match(/:bust_in_silhouette:\s*([A-ZÄÖÅ][^|:\n]+?)(?:\s*\|)/);
+    if (m) name = m[1].trim();
+  }
+
+  // Price: old format "Arvioitu hinta: X" / "Estimated fare: X", new format ":euro: *X €*"
+  let price = fieldValue(text, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
+  if (!price || /not calculated/i.test(price)) {
+    const m = clean.match(/:euro:\s*([\d.,]+\s*€)/);
+    if (m) price = m[1].trim();
+  }
+
+  // Distance: old format "Etäisyys: X" / "Distance: X", new format ":straight_ruler: X km"
+  let dist = fieldValue(text, 'Etäisyys', 'Distance');
+  if (!dist || /not calculated/i.test(dist)) {
+    const m = clean.match(/:straight_ruler:\s*([\d.,]+\s*km)/);
+    if (m) dist = m[1].trim();
+    else {
+      const m2 = clean.match(/([\d.,]+)\s*km\s*\|/);
+      if (m2) dist = m2[1] + ' km';
+    }
+  }
+
+  // Phone: old format "Puhelin: X" / "Phone: X", new format ":phone: X"
+  let phone = fieldValue(text, 'Puhelin', 'Phone');
+  if (!phone) {
+    const m = clean.match(/:phone:\s*(\+?[\d\s]+)/);
+    if (m) phone = m[1].trim();
+  }
+
+  return { name, price, dist, phone };
+}
+
 async function checkMissingFields(messages) {
-  // Only check recent bookings (last 48h) so we don't re-alert on old known cases
   const cutoff = Date.now() / 1000 - 48 * 3600;
   const problems = [];
 
@@ -243,16 +259,11 @@ async function checkMissingFields(messages) {
     const t = m.text || '';
     const issues = [];
 
-    const price = fieldValue(t, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
-    if (!price || /not calculated/i.test(price)) issues.push('price');
+    const { name, price, dist, phone } = parseBookingFields(t);
 
-    const dist = fieldValue(t, 'Etäisyys', 'Distance');
-    if (!dist || /not calculated/i.test(dist)) issues.push('distance');
-
-    const name = fieldValue(t, 'Nimi', 'Name');
+    if (!price || /not calculated/i.test(price || '')) issues.push('price');
+    if (!dist || /not calculated/i.test(dist || '')) issues.push('distance');
     if (!name) issues.push('name');
-
-    const phone = fieldValue(t, 'Puhelin', 'Phone');
     if (!phone) issues.push('phone');
 
     if (issues.length) {
