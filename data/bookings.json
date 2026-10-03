@@ -1,5 +1,16 @@
 [
   {
+    "ts": "1791015405.341419",
+    "text": ":warning: *Dashboard data check* — some recent bookings have missing fields and won't be tracked correctly:\n• *(2026-10-03) — missing: price* (2026-10-03) — missing: price\n• *• Unknown (2026-10-01) — missing: price, distance, name* (2026-10-02) — missing: price, phone\n_Fix the booking data or add the real value to `data/overrides.js` in the dashboard repo._",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-10-03T08:19:46.376Z"
+  },
+  {
     "ts": "1791015136.025599",
     "text": ":warning: *Dashboard data check* — some recent bookings have missing fields and won't be tracked correctly:\n• *• Unknown (2026-10-03) — missing: price, distance, name* (2026-10-03) — missing: price\n• *Unknown* (2026-10-03) — missing: name\n• *Unknown* (2026-10-03) — missing: name\n• *Unknown* (2026-10-02) — missing: name\n• *• Unknown (2026-10-01) — missing: price, distance, name* (2026-10-02) — missing: price, phone\n_Fix the booking data or add the real value to `data/overrides.js` in the dashboard repo._",
     "subtype": null,
