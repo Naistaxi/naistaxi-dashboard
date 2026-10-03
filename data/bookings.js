@@ -2,10 +2,21 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1791014467.632819",
+    "text": ":warning: *Dashboard data check* — some recent bookings have missing fields and won't be tracked correctly:\n• *Unknown* (2026-10-03) — missing: price, distance, name\n• *Unknown* (2026-10-03) — missing: price, distance, name\n• *Unknown* (2026-10-02) — missing: price, distance, name\n• *• Unknown (2026-10-01) — missing: price, distance, name* (2026-10-02) — missing: price, phone\n• *Unknown* (2026-10-01) — missing: price, distance, name\n• *Unknown* (2026-10-01) — missing: price, distance, name\n_Fix the booking data or add the real value to `data/overrides.js` in the dashboard repo._",
+    "subtype": null,
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-10-03T08:12:15.965Z"
+  },
+  {
     "ts": "1791006171.109119",
     "text": ":oncoming_taxi: *Naistaxi Ennakkovaraus*\n\n:bust_in_silhouette: *SENJA NIEMI*\n:clock1: *04.10.2026 — 17:00*\n:euro: *17.23 €*\n\nLähtö: Läntinen Brahenkatu 2, 00510 Helsinki, Finland\nMääränpää: Ratapihantie 6, 00520 Helsinki, Finland\n\n2.63 km | 8 min | 1 pax\n\n:telephone_receiver: +358456932702\n:e-mail: <mailto:senja.tuulimaria@gmail.com|senja.tuulimaria@gmail.com>\n:speech_balloon: <https://wa.me/358456932702?text=Hei%20Senja%20Niemi!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2004.10.2026%20klo%2017.00.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\nLisätoiveet: None\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 0,
+    "reply_count": 1,
     "confirmed": false,
     "rejected": false,
     "cancelled": false,
