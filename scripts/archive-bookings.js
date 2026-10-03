@@ -229,6 +229,7 @@ function parseBookingFields(text) {
   if (!price || /not calculated/i.test(price || '')) {
     // New format: ":euro: *17.23 €*" — after removing * becomes ":euro: 17.23 €"
     const euroMatch = clean.match(/:euro:\s*([\d]+[.,][\d]+)/m);
+    if (!euroMatch) console.log('DEBUG price miss:', JSON.stringify(clean.substring(0, 150)));
     if (euroMatch) price = euroMatch[1] + ' €';
     if (!price || /not calculated/i.test(price || '')) {
       // Last fallback: number + € anywhere
