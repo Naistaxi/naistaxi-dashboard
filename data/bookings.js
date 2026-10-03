@@ -2,10 +2,54 @@
 // Regenerated daily by .github/workflows/archive-bookings.yml — do not edit by hand.
 export default [
   {
+    "ts": "1791006171.109119",
+    "text": ":oncoming_taxi: *Naistaxi Ennakkovaraus*\n\n:bust_in_silhouette: *SENJA NIEMI*\n:clock1: *04.10.2026 — 17:00*\n:euro: *17.23 €*\n\nLähtö: Läntinen Brahenkatu 2, 00510 Helsinki, Finland\nMääränpää: Ratapihantie 6, 00520 Helsinki, Finland\n\n2.63 km | 8 min | 1 pax\n\n:telephone_receiver: +358456932702\n:e-mail: <mailto:senja.tuulimaria@gmail.com|senja.tuulimaria@gmail.com>\n:speech_balloon: <https://wa.me/358456932702?text=Hei%20Senja%20Niemi!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2004.10.2026%20klo%2017.00.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\nLisätoiveet: None\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-10-03T08:01:07.536Z"
+  },
+  {
+    "ts": "1791005571.103219",
+    "text": ":oncoming_taxi: *Naistaxi Ennakkovaraus*\n\n:bust_in_silhouette: *KATJA-MARIA JOUTSEN*\n:clock1: *12.10.2026 — 04:30*\n:euro: *44.52 €*\n\nLähtö: Kaljaasi Fortunan katu 4, 00540 Helsinki, Finland\nMääränpää: Helsinki-Vantaan lentoasema (HEL), Lentoasemantie 1, 01530 Vantaa\n\n17.79 km | 26 min | 1 pax\n\n:telephone_receiver: +358503600079\n:e-mail: <mailto:katja.joutsen@gmail.com|katja.joutsen@gmail.com>\n:speech_balloon: <https://wa.me/358503600079?text=Hei%20Katja-Maria%20Joutsen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2012.10.2026%20klo%2004.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\nLisätoiveet: —\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 0,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-10-03T08:01:07.536Z"
+  },
+  {
+    "ts": "1790959673.257799",
+    "text": ":oncoming_taxi: *Naistaxi Ennakkovaraus*\n\n:bust_in_silhouette: *HENNA JALONEN*\n:clock1: *02.10.2026 — 22:30*\n:euro: *22.16 €*\n\nLähtö: Nordenskiöldinkatu 11-13, 00250 Helsinki, Finland\nMääränpää: Ruoholahdenranta 3, 00180 Helsinki, Finland\n\n3.7 km | 13 min | 4 pax\n\n:telephone_receiver: 0503068673\n:e-mail: <mailto:henna.jalonen@dnainternet.net|henna.jalonen@dnainternet.net>\n:speech_balloon: <https://wa.me/358503068673?text=Hei%20Henna%20Jalonen!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2002.10.2026%20klo%2022.30.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\nLisätoiveet: None\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
+    "subtype": "bot_message",
+    "reply_count": 1,
+    "confirmed": true,
+    "rejected": false,
+    "cancelled": false,
+    "driver": "Danche",
+    "archived_at": "2026-10-03T08:01:07.536Z"
+  },
+  {
+    "ts": "1790938347.307369",
+    "text": ":warning: *Dashboard data check* — some recent bookings have missing fields and won't be tracked correctly:\n• *Unknown* (2026-10-01) — missing: price, distance, name\n• *Unknown* (2026-10-01) — missing: price, distance, name\n_Fix the booking data or add the real value to `data/overrides.js` in the dashboard repo._",
+    "subtype": null,
+    "reply_count": 2,
+    "confirmed": false,
+    "rejected": false,
+    "cancelled": false,
+    "driver": null,
+    "archived_at": "2026-10-03T08:01:07.536Z"
+  },
+  {
     "ts": "1790871045.860779",
     "text": ":car: *Naistaxi Ennakkovaraus*\n\n&gt;:bust_in_silhouette: *ROOSA KONSTER* | :clock1: *22:50 — 01.10.2026* | :euro: *15.08 €*\n\n:round_pushpin: *Reitti:*\n• Lähtö: Nordenskiöldinkatu 11-13, 00250 Helsinki, Finland\n• Määränpää: Tukholmankatu 2, 00250 Helsinki, Finland\n\n:straight_ruler: 0.88 km | :stopwatch: 4 min | :busts_in_silhouette: 2 | :baby: Ei\n\n:phone: +358505401039\n:email: <mailto:roosamatilda.konster@gmail.com|roosamatilda.konster@gmail.com>\n:speech_balloon: <https://wa.me/358505401039?text=Hei%20Roosa%20Konster!%20T%C3%A4%C3%A4ll%C3%A4%20Naistaxi.%20Kiitos%20ennakkovarauksestasi%2001.10.2026%20klo%2022.50.%20Olemme%20tehneet%20katevarauksen%2C%20mutta%20emme%20veloittaneet%20ja%20etsimme%20sinulle%20kuljettajaa.%20Jos%20kuljettajaa%20ei%20l%C3%B6ydy%2C%20katevaraus%20vapautuu%20automaattisesti%20eik%C3%A4%20sinulta%20veloiteta%20mit%C3%A4%C3%A4n.%20Ilmoitamme%20sinulle%20mahdollisimman%20pian|WhatsApp>\n\n:memo: *Lisätoiveet:* None\n\nOle hyvä ja vahvista tämä ennakkovaraus. Kiitos!",
     "subtype": "bot_message",
-    "reply_count": 1,
+    "reply_count": 2,
     "confirmed": true,
     "rejected": false,
     "cancelled": false,
