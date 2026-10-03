@@ -215,24 +215,27 @@ function fieldValue(text, ...keys) {
 function parseBookingFields(text) {
   const clean = text.replace(/\*/g, '');
 
-  // Name: old format "Nimi: X" / "Name: X", new format ":bust_in_silhouette: NAME |"
+  // Name: old format "Nimi: X" / "Name: X"
+  // New format: ":bust_in_silhouette: SENJA NIEMI" on its own line
   let name = fieldValue(text, 'Nimi', 'Name');
   if (!name) {
-    const m = clean.match(/:bust_in_silhouette:\s*([A-ZÄÖÅ][^|:\n]+?)(?:\s*\|)/);
+    const m = clean.match(/:bust_in_silhouette:\s*([A-ZÄÖÅA-Za-zäöå][^\n|:]+?)(?:\s*[|\n]|$)/m);
     if (m) name = m[1].trim();
   }
 
-  // Price: old format "Arvioitu hinta: X" / "Estimated fare: X", new format ":euro: *X €*"
+  // Price: old format "Arvioitu hinta: X" / "Estimated fare: X"
+  // New format: ":euro: 17.23 €" on its own line
   let price = fieldValue(text, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
-  if (!price || /not calculated/i.test(price)) {
-    const m = clean.match(/:euro:\s*([\d.,]+\s*€)/);
+  if (!price || /not calculated/i.test(price || '')) {
+    const m = clean.match(/:euro:\s*([\d.,]+\s*€)/m);
     if (m) price = m[1].trim();
   }
 
-  // Distance: old format "Etäisyys: X" / "Distance: X", new format ":straight_ruler: X km"
+  // Distance: old format "Etäisyys: X" / "Distance: X"
+  // New format: "2.63 km | 8 min | ..."
   let dist = fieldValue(text, 'Etäisyys', 'Distance');
-  if (!dist || /not calculated/i.test(dist)) {
-    const m = clean.match(/:straight_ruler:\s*([\d.,]+\s*km)/);
+  if (!dist || /not calculated/i.test(dist || '')) {
+    const m = clean.match(/:straight_ruler:\s*([\d.,]+\s*km)/m);
     if (m) dist = m[1].trim();
     else {
       const m2 = clean.match(/([\d.,]+)\s*km\s*\|/);
@@ -240,10 +243,11 @@ function parseBookingFields(text) {
     }
   }
 
-  // Phone: old format "Puhelin: X" / "Phone: X", new format ":phone: X"
+  // Phone: old format "Puhelin: X" / "Phone: X"
+  // New format: ":telephone_receiver: +358..." or ":phone: +358..."
   let phone = fieldValue(text, 'Puhelin', 'Phone');
   if (!phone) {
-    const m = clean.match(/:phone:\s*(\+?[\d\s]+)/);
+    const m = clean.match(/(?::telephone_receiver:|:phone:)\s*(\+?[\d\s]+)/m);
     if (m) phone = m[1].trim();
   }
 
