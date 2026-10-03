@@ -227,8 +227,13 @@ function parseBookingFields(text) {
   // New format: ":euro: 17.23 €" on its own line
   let price = fieldValue(text, 'Arvioitu hinta', 'Estimated fare', 'Estimated fair', 'Estimated price', 'Hinta');
   if (!price || /not calculated/i.test(price || '')) {
-    const m = clean.match(/:euro:\s*([\d.,]+\s*€)/m);
+    const m = clean.match(/:euro:\s*([\d.,]+\s*[€\u20ac])/m);
     if (m) price = m[1].trim();
+    else {
+      // Fallback: any number followed by € anywhere in text
+      const m2 = clean.match(/([\d.,]+)\s*[€\u20ac]/m);
+      if (m2) price = m2[1] + ' €';
+    }
   }
 
   // Distance: old format "Etäisyys: X" / "Distance: X"
