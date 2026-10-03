@@ -79,7 +79,9 @@ function mergeArchiveAndLive(archiveData, live) {
       const finalDriver = o.driver ? normalizeDriverName(o.driver) : driver;
       return { ...m, text, driver: finalDriver };
     }
-    return { ...m, driver };
+    // Even without other overrides, apply driver override if present
+    const overrideDriver = overrides[m.ts] && overrides[m.ts].driver ? normalizeDriverName(overrides[m.ts].driver) : null;
+    return { ...m, driver: overrideDriver || driver };
   });
 }
 
