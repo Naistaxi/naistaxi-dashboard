@@ -1,3 +1,4 @@
+// v2
 // Import the historical archive directly so Vercel bundles it with the function.
 // Reading it from disk with fs is unreliable on serverless.
 import archive from '../data/bookings.js';
