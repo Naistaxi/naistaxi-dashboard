@@ -261,7 +261,17 @@ function parseBookingFields(text) {
 }
 
 async function checkMissingFields(messages) {
-  const cutoff = Date.now() / 1000 - 48 * 3600;
+  // Load overrides to skip bookings that are already manually corrected
+  let overrides = {};
+  try {
+    const overridesPath = path.join(process.cwd(), 'data', 'overrides.js');
+    const raw = fs.readFileSync(overridesPath, 'utf-8').replace(/^export default\s*/, '').replace(/;\s*$/, '');
+    // Simple parse - extract ts keys
+    const tsMatches = raw.matchAll(/'([\d.]+)'\s*:/g);
+    for (const m of tsMatches) overrides[m[1]] = true;
+  } catch(e) {}
+
+  const cutoff = Date.now() / 1000 - 24 * 3600; // Only alert on last 24h bookings
   const problems = [];
 
   for (const m of messages) {
@@ -276,7 +286,7 @@ async function checkMissingFields(messages) {
     if (!name) issues.push('name');
     if (!phone) issues.push('phone');
 
-    if (issues.length) {
+    if (issues.length && !overrides[m.ts]) {
       const who = name || 'Unknown';
       const date = new Date(parseFloat(m.ts) * 1000).toISOString().slice(0, 10);
       problems.push(`• *${who}* (${date}) — missing: ${issues.join(', ')}`);
