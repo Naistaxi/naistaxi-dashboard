@@ -6,4 +6,6 @@ export default {
   '1790818439.583189': { fare: '18,76', name: 'Johanna Karppinen', from: 'Nordenskiöldinkatu 11-13, 00250 Helsinki', to: 'Eteläinen Rautatiekatu 4, 00100 Helsinki', dist: 2.92 },
   '1790849633.815899': { driver: 'Meriem' },
   '1790871045.860779': { driver: 'Payal' },
+  // Henna Jalonen — Oct 2, phone without +358 prefix
+  '1790959673.257799': { phone: '+358503068673' },
 };
