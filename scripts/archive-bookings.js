@@ -59,6 +59,9 @@ async function fetchThreadStatus(ts, attempt = 1) {
 
 function isBookingMessage(text) {
   if (!text) return false;
+  // Exclude dashboard alert messages
+  if (/Dashboard data check/i.test(text)) return false;
+  if (/missing: price|missing: name|missing: distance/i.test(text)) return false;
   return /ennakkovaraus|booking|reservation|reitti|route|pre-book|prebook|ride request|pickup address|estimated fare|arvioitu hinta|applied tariff|l\u00e4ht\u00f6paikka/i.test(text);
 }
 
@@ -229,7 +232,7 @@ function parseBookingFields(text) {
   if (!price || /not calculated/i.test(price || '')) {
     // New format: ":euro: *17.23 €*" — after removing * becomes ":euro: 17.23 €"
     const euroMatch = clean.match(/:euro:\s*([\d]+[.,][\d]+)/m);
-    if (!euroMatch) console.log('DEBUG price miss:', JSON.stringify(clean.substring(0, 150)));
+
     if (euroMatch) price = euroMatch[1] + ' €';
     if (!price || /not calculated/i.test(price || '')) {
       // Last fallback: number + € anywhere
