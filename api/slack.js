@@ -1,9 +1,4 @@
-// v2
-// Import the historical archive directly so Vercel bundles it with the function.
-// Reading it from disk with fs is unreliable on serverless.
-import archive from '../data/bookings.js';
-import overrides from '../data/overrides.js';
-
+// v3 — reads archive and overrides from GitHub at runtime, not bundled
 const NON_NAME_WORDS = /^(by|the|for|it|ride|booking|confirmed|rejected|cancelled|canceled|driver|available|yes|no|ok|okay|okey|done|thanks|thank|sure|kiitos|joo|jep|kylla|kyll[aä]|selv[aä]|hyv[aä])$/i;
 
 function extractDriver(texts) {
@@ -35,22 +30,39 @@ function titleCase(s) {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 }
 
-const DRIVER_ALIASES = {
-  'dance': 'Danche',
-};
+const DRIVER_ALIASES = { 'dance': 'Danche' };
 function normalizeDriverName(name) {
   if (!name) return name;
-  const canonical = DRIVER_ALIASES[name.toLowerCase()];
-  return canonical || name;
+  return DRIVER_ALIASES[name.toLowerCase()] || name;
 }
 
 let cache = { data: null, timestamp: 0 };
 const CACHE_TTL_MS = 300000;
-const FRESH_WINDOW_MS = 6 * 3600 * 1000; // Only re-fetch last 6 hours from live
+const FRESH_WINDOW_MS = 6 * 3600 * 1000;
 
-function mergeArchiveAndLive(archiveData, live) {
+// Load archive and overrides fresh from GitHub every time (no bundle caching)
+const GITHUB_RAW = 'https://raw.githubusercontent.com/Naistaxi/naistaxi-dashboard/main/data';
+
+async function loadArchive() {
+  const res = await fetch(`${GITHUB_RAW}/bookings.json`, { cache: 'no-store' });
+  return res.json();
+}
+
+async function loadOverrides() {
+  const res = await fetch(`${GITHUB_RAW}/overrides.js`, { cache: 'no-store' });
+  const text = await res.text();
+  // Parse: "export default { ... };" → object
+  const json = text
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/export default\s*/, '')
+    .replace(/;\s*$/, '')
+    .trim();
+  return new Function('return ' + json)();
+}
+
+function mergeArchiveAndLive(archive, overrides, live) {
   const liveTs = new Set(live.map(m => m.ts));
-  const archiveOnly = archiveData.filter(a => !liveTs.has(a.ts));
+  const archiveOnly = archive.filter(a => !liveTs.has(a.ts));
   const merged = [...live, ...archiveOnly].sort((a, b) => parseFloat(b.ts) - parseFloat(a.ts));
   return merged.map(m => {
     const driver = m.driver ? normalizeDriverName(m.driver) : m.driver;
@@ -64,24 +76,14 @@ function mergeArchiveAndLive(archiveData, live) {
           text = text + `\nEstimated fare: ${o.fare} €`;
         }
       }
-      if (o.name && !/(Nimi|Name)\s*:/i.test(text)) {
-        text = text + `\nNimi: ${o.name}`;
-      }
-      if (o.from && !/(Lähtö|From|Pickup address)\s*:/i.test(text)) {
-        text = text + `\nFrom: ${o.from}`;
-      }
-      if (o.to && !/(Määränpää|Destination|To)\s*:/i.test(text)) {
-        text = text + `\nDestination: ${o.to}`;
-      }
-      if (o.dist && !/(Etäisyys|Distance)\s*:/i.test(text)) {
-        text = text + `\nDistance: ${o.dist} km`;
-      }
-      // Override driver if explicitly set
+      if (o.name && !/(Nimi|Name)\s*:/i.test(text)) text = text + `\nNimi: ${o.name}`;
+      if (o.from && !/(Lähtö|From|Pickup address)\s*:/i.test(text)) text = text + `\nFrom: ${o.from}`;
+      if (o.to && !/(Määränpää|Destination|To)\s*:/i.test(text)) text = text + `\nDestination: ${o.to}`;
+      if (o.dist && !/(Etäisyys|Distance)\s*:/i.test(text)) text = text + `\nDistance: ${o.dist} km`;
       const finalDriver = o.driver ? normalizeDriverName(o.driver) : driver;
       return { ...m, text, driver: finalDriver };
     }
-    // Even without other overrides, apply driver override if present
-    const overrideDriver = overrides[m.ts] && overrides[m.ts].driver ? normalizeDriverName(overrides[m.ts].driver) : null;
+    const overrideDriver = o && o.driver ? normalizeDriverName(o.driver) : null;
     return { ...m, driver: overrideDriver || driver };
   });
 }
@@ -97,6 +99,9 @@ export default async function handler(req, res) {
   const forceRefresh = req.query.force === '1';
 
   try {
+    // Load archive and overrides fresh from GitHub
+    const [archive, overrides] = await Promise.all([loadArchive(), loadOverrides()]);
+
     const histRes = await fetch(
       `https://slack.com/api/conversations.history?channel=${channelId}&limit=200`,
       { headers: { Authorization: `Bearer ${token}` } }
@@ -115,7 +120,7 @@ export default async function handler(req, res) {
     const liveMessages = histData.messages || [];
 
     if (mode === 'messages') {
-      const merged = mergeArchiveAndLive(archive, liveMessages.map(m => ({
+      const merged = mergeArchiveAndLive(archive, overrides, liveMessages.map(m => ({
         ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: false
       })));
       return res.status(200).json({ messages: merged, archive_count: archive.length });
@@ -147,9 +152,7 @@ export default async function handler(req, res) {
         );
         const d = await r.json();
         if (!d.ok) {
-          if (d.error === 'method_not_supported_for_channel_type' || d.error === 'not_allowed_token_type') {
-            return { unsupported: true };
-          }
+          if (d.error === 'method_not_supported_for_channel_type' || d.error === 'not_allowed_token_type') return { unsupported: true };
           if ((d.error === 'ratelimited' || d.error === 'rate_limited') && attempt < 3) {
             await new Promise(res => setTimeout(res, 500 * attempt));
             return fetchThread(msg, attempt + 1);
@@ -202,29 +205,23 @@ export default async function handler(req, res) {
       const r = confirmedMap[m.ts];
       const liveOk = r && !r.error && !r.unsupported;
       const fallback = archiveStatusByTs[m.ts];
+      const overrideDriver = overrides[m.ts] && overrides[m.ts].driver ? normalizeDriverName(overrides[m.ts].driver) : null;
 
       if (liveOk) {
-        // If live fetch got no driver, fall back to archive driver or override before giving up
-        const overrideDriver = overrides[m.ts] && overrides[m.ts].driver ? overrides[m.ts].driver : null;
-        const liveDriver = r.driver || overrideDriver || (archiveStatusByTs[m.ts] && archiveStatusByTs[m.ts].driver) || null;
+        const liveDriver = r.driver || overrideDriver || (fallback && fallback.driver) || null;
         return { ...m, confirmed: r.confirmed, rejected: r.rejected, cancelled: r.cancelled, driver: liveDriver, status_unknown: false };
       }
       if (fallback) {
-        return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, driver: fallback.driver || null, status_unknown: false };
+        return { ...m, confirmed: fallback.confirmed, rejected: fallback.rejected, cancelled: fallback.cancelled, driver: overrideDriver || fallback.driver || null, status_unknown: false };
       }
       const statusUnknown = m.reply_count > 0;
       return { ...m, confirmed: false, rejected: false, cancelled: false, status_unknown: statusUnknown };
     });
 
-    const merged = mergeArchiveAndLive(archive, enrichedLive);
+    const merged = mergeArchiveAndLive(archive, overrides, enrichedLive);
     cache = { data: merged, timestamp: now };
     res.status(200).json({ messages: merged, archive_count: archive.length });
   } catch (err) {
-    if (archive.length) {
-      return res.status(200).json({
-        messages: archive, archive_only: true, archive_count: archive.length, slack_error: err.message
-      });
-    }
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 }
